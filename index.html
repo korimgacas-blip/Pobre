@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pobre 3.1 - Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+        
+    <style>
+        :root { --primary: #4f46e5; --primary-dark: #4338ca; --income: #059669; --expense: #dc2626; --bg: #f3f4f6; --card-bg: #ffffff; --radius: 20px; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); margin: 0; padding-bottom: 110px; color: #111; overflow-x: hidden; }
+        header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 20px 24px 70px; border-radius: 0 0 36px 36px; display: flex; justify-content: space-between; align-items: center; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px; margin-top: -50px; }
+        .dash-card { background: var(--card-bg); padding: 20px 16px; border-radius: var(--radius); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); text-align: center; }
+        .dash-card small { color: #6b7280; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
+        .dash-card b { font-size: 1.2rem; display: block; margin-top: 5px; }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .view { display: none; } .view.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: white; padding: 20px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; margin-bottom: 15px; }
+        button { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-income { background: var(--income); color: white; }
+        .btn-expense { background: var(--expense); color: white; }
+        .btn-delete { background: #fff1f2; color: #e11d48; margin-top: 10px; border: 1px solid #fecaca; }
+        .btn-sec { background: #f3f4f6; color: #4b5563; margin-top: 10px; }
+        .btn-pix { background: #32bcad; color: white; }
+        .btn-mp { background: #009ee3; color: white; }
+        .btn-wpp { background: #25d366; color: white; }
+        .category-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        .category-option { padding: 10px 5px; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center; font-size: 0.65rem; cursor: pointer; }
+        .category-option.selected { background: #e0e7ff; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+        nav { position: fixed; bottom: 20px; left: 16px; right: 16px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 100; }
+        .nav-buttons { display: flex; height: 70px; justify-content: space-around; align-items: center; }
+        .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
+        .tab.active { color: var(--primary); }
+        .item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f3f4f6; cursor: pointer; }
+        #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 50px; opacity: 0; transition: 0.3s; z-index: 1000; pointer-events: none; }
+        .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
+        .info-section h4 { color: var(--primary); margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; }
+        .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="app-title">💸 Pobre 3.1</div>
+        <div id="status-tag"><i class="fas fa-piggy-bank"></i></div>
+    </header>
+
+    <div class="dashboard">
+        <div class="dash-card">
+            <small>Saldo Geral</small>
+            <b id="dash-saldo">R$ 0,00</b>
+        </div>
+        <div class="dash-card">
+            <small>Gastos (Mês)</small>
+            <b id="dash-gastos-mes" style="color: var(--expense)">R$ 0,00</b>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="v-receita" class="view active">
+            <div class="card">
+                <h3 id="titulo-receita"><i class="fas fa-plus"></i> Nova Receita</h3>
+                <input type="hidden" id="receita-id">
+                <input type="text" id="descricao-receita" placeholder="Ex: Salário Freelance">
+                <div class="category-selector" id="categoria-receita-selector">
+                    <div class="category-option selected" data-category="salario" onclick="selectCategory('receita', 'salario')">💼<br>Salário</div>
+                    <div class="category-option" data-category="investimentos" onclick="selectCategory('receita', 'investimentos')">📈<br>Invest.</div>
+                    <div class="category-option" data-category="outros" onclick="selectCategory('receita', 'outros')">🎁<br>Outros</div>
+                </div>
+                <input type="hidden" id="categoria-receita" value="salario">
+                <input type="number" id="valor-receita" placeholder="Valor R$" step="0.01">
+                <input type="date" id="data-receita">
+                <button class="btn-income" onclick="salvar('receita')"><i class="fas fa-check"></i> Salvar Receita</button>
+                <button id="del-receita" class="btn-delete" style="display:none;" onclick="deletarRegistro('receita')"><i class="fas fa-trash"></i> Excluir</button>
+                <button id="btn-cancel-receita" class="btn-sec" style="display:none;" onclick="cancelarEdicao('receitas')">Voltar</button>
+            </div>
+        </div>
+
+        <div id="v-despesa" class="view">
+            <div class="card">
+                <h3 id="titulo-despesa"><i class="fas fa-minus"></i> Novo Gasto</h3>
+                <input type="hidden" id="despesa-id">
+                <input type="text" id="descricao-despesa" placeholder="Onde você gastou?">
+                <div class="category-selector" id="categoria-despesa-selector">
+                    <div class="category-option selected" data-category="alimentacao" onclick="selectCategory('despesa', 'alimentacao')">🍕<br>Comida</div>
+                    <div class="category-option" data-category="transporte" onclick="selectCategory('despesa', 'transporte')">🚗<br>Transporte</div>
+                    <div class="category-option" data-category="lazer" onclick="selectCategory('despesa', 'lazer')">🍿<br>Lazer</div>
+                    <div class="category-option" data-category="contas" onclick="selectCategory('despesa', 'contas')">🧾<br>Contas</div>
+                </div>
+                <input type="hidden" id="categoria-despesa" value="alimentacao">
+                <input type="number" id="valor-despesa" placeholder="Valor R$" step="0.01">
+                <input type="date" id="data-despesa">
+                <button class="btn-expense" onclick="salvar('despesa')"><i class="fas fa-money-bill-wave"></i> Confirmar Gasto</button>
+                <button id="del-despesa" class="btn-delete" style="display:none;" onclick="deletarRegistro('despesa')"><i class="fas fa-trash"></i> Excluir Registro</button>
+                <button id="btn-cancel-despesa" class="btn-sec" style="display:none;" onclick="cancelarEdicao('despesas')">Voltar</button>
+            </div>
+        </div>
+
+        <div id="v-consulta" class="view">
+            <div class="card">
+                <h3><i class="fas fa-chart-pie"></i> Gastos por Categoria</h3>
+                <select id="filtroMes" onchange="render()"></select>
+                <div style="height:250px;"><canvas id="graficoPizza"></canvas></div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-history"></i> Extrato</h3>
+                <div id="lista-detalhada"></div>
+            </div>
+            <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-sec" onclick="exportarBackup()"><i class="fas fa-download"></i> Backup JSON</button>
+                    <button class="btn-sec" onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
+                    <input type="file" id="restore-file" style="display:none" accept=".json" onchange="restaurarBackup(this)">
+                </div>
+                <button onclick="confirmarLimpeza()" style="color: var(--expense); background: #fee2e2;"><i class="fas fa-trash-alt"></i> Limpar Dados</button>
+            </div>
+        </div>
+
+        <div id="v-apoie" class="view">
+            <div class="card">
+                <h3><i class="fas fa-heart" style="color: #e11d48;"></i> Sobre o Pobre 3.1</h3>
+                <div class="info-section">
+                    <p>O <b>Pobre 3.1</b> é um software independente focado em <b>Soberania Digital</b>. Aqui, você é o único dono dos seus dados.</p>
+                    
+                    <h4><i class="fas fa-shield-alt"></i> Sua Privacidade é Real</h4>
+                    <p>Ao contrário de outros apps, o Pobre 3.1 <b>não possui servidores</b>. Suas informações financeiras nunca saem do seu celular. Elas ficam salvas na memória interna do seu navegador.</p>
+
+                    <h4><i class="fas fa-save"></i> Como funciona o Backup?</h4>
+                    <p>Como não guardamos seus dados na nuvem, a segurança deles depende de você. </p>
+                    <ul style="padding-left: 20px; margin-top: 5px;">
+                        <li>Use o botão <b>Backup JSON</b> (na aba Análise) para salvar um arquivo com seus dados.</li>
+                        <li>Se você trocar de celular ou formatar o aparelho, precisará desse arquivo para <b>Restaurar</b> seu histórico.</li>
+                    </ul>
+
+                    <h4><i class="fas fa-bolt"></i> 100% Offline</h4>
+                    <p>Você pode registrar seus gastos no metrô, no avião ou em qualquer lugar, sem precisar de internet ou sinal de celular.</p>
+
+                    <div class="privacy-box">
+                        <p><i class="fas fa-info-circle"></i> <b>Dica de Segurança:</b> Evite limpar os "Dados do Site" nas configurações do seu navegador, pois isso apagará seus registros locais. Mantenha sempre um backup atualizado!</p>
+                    </div>
+
+                    <h4 style="margin-top: 20px;">☕ Apoie o Projeto</h4>
+                    <p>Este app é gratuito e livre de anúncios. Se ele te ajuda a economizar, considere fazer uma contribuição voluntária para mantê-lo vivo:</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                    <button class="btn-pix" onclick="copiarPix()"><i class="fas fa-copy"></i> Doar por PIX (Copiar Chave)</button>
+                    <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')"><i class="fas fa-credit-card"></i> Mercado Pago</button>
+                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149', '_blank')"><i class="fab fa-whatsapp"></i> Suporte Especializado</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-buttons">
+            <div class="tab active" onclick="navTo('v-receita',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
+            <div class="tab" onclick="navTo('v-despesa',this)"><i class="fas fa-arrow-down"></i><span>Gastar</span></div>
+            <div class="tab" onclick="navTo('v-consulta',this)"><i class="fas fa-chart-bar"></i><span>Análise</span></div>
+            <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
+        </div>
+    </nav>
+
+    <div id="toast">Mensagem</div>
+
+    <script>
+        // --- VERIFICAÇÃO DE ABA DUPLICADA ---
+        const channel = new BroadcastChannel('pobre_3_1_auth');
+        channel.postMessage('ping');
+        channel.onmessage = (event) => {
+            if (event.data === 'ping') {
+                channel.postMessage('pong');
+            } else if (event.data === 'pong') {
+                document.body.innerHTML = `
+                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; text-align:center; padding:30px; background:#f3f4f6;">
+                        <h1 style="font-size: 4rem;">⚠️</h1>
+                        <h2 style="color:#4f46e5;">App já aberto</h2>
+                        <p style="font-size:1.1rem; color:#6b7280; max-width:400px;">
+                            Por segurança, o <b>Pobre 3.1</b> permite apenas uma aba ativa por vez. Feche a outra aba para continuar aqui.
+                        </p>
+                        <button onclick="location.reload()" style="background:#4f46e5; color:white; padding:12px 24px; border-radius:12px; border:none; font-weight:700; margin-top:20px;">Tentar Novamente</button>
+                    </div>`;
+                window.stop();
+            }
+        };
+
+        // --- REGISTRO DO PWA ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+
+        let db;
+        let chartInstancePie;
+        const FORMAT_BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        const CATEGORIES = {
+            receita: { salario: "💼 Salário", investimentos: "📈 Invest.", outros: "🎁 Outros" },
+            despesa: { alimentacao: "🍕 Comida", transporte: "🚗 Transp.", moradia: "🏠 Casa", lazer: "🍿 Lazer", saude: "💊 Saúde", educacao: "🎓 Educ.", compras: "🛍️ Compra", contas: "🧾 Contas" }
+        };
+
+        async function initDB() {
+            return new Promise((resolve) => {
+                const request = indexedDB.open("GastosProDB", 3);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("receitas")) db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
+                    if (!db.objectStoreNames.contains("despesas")) db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
+                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(); };
+            });
+        }
+
+        async function getAll(storeName) {
+            const tx = db.transaction(storeName, "readonly");
+            const store = tx.objectStore(storeName);
+            return new Promise(r => { const req = store.getAll(); req.onsuccess = () => r(req.result || []); });
+        }
+
+        async function salvar(tipo) {
+            const id = document.getElementById(`${tipo}-id`).value;
+            const item = {
+                descricao: document.getElementById(`descricao-${tipo}`).value,
+                categoria: document.getElementById(`categoria-${tipo}`).value,
+                valor: parseFloat(document.getElementById(`valor-${tipo}`).value),
+                data: document.getElementById(`data-${tipo}`).value
+            };
+            if (!item.descricao || isNaN(item.valor) || !item.data) { showToast("Preencha tudo certinho!", "warning"); return; }
+            if (id) item.id = parseInt(id);
+            const storeName = tipo === 'receita' ? "receitas" : "despesas";
+            const tx = db.transaction(storeName, "readwrite");
+            tx.objectStore(storeName).put(item);
+            tx.oncomplete = () => { showToast(id ? "Atualizado!" : "Salvo!"); cancelarEdicao(storeName); render(); };
+        }
+
+        async function deletarRegistro(tipo) {
+            const id = parseInt(document.getElementById(`${tipo}-id`).value);
+            if (!id || !confirm("Quer apagar mesmo?")) return;
+            const storeName = tipo === 'receita' ? "receitas" : "despesas";
+            const tx = db.transaction(storeName, "readwrite");
+            tx.objectStore(storeName).delete(id);
+            tx.oncomplete = () => { showToast("Removido."); cancelarEdicao(storeName); render(); navTo('v-consulta', document.querySelectorAll('.tab')[2]); };
+        }
+
+        async function exportarBackup() {
+            const data = { receitas: await getAll("receitas"), despesas: await getAll("despesas") };
+            const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `backup_pobre_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+        }
+
+        async function restaurarBackup(input) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(confirm("Deseja importar estes dados? (Isso não apaga os atuais)")) {
+                        const txR = db.transaction("receitas", "readwrite");
+                        data.receitas.forEach(r => { delete r.id; txR.objectStore("receitas").add(r); });
+                        const txD = db.transaction("despesas", "readwrite");
+                        data.despesas.forEach(d => { delete d.id; txD.objectStore("despesas").add(d); });
+                        showToast("Dados restaurados!"); render();
+                    }
+                } catch(err) { showToast("Erro no arquivo!", "error"); }
+            };
+            reader.readAsText(file);
+        }
+
+        function gerarRelatorioPDF() {
+            showToast("Função em desenvolvimento...");
+        }
+
+        function navTo(id, el) {
+            document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+            if (id === 'v-consulta') popularFiltro();
+        }
+
+        function selectCategory(tipo, cat) {
+            document.querySelectorAll(`#categoria-${tipo}-selector .category-option`).forEach(e => e.classList.remove('selected'));
+            const opt = document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`);
+            if(opt) opt.classList.add('selected');
+            document.getElementById(`categoria-${tipo}`).value = cat;
+        }
+
+        function openEdit(item) {
+            const tipo = item.t;
+            navTo(tipo === 'receita' ? 'v-receita' : 'v-despesa', document.querySelectorAll('.tab')[tipo === 'receita' ? 0 : 1]);
+            document.getElementById(`${tipo}-id`).value = item.id;
+            document.getElementById(`descricao-${tipo}`).value = item.descricao;
+            document.getElementById(`valor-${tipo}`).value = item.valor;
+            document.getElementById(`data-${tipo}`).value = item.data;
+            selectCategory(tipo, item.categoria);
+            document.getElementById(`del-${tipo}`).style.display = "block";
+            document.getElementById(`btn-cancel-${tipo}`).style.display = "block";
+            document.getElementById(`titulo-${tipo}`).innerText = "Editar Registro";
+        }
+
+        function cancelarEdicao(store) {
+            const tipo = store === 'receitas' ? 'receita' : 'despesa';
+            document.getElementById(`${tipo}-id`).value = "";
+            document.getElementById(`descricao-${tipo}`).value = "";
+            document.getElementById(`valor-${tipo}`).value = "";
+            document.getElementById(`data-${tipo}`).value = new Date().toISOString().split('T')[0];
+            document.getElementById(`del-${tipo}`).style.display = "none";
+            document.getElementById(`btn-cancel-${tipo}`).style.display = "none";
+            document.getElementById(`titulo-${tipo}`).innerText = tipo === 'receita' ? "Nova Receita" : "Novo Gasto";
+        }
+
+        async function render() {
+            if (!db) return;
+            const r = await getAll("receitas");
+            const d = await getAll("despesas");
+            const mesAtual = new Date().toISOString().substring(0, 7);
+            const filtro = (document.getElementById('filtroMes') && document.getElementById('filtroMes').value) || mesAtual;
+            const totalR = r.reduce((s, i) => s + i.valor, 0);
+            const totalD = d.reduce((s, i) => s + i.valor, 0);
+            document.getElementById('dash-saldo').innerText = FORMAT_BRL.format(totalR - totalD);
+            const gastosMes = d.filter(i => i.data.startsWith(filtro)).reduce((s, i) => s + i.valor, 0);
+            document.getElementById('dash-gastos-mes').innerText = FORMAT_BRL.format(gastosMes);
+            const listCont = document.getElementById('lista-detalhada');
+            listCont.innerHTML = "";
+            const mesD = d.filter(i => i.data.startsWith(filtro));
+            [...r.filter(i => i.data.startsWith(filtro)).map(x => ({...x, t:'receita'})), ...mesD.map(x => ({...x, t:'despesa'}))]
+            .sort((a,b) => b.data.localeCompare(a.data))
+            .forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'item';
+                el.onclick = () => openEdit(item);
+                el.innerHTML = `<div><b>${item.descricao}</b><br><small>${item.data.split('-').reverse().join('/')}</small></div>
+                                <div style="color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
+                                ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}</div>`;
+                listCont.appendChild(el);
+            });
+            updateChart(mesD);
+        }
+
+        function updateChart(dados) {
+            const ctx = document.getElementById('graficoPizza').getContext('2d');
+            if (chartInstancePie) chartInstancePie.destroy();
+            const cats = {};
+            dados.forEach(d => cats[d.categoria] = (cats[d.categoria] || 0) + d.valor);
+            chartInstancePie = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(cats).map(k => CATEGORIES.despesa[k] || k),
+                    datasets: [{ data: Object.values(cats), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'] }]
+                },
+                options: { maintainAspectRatio: false }
+            });
+        }
+
+        function popularFiltro() {
+            const sel = document.getElementById('filtroMes');
+            if (!sel || sel.options.length > 0) return;
+            const hoje = new Date();
+            for(let i=0; i<6; i++) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                const val = d.toISOString().substring(0, 7);
+                sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
+            }
+        }
+
+        function showToast(m) {
+            const t = document.getElementById("toast");
+            t.innerText = m; t.style.opacity = 1;
+            setTimeout(() => t.style.opacity = 0, 3000);
+        }
+
+        function confirmarLimpeza() {
+            if(confirm("⚠️ Isso apagará TUDO. Continuar?")) {
+                db.transaction("receitas", "readwrite").objectStore("receitas").clear();
+                db.transaction("despesas", "readwrite").objectStore("despesas").clear();
+                showToast("Tudo limpo!"); render();
+            }
+        }
+
+        function copiarPix() {
+            const chave = "Aquinogabriel@outlook.com";
+            navigator.clipboard.writeText(chave).then(() => {
+                showToast("Chave PIX copiada!");
+            });
+        }
+
+        window.onload = async () => {
+            await initDB();
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data-receita').value = hoje;
+            document.getElementById('data-despesa').value = hoje;
+            render();
+        };
+    </script>
+</body>
+</html>
