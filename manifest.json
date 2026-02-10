@@ -1,10 +1,9 @@
 {
-  "name": "Pobre 3.1 - Pro",
+  "name": "Pobre 3.1 Pro",
   "short_name": "Pobre 3.1",
-  "description": "Controle financeiro simples e offline",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#4f46e5",
+  "background_color": "#f3f4f6",
   "theme_color": "#4f46e5",
   "icons": [
     {
