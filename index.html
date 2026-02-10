@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pobre 3.1 - Pro</title>
+    <title>Pobre 3.1 - Pro (Turbo)</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
@@ -16,46 +16,186 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-        
+    
     <style>
-        :root { --primary: #4f46e5; --primary-dark: #4338ca; --income: #059669; --expense: #dc2626; --bg: #f3f4f6; --card-bg: #ffffff; --radius: 20px; }
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); margin: 0; padding-bottom: 110px; color: #111; overflow-x: hidden; }
-        header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 20px 24px 70px; border-radius: 0 0 36px 36px; display: flex; justify-content: space-between; align-items: center; }
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px; margin-top: -50px; }
-        .dash-card { background: var(--card-bg); padding: 20px 16px; border-radius: var(--radius); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); text-align: center; }
+        :root { 
+            --primary: #4f46e5; 
+            --primary-dark: #4338ca; 
+            --income: #059669; 
+            --expense: #dc2626; 
+            --bg: #f3f4f6; 
+            --card-bg: #ffffff; 
+            --radius: 20px; 
+        }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg); 
+            margin: 0; 
+            padding-bottom: 110px; 
+            color: #111; 
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        /* --- ACELERAÇÃO DE HARDWARE --- */
+        .gpu-accelerated {
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        header { 
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); 
+            color: white; 
+            padding: 20px 24px 70px; 
+            border-radius: 0 0 36px 36px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-content { display: flex; flex-direction: column; justify-content: center; }
+        .user-greeting { font-size: 0.8rem; font-weight: 500; opacity: 0.9; margin-top: 4px; display: none; }
+
+        .dashboard { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 16px; 
+            padding: 0 24px; 
+            margin-top: -50px; 
+            position: relative;
+            z-index: 20;
+        }
+
+        .dash-card { 
+            background: var(--card-bg); 
+            padding: 20px 16px; 
+            border-radius: var(--radius); 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
+            text-align: center; 
+            contain: content; 
+            transform: translateZ(0); 
+        }
+
         .dash-card small { color: #6b7280; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
         .dash-card b { font-size: 1.2rem; display: block; margin-top: 5px; }
+
         .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-        .view { display: none; } .view.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: white; padding: 20px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; margin-bottom: 15px; }
-        button { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        .view { display: none; will-change: transform, opacity; }
+        .view.active { display: block; animation: fadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(15px) scale(0.98); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: var(--radius); 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); 
+            transform: translateZ(0);
+            transition: transform 0.2s;
+        }
+        .card:active { transform: scale(0.99) translateZ(0); }
+
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; margin-bottom: 15px; font-size: 16px; }
+        button { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s; }
+        button:active { opacity: 0.8; }
+
         .btn-income { background: var(--income); color: white; }
         .btn-expense { background: var(--expense); color: white; }
         .btn-delete { background: #fff1f2; color: #e11d48; margin-top: 10px; border: 1px solid #fecaca; }
         .btn-sec { background: #f3f4f6; color: #4b5563; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        
         .btn-pix { background: #32bcad; color: white; }
         .btn-mp { background: #009ee3; color: white; }
         .btn-wpp { background: #25d366; color: white; }
+
         .category-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
-        .category-option { padding: 10px 5px; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center; font-size: 0.65rem; cursor: pointer; }
+        .category-option { padding: 10px 5px; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center; font-size: 0.65rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .category-option:active { transform: scale(0.95); }
         .category-option.selected { background: #e0e7ff; border-color: var(--primary); color: var(--primary); font-weight: 700; }
-        nav { position: fixed; bottom: 20px; left: 16px; right: 16px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 100; }
+
+        nav { 
+            position: fixed; bottom: 20px; left: 16px; right: 16px; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            z-index: 100; 
+            transform: translateZ(0); 
+        }
+        
         .nav-buttons { display: flex; height: 70px; justify-content: space-around; align-items: center; }
-        .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
+        .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; transition: color 0.2s; }
         .tab.active { color: var(--primary); }
+        .tab i { font-size: 1.2rem; margin-bottom: 2px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .tab.active i { transform: translateY(-3px); }
+
         .item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f3f4f6; cursor: pointer; }
-        #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 50px; opacity: 0; transition: 0.3s; z-index: 1000; pointer-events: none; }
+
+        #toast { 
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0); 
+            background: #333; color: white; padding: 12px 24px; border-radius: 50px; 
+            opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none; 
+            will-change: opacity;
+        }
+
         .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
         .info-section h4 { color: var(--primary); margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; }
         .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
+        
+        canvas { transform: translateZ(0); }
+
+        /* --- GLASSMORPHISM MODALS (UI Vidro) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.35); /* Fundo escuro leve */
+            backdrop-filter: blur(6px);
+            z-index: 5000; display: none; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65); /* Quase transparente */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            padding: 30px 20px; border-radius: 30px;
+            text-align: center; width: 100%; max-width: 340px;
+            transform: translateZ(0);
+            animation: floatUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-input {
+            background: rgba(255,255,255,0.8);
+            border: 2px solid transparent;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .glass-input:focus { border-color: var(--primary); background: white; }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="app-title">💸 Pobre 3.1</div>
+    <header class="gpu-accelerated">
+        <div class="header-content">
+            <div class="app-title" style="font-weight: 800; font-size: 1.2rem;">💸 Pobre 3.1</div>
+            <div id="user-greeting" class="user-greeting"></div>
+        </div>
         <div id="status-tag"><i class="fas fa-piggy-bank"></i></div>
     </header>
 
@@ -67,6 +207,37 @@
         <div class="dash-card">
             <small>Gastos (Mês)</small>
             <b id="dash-gastos-mes" style="color: var(--expense)">R$ 0,00</b>
+        </div>
+    </div>
+
+    <div id="welcome-modal" class="modal-overlay">
+        <div class="glass-card">
+            <div style="font-size: 3rem; margin-bottom: 10px;">👋</div>
+            <h2 style="color: var(--primary); margin: 0 0 10px;">Bem-vindo(a)!</h2>
+            <p style="color: #4b5563; font-size: 0.9rem; margin-bottom: 20px;">
+                Para personalizar seus backups e relatórios, como você quer ser chamado?
+            </p>
+            <input type="text" id="user-name-input" class="glass-input" placeholder="Ex: Gabriel, Casa, Loja...">
+            <button class="btn-primary" onclick="salvarUsuario()">Começar</button>
+        </div>
+    </div>
+
+    <div id="pix-modal" class="modal-overlay">
+        <div class="glass-card">
+            <h3 style="color: var(--primary); margin-top: 0;">Ajude com um café ao dev ☕</h3>
+            
+            <div style="background: white; padding: 15px; border-radius: 15px; display: inline-block; margin: 10px 0;">
+                <img src="qrcode.png" alt="QR Code PIX" style="width: 200px; height: 200px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+Ausente'">
+            </div>
+
+            <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 20px; line-height: 1.5;">
+                Seu apoio mantém as atualizações gratuitas!<br>
+                <b>Scaneie e ajude com um pix.</b>
+            </p>
+
+            <button class="btn-primary" onclick="closePixModal()" style="background: #374151;">
+                <i class="fas fa-times"></i> Fechar a janela
+            </button>
         </div>
     </div>
 
@@ -114,7 +285,7 @@
             <div class="card">
                 <h3><i class="fas fa-chart-pie"></i> Gastos por Categoria</h3>
                 <select id="filtroMes" onchange="render()"></select>
-                <div style="height:250px;"><canvas id="graficoPizza"></canvas></div>
+                <div style="height:250px; position: relative;"><canvas id="graficoPizza"></canvas></div>
             </div>
             <div class="card">
                 <h3><i class="fas fa-history"></i> Extrato</h3>
@@ -123,7 +294,7 @@
             <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
                 <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="btn-sec" onclick="exportarBackup()"><i class="fas fa-download"></i> Backup JSON</button>
+                    <button class="btn-sec" onclick="exportarBackup()"><i class="fas fa-download"></i> Backup</button>
                     <button class="btn-sec" onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
                     <input type="file" id="restore-file" style="display:none" accept=".json" onchange="restaurarBackup(this)">
                 </div>
@@ -133,35 +304,47 @@
 
         <div id="v-apoie" class="view">
             <div class="card">
-                <h3><i class="fas fa-heart" style="color: #e11d48;"></i> Sobre o Pobre 3.1</h3>
+                <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> Por que apoiar?</h3>
+                
                 <div class="info-section">
-                    <p>O <b>Pobre 3.1</b> é um software independente focado em <b>Soberania Digital</b>. Aqui, você é o único dono dos seus dados.</p>
+                    <p>O <b>Pobre 3.1</b> não é apenas um app de finanças. É um manifesto de <b>Engenharia de Software Ética</b>. Veja o que torna este aplicativo único:</p>
                     
-                    <h4><i class="fas fa-shield-alt"></i> Sua Privacidade é Real</h4>
-                    <p>Ao contrário de outros apps, o Pobre 3.1 <b>não possui servidores</b>. Suas informações financeiras nunca saem do seu celular. Elas ficam salvas na memória interna do seu navegador.</p>
-
-                    <h4><i class="fas fa-save"></i> Como funciona o Backup?</h4>
-                    <p>Como não guardamos seus dados na nuvem, a segurança deles depende de você. </p>
-                    <ul style="padding-left: 20px; margin-top: 5px;">
-                        <li>Use o botão <b>Backup JSON</b> (na aba Análise) para salvar um arquivo com seus dados.</li>
-                        <li>Se você trocar de celular ou formatar o aparelho, precisará desse arquivo para <b>Restaurar</b> seu histórico.</li>
-                    </ul>
-
-                    <h4><i class="fas fa-bolt"></i> 100% Offline</h4>
-                    <p>Você pode registrar seus gastos no metrô, no avião ou em qualquer lugar, sem precisar de internet ou sinal de celular.</p>
-
-                    <div class="privacy-box">
-                        <p><i class="fas fa-info-circle"></i> <b>Dica de Segurança:</b> Evite limpar os "Dados do Site" nas configurações do seu navegador, pois isso apagará seus registros locais. Mantenha sempre um backup atualizado!</p>
+                    <h4><i class="fas fa-user-shield"></i> Privacidade Radical (Client-Side)</h4>
+                    <p>A maioria dos apps envia seus gastos para "a nuvem" (servidores), onde seus dados podem ser analisados ou vazados. 
+                    Aqui, usamos tecnologia <b>IndexedDB</b> criptografada. Isso significa que seus dados financeiros <b>nunca saem do seu aparelho</b>. 
+                    Nós literalmente <i>não conseguimos</i> ver o que você gasta.</p>
+        
+                    <h4><i class="fas fa-tachometer-alt"></i> Performance Extrema</h4>
+                    <p>Cansado de apps que travam ou aquecem o celular? O Pobre 3.1 utiliza <b>Aceleração de Hardware (GPU)</b> para renderizar as telas.
+                    Isso garante animações fluidas (60fps) e economiza sua bateria, rodando liso até em celulares mais antigos ou modestos.</p>
+        
+                    <h4><i class="fas fa-wifi"></i> Soberania Digital (Offline)</h4>
+                    <p>Você não precisa de internet para controlar seu dinheiro. Graças à tecnologia <b>PWA Offline-First</b>, o app funciona no modo avião, no metrô ou no sítio. Você é o único dono do seu backup (JSON).</p>
+        
+                    <div class="privacy-box" style="background: #fff1f2; border-color: #e11d48; color: #9f1239;">
+                        <p><i class="fas fa-mug-hot"></i> <b>Mantido por Doações</b><br>
+                        Este software é livre de mensalidades, livre de anúncios chatos e livre de rastreadores espiões.
+                        Desenvolver tecnologia independente, segura e de alta performance consome centenas de horas.
+                        <br><br>
+                        Se este app te ajuda a economizar, considere me pagar um café. Isso mantém as atualizações vivas!</p>
                     </div>
-
-                    <h4 style="margin-top: 20px;">☕ Apoie o Projeto</h4>
-                    <p>Este app é gratuito e livre de anúncios. Se ele te ajuda a economizar, considere fazer uma contribuição voluntária para mantê-lo vivo:</p>
                 </div>
-
+        
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                    <button class="btn-pix" onclick="copiarPix()"><i class="fas fa-copy"></i> Doar por PIX (Copiar Chave)</button>
-                    <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')"><i class="fas fa-credit-card"></i> Mercado Pago</button>
-                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996057007', '_blank')"><i class="fab fa-whatsapp"></i> Suporte Especializado</button>
+                    <button class="btn-pix" onclick="openPixModal()">
+                        <i class="fas fa-qrcode"></i> Apoiar via PIX (QR Code)
+                    </button>
+
+                    <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')">
+                        <i class="fas fa-credit-card"></i> Apoiar via Cartão/MP
+                    </button>
+                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149', '_blank')">
+                        <i class="fab fa-whatsapp"></i> Contato do Desenvolvedor
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 0.7rem;">
+                    Versão 3.1 Pro • Build 2023.10<br>Feito com ódio aos juros abusivos.
                 </div>
             </div>
         </div>
@@ -179,41 +362,73 @@
     <div id="toast">Mensagem</div>
 
     <script>
-        // --- VERIFICAÇÃO DE ABA DUPLICADA ---
         const channel = new BroadcastChannel('pobre_3_1_auth');
         channel.postMessage('ping');
         channel.onmessage = (event) => {
-            if (event.data === 'ping') {
-                channel.postMessage('pong');
-            } else if (event.data === 'pong') {
-                document.body.innerHTML = `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; text-align:center; padding:30px; background:#f3f4f6;">
-                        <h1 style="font-size: 4rem;">⚠️</h1>
-                        <h2 style="color:#4f46e5;">App já aberto</h2>
-                        <p style="font-size:1.1rem; color:#6b7280; max-width:400px;">
-                            Por segurança, o <b>Pobre 3.1</b> permite apenas uma aba ativa por vez. Feche a outra aba para continuar aqui.
-                        </p>
-                        <button onclick="location.reload()" style="background:#4f46e5; color:white; padding:12px 24px; border-radius:12px; border:none; font-weight:700; margin-top:20px;">Tentar Novamente</button>
-                    </div>`;
+            if (event.data === 'ping') channel.postMessage('pong');
+            else if (event.data === 'pong') {
+                document.body.innerHTML = '<div style="display:flex;height:100vh;align-items:center;justify-content:center;"><h1>⚠️ App já aberto</h1></div>';
                 window.stop();
             }
         };
 
-        // --- REGISTRO DO PWA ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
-            });
-        }
+        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 
         let db;
         let chartInstancePie;
         const FORMAT_BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
         const CATEGORIES = {
-            receita: { salario: "💼 Salário", investimentos: "📈 Invest.", outros: "🎁 Outros" },
-            despesa: { alimentacao: "🍕 Comida", transporte: "🚗 Transp.", moradia: "🏠 Casa", lazer: "🍿 Lazer", saude: "💊 Saúde", educacao: "🎓 Educ.", compras: "🛍️ Compra", contas: "🧾 Contas" }
+            receita: { salario: "Salario", investimentos: "Invest.", outros: "Outros" },
+            despesa: { alimentacao: "Comida", transporte: "Transp.", moradia: "Casa", lazer: "Lazer", saude: "Saude", educacao: "Educ.", compras: "Compra", contas: "Contas" }
         };
+
+        // --- SISTEMA DE IDENTIFICAÇÃO DO USUÁRIO ---
+        function checkUser() {
+            const user = localStorage.getItem('pobre_user_name');
+            if (!user) {
+                document.getElementById('welcome-modal').style.display = 'flex';
+            } else {
+                updateUserUI(user);
+            }
+        }
+
+        function salvarUsuario() {
+            const name = document.getElementById('user-name-input').value.trim();
+            if (!name) return alert("Por favor, digite um nome.");
+            
+            localStorage.setItem('pobre_user_name', name);
+            document.getElementById('welcome-modal').style.display = 'none';
+            updateUserUI(name);
+            showToast(`Bem-vindo, ${name}!`);
+        }
+
+        function updateUserUI(name) {
+            const el = document.getElementById('user-greeting');
+            el.innerText = `Olá, ${name}`;
+            el.style.display = 'block';
+        }
+
+        function getUserName() {
+            return localStorage.getItem('pobre_user_name') || "Usuário";
+        }
+        
+        function getSafeFileName() {
+            return getUserName().replace(/[^a-z0-9]/gi, '_');
+        }
+
+        // --- MODAL PIX ---
+        function openPixModal() {
+            document.getElementById('pix-modal').style.display = 'flex';
+        }
+        function closePixModal() {
+            document.getElementById('pix-modal').style.display = 'none';
+        }
+
+        function removerAcentos(str) {
+            if (!str) return "";
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        }
 
         async function initDB() {
             return new Promise((resolve) => {
@@ -229,8 +444,10 @@
 
         async function getAll(storeName) {
             const tx = db.transaction(storeName, "readonly");
-            const store = tx.objectStore(storeName);
-            return new Promise(r => { const req = store.getAll(); req.onsuccess = () => r(req.result || []); });
+            return new Promise(r => { 
+                const req = tx.objectStore(storeName).getAll(); 
+                req.onsuccess = () => r(req.result || []); 
+            });
         }
 
         async function salvar(tipo) {
@@ -241,7 +458,7 @@
                 valor: parseFloat(document.getElementById(`valor-${tipo}`).value),
                 data: document.getElementById(`data-${tipo}`).value
             };
-            if (!item.descricao || isNaN(item.valor) || !item.data) { showToast("Preencha tudo certinho!", "warning"); return; }
+            if (!item.descricao || isNaN(item.valor) || !item.data) { showToast("Preencha tudo certinho!"); return; }
             if (id) item.id = parseInt(id);
             const storeName = tipo === 'receita' ? "receitas" : "despesas";
             const tx = db.transaction(storeName, "readwrite");
@@ -264,7 +481,8 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `backup_pobre_${new Date().toISOString().slice(0,10)}.json`;
+            // NOME PERSONALIZADO NO BACKUP
+            a.download = `backup_${getSafeFileName()}_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
         }
 
@@ -275,33 +493,88 @@
             reader.onload = async (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(confirm("Deseja importar estes dados? (Isso não apaga os atuais)")) {
+                    if(confirm("Importar dados?")) {
                         const txR = db.transaction("receitas", "readwrite");
                         data.receitas.forEach(r => { delete r.id; txR.objectStore("receitas").add(r); });
                         const txD = db.transaction("despesas", "readwrite");
                         data.despesas.forEach(d => { delete d.id; txD.objectStore("despesas").add(d); });
                         showToast("Dados restaurados!"); render();
                     }
-                } catch(err) { showToast("Erro no arquivo!", "error"); }
+                } catch(err) { showToast("Erro no arquivo!"); }
             };
             reader.readAsText(file);
         }
 
-        function gerarRelatorioPDF() {
-            showToast("Função em desenvolvimento...");
+        // --- GERAÇÃO DE PDF PERSONALIZADA ---
+        async function gerarRelatorioPDF() {
+            showToast("Gerando relatório...");
+            const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
+            const mesSelecionado = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
+            const receitasMes = receitas.filter(r => r.data.startsWith(mesSelecionado));
+            const despesasMes = despesas.filter(d => d.data.startsWith(mesSelecionado));
+            const totalReceitas = receitasMes.reduce((s, i) => s + i.valor, 0);
+            const totalDespesas = despesasMes.reduce((s, i) => s + i.valor, 0);
+            const saldoMes = totalReceitas - totalDespesas;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 14; 
+            const safeText = (txt) => removerAcentos(txt);
+            const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
+
+            // Cabeçalho PDF
+            doc.setFillColor(79, 70, 229);
+            doc.rect(0, 0, pageWidth, 55, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.setFont("helvetica", 'bold');
+            doc.text(safeText("RELATORIO FINANCEIRO"), pageWidth/2, 25, { align: 'center' });
+            
+            // NOME DO USUÁRIO NO PDF
+            doc.setFontSize(12);
+            doc.setFont("helvetica", 'normal');
+            doc.text(safeText(`Relatorio de: ${getUserName()}`), pageWidth/2, 38, { align: 'center' });
+            
+            let yPos = 70;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.text(`${safeText("Emissao")}: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`, margin, yPos);
+            
+            // Resumo
+            doc.autoTable({
+                startY: yPos + 10,
+                head: [[safeText('SALDO DO MES'), safeText('GASTOS DO MES')]],
+                body: [[fmtBRL(saldoMes), fmtBRL(totalDespesas)]],
+                theme: 'grid',
+                headStyles: { fillColor: [79, 70, 229], halign: 'center', fontStyle: 'bold' },
+                bodyStyles: { halign: 'center', fontSize: 14, fontStyle: 'bold' }
+            });
+            yPos = doc.lastAutoTable.finalY + 15;
+
+            // Extrato
+            doc.setFontSize(14); doc.setTextColor(220, 38, 38);
+            doc.text("DESPESAS", margin, yPos);
+            const rowsDespesas = despesasMes.map(d => [d.data.split('-').reverse().join('/'), safeText(d.descricao), safeText(CATEGORIES.despesa[d.categoria] || d.categoria), fmtBRL(d.valor)]);
+            doc.autoTable({ startY: yPos + 5, head: [['Data', safeText('Descricao'), 'Categoria', 'Valor']], body: rowsDespesas.length ? rowsDespesas : [['-', 'Nenhuma despesa', '-', '-']], theme: 'striped', headStyles: { fillColor: [220, 38, 38] }, columnStyles: { 3: { halign: 'right' } } });
+            
+            // NOME NO ARQUIVO
+            doc.save(`Relatorio_${getSafeFileName()}_${mesSelecionado}.pdf`);
+            showToast("Relatório PDF salvo!");
         }
 
         function navTo(id, el) {
-            document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-            if (id === 'v-consulta') popularFiltro();
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                el.classList.add('active');
+                if (id === 'v-consulta') popularFiltro();
+            });
         }
 
         function selectCategory(tipo, cat) {
             document.querySelectorAll(`#categoria-${tipo}-selector .category-option`).forEach(e => e.classList.remove('selected'));
-            const opt = document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`);
-            if(opt) opt.classList.add('selected');
+            document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`).classList.add('selected');
             document.getElementById(`categoria-${tipo}`).value = cat;
         }
 
@@ -315,7 +588,6 @@
             selectCategory(tipo, item.categoria);
             document.getElementById(`del-${tipo}`).style.display = "block";
             document.getElementById(`btn-cancel-${tipo}`).style.display = "block";
-            document.getElementById(`titulo-${tipo}`).innerText = "Editar Registro";
         }
 
         function cancelarEdicao(store) {
@@ -326,13 +598,11 @@
             document.getElementById(`data-${tipo}`).value = new Date().toISOString().split('T')[0];
             document.getElementById(`del-${tipo}`).style.display = "none";
             document.getElementById(`btn-cancel-${tipo}`).style.display = "none";
-            document.getElementById(`titulo-${tipo}`).innerText = tipo === 'receita' ? "Nova Receita" : "Novo Gasto";
         }
 
         async function render() {
             if (!db) return;
-            const r = await getAll("receitas");
-            const d = await getAll("despesas");
+            const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const mesAtual = new Date().toISOString().substring(0, 7);
             const filtro = (document.getElementById('filtroMes') && document.getElementById('filtroMes').value) || mesAtual;
             const totalR = r.reduce((s, i) => s + i.valor, 0);
@@ -343,6 +613,7 @@
             const listCont = document.getElementById('lista-detalhada');
             listCont.innerHTML = "";
             const mesD = d.filter(i => i.data.startsWith(filtro));
+            const fragment = document.createDocumentFragment();
             [...r.filter(i => i.data.startsWith(filtro)).map(x => ({...x, t:'receita'})), ...mesD.map(x => ({...x, t:'despesa'}))]
             .sort((a,b) => b.data.localeCompare(a.data))
             .forEach(item => {
@@ -352,8 +623,9 @@
                 el.innerHTML = `<div><b>${item.descricao}</b><br><small>${item.data.split('-').reverse().join('/')}</small></div>
                                 <div style="color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
                                 ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}</div>`;
-                listCont.appendChild(el);
+                fragment.appendChild(el);
             });
+            listCont.appendChild(fragment);
             updateChart(mesD);
         }
 
@@ -366,9 +638,9 @@
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(cats).map(k => CATEGORIES.despesa[k] || k),
-                    datasets: [{ data: Object.values(cats), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'] }]
+                    datasets: [{ data: Object.values(cats), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'], borderWidth: 0 }]
                 },
-                options: { maintainAspectRatio: false }
+                options: { maintainAspectRatio: false, responsive: true, elements: { arc: { borderWidth: 0 } } }
             });
         }
 
@@ -398,14 +670,12 @@
         }
 
         function copiarPix() {
-            const chave = "Aquinogabriel@outlook.com";
-            navigator.clipboard.writeText(chave).then(() => {
-                showToast("Chave PIX copiada!");
-            });
+            navigator.clipboard.writeText("Aquinogabriel@outlook.com").then(() => showToast("Chave PIX copiada!"));
         }
 
         window.onload = async () => {
             await initDB();
+            checkUser(); // Verifica se usuário já existe
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('data-receita').value = hoje;
             document.getElementById('data-despesa').value = hoje;
