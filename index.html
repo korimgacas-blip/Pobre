@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -19,24 +20,24 @@
     
     <style>
         :root { 
-            --primary: #4f46e5; 
-            --primary-dark: #4338ca; 
-            --income: #059669; 
-            --expense: #dc2626; 
-            --bg: #f3f4f6; 
-            --card-bg: #ffffff; 
-            --radius: 20px; 
-        }
+             --primary: #4f46e5; 
+             --primary-dark: #4338ca; 
+             --income: #059669; 
+             --expense: #dc2626; 
+             --bg: #f3f4f6; 
+             --card-bg: #ffffff; 
+             --radius: 20px; 
+         }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background: var(--bg); 
-            margin: 0; 
-            padding-bottom: 110px; 
-            color: #111; 
-            overflow-x: hidden;
+             background: var(--bg); 
+             margin: 0; 
+             padding-bottom: 110px; 
+             color: #111; 
+             overflow-x: hidden;
             -webkit-overflow-scrolling: touch; 
-        }
+         }
 
         /* --- ACELERAÇÃO DE HARDWARE --- */
         .gpu-accelerated {
@@ -46,14 +47,14 @@
         }
 
         header { 
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); 
-            color: white; 
-            padding: 20px 24px 70px; 
-            border-radius: 0 0 36px 36px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); 
+             color: white; 
+             padding: 20px 24px 70px; 
+             border-radius: 0 0 36px 36px; 
+             display: flex; 
+             justify-content: space-between; 
+             align-items: center; 
+             box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
             position: relative;
             z-index: 10;
         }
@@ -62,24 +63,24 @@
         .user-greeting { font-size: 0.8rem; font-weight: 500; opacity: 0.9; margin-top: 4px; display: none; }
 
         .dashboard { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 16px; 
-            padding: 0 24px; 
-            margin-top: -50px; 
-            position: relative;
+             display: grid; 
+             grid-template-columns: 1fr 1fr; 
+             gap: 16px; 
+             padding: 0 24px; 
+             margin-top: -50px; 
+             position: relative;
             z-index: 20;
         }
 
         .dash-card { 
-            background: var(--card-bg); 
-            padding: 20px 16px; 
-            border-radius: var(--radius); 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
-            text-align: center; 
-            contain: content; 
-            transform: translateZ(0); 
-        }
+             background: var(--card-bg); 
+             padding: 20px 16px; 
+             border-radius: var(--radius); 
+             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
+             text-align: center; 
+             contain: content; 
+             transform: translateZ(0); 
+         }
 
         .dash-card small { color: #6b7280; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
         .dash-card b { font-size: 1.2rem; display: block; margin-top: 5px; }
@@ -90,17 +91,17 @@
         .view.active { display: block; animation: fadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
 
         @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(15px) scale(0.98); } 
-            to { opacity: 1; transform: translateY(0) scale(1); } 
-        }
+             from { opacity: 0; transform: translateY(15px) scale(0.98); } 
+             to { opacity: 1; transform: translateY(0) scale(1); } 
+         }
 
         .card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: var(--radius); 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); 
-            transform: translateZ(0);
+             background: white; 
+             padding: 20px; 
+             border-radius: var(--radius); 
+             margin-bottom: 20px; 
+             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); 
+             transform: translateZ(0);
             transition: transform 0.2s;
         }
         .card:active { transform: scale(0.99) translateZ(0); }
@@ -125,14 +126,14 @@
         .category-option.selected { background: #e0e7ff; border-color: var(--primary); color: var(--primary); font-weight: 700; }
 
         nav { 
-            position: fixed; bottom: 20px; left: 16px; right: 16px; 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); 
-            border-radius: 24px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            z-index: 100; 
-            transform: translateZ(0); 
-        }
+             position: fixed; bottom: 20px; left: 16px; right: 16px; 
+             background: rgba(255, 255, 255, 0.95); 
+             backdrop-filter: blur(10px); 
+             border-radius: 24px; 
+             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+             z-index: 100; 
+             transform: translateZ(0); 
+         }
         
         .nav-buttons { display: flex; height: 70px; justify-content: space-around; align-items: center; }
         .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; transition: color 0.2s; }
@@ -143,10 +144,10 @@
         .item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f3f4f6; cursor: pointer; }
 
         #toast { 
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0); 
-            background: #333; color: white; padding: 12px 24px; border-radius: 50px; 
-            opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none; 
-            will-change: opacity;
+             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0); 
+             background: #333; color: white; padding: 12px 24px; border-radius: 50px; 
+             opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none; 
+             will-change: opacity;
         }
 
         .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
@@ -255,7 +256,7 @@
                 <input type="hidden" id="categoria-receita" value="salario">
                 <input type="number" id="valor-receita" placeholder="Valor R$" step="0.01">
                 <input type="date" id="data-receita">
-                <button class="btn-income" onclick="salvar('receita')"><i class="fas fa-check"></i> Salvar Receita</button>
+                <button id="btn-salvar-receita" class="btn-income" onclick="salvar('receita')"><i class="fas fa-check"></i> Salvar Receita</button>
                 <button id="del-receita" class="btn-delete" style="display:none;" onclick="deletarRegistro('receita')"><i class="fas fa-trash"></i> Excluir</button>
                 <button id="btn-cancel-receita" class="btn-sec" style="display:none;" onclick="cancelarEdicao('receitas')">Voltar</button>
             </div>
@@ -275,7 +276,7 @@
                 <input type="hidden" id="categoria-despesa" value="alimentacao">
                 <input type="number" id="valor-despesa" placeholder="Valor R$" step="0.01">
                 <input type="date" id="data-despesa">
-                <button class="btn-expense" onclick="salvar('despesa')"><i class="fas fa-money-bill-wave"></i> Confirmar Gasto</button>
+                <button id="btn-salvar-despesa" class="btn-expense" onclick="salvar('despesa')"><i class="fas fa-money-bill-wave"></i> Confirmar Gasto</button>
                 <button id="del-despesa" class="btn-delete" style="display:none;" onclick="deletarRegistro('despesa')"><i class="fas fa-trash"></i> Excluir Registro</button>
                 <button id="btn-cancel-despesa" class="btn-sec" style="display:none;" onclick="cancelarEdicao('despesas')">Voltar</button>
             </div>
@@ -313,14 +314,14 @@
                     <p>A maioria dos apps envia seus gastos para "a nuvem" (servidores), onde seus dados podem ser analisados ou vazados. 
                     Aqui, usamos tecnologia <b>IndexedDB</b> criptografada. Isso significa que seus dados financeiros <b>nunca saem do seu aparelho</b>. 
                     Nós literalmente <i>não conseguimos</i> ver o que você gasta.</p>
-        
+            
                     <h4><i class="fas fa-tachometer-alt"></i> Performance Extrema</h4>
                     <p>Cansado de apps que travam ou aquecem o celular? O Pobre 3.1 utiliza <b>Aceleração de Hardware (GPU)</b> para renderizar as telas.
                     Isso garante animações fluidas (60fps) e economiza sua bateria, rodando liso até em celulares mais antigos ou modestos.</p>
-        
+            
                     <h4><i class="fas fa-wifi"></i> Soberania Digital (Offline)</h4>
                     <p>Você não precisa de internet para controlar seu dinheiro. Graças à tecnologia <b>PWA Offline-First</b>, o app funciona no modo avião, no metrô ou no sítio. Você é o único dono do seu backup (JSON).</p>
-        
+            
                     <div class="privacy-box" style="background: #fff1f2; border-color: #e11d48; color: #9f1239;">
                         <p><i class="fas fa-mug-hot"></i> <b>Mantido por Doações</b><br>
                         Este software é livre de mensalidades, livre de anúncios chatos e livre de rastreadores espiões.
@@ -445,9 +446,9 @@
         async function getAll(storeName) {
             const tx = db.transaction(storeName, "readonly");
             return new Promise(r => { 
-                const req = tx.objectStore(storeName).getAll(); 
-                req.onsuccess = () => r(req.result || []); 
-            });
+                 const req = tx.objectStore(storeName).getAll(); 
+                 req.onsuccess = () => r(req.result || []); 
+             });
         }
 
         async function salvar(tipo) {
@@ -580,52 +581,109 @@
 
         function openEdit(item) {
             const tipo = item.t;
+            // Navega para a tela correta
             navTo(tipo === 'receita' ? 'v-receita' : 'v-despesa', document.querySelectorAll('.tab')[tipo === 'receita' ? 0 : 1]);
+            
+            // Preenche os dados
             document.getElementById(`${tipo}-id`).value = item.id;
             document.getElementById(`descricao-${tipo}`).value = item.descricao;
             document.getElementById(`valor-${tipo}`).value = item.valor;
             document.getElementById(`data-${tipo}`).value = item.data;
             selectCategory(tipo, item.categoria);
+            
+            // Exibe botões de exclusão e cancelar
             document.getElementById(`del-${tipo}`).style.display = "block";
             document.getElementById(`btn-cancel-${tipo}`).style.display = "block";
+            
+            // ATUALIZA VISUAL DO BOTÃO DE SALVAR
+            const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
+            if(btnSalvar) btnSalvar.innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
+            
+            const titulo = document.getElementById(`titulo-${tipo}`);
+            if(titulo) titulo.innerHTML = `<i class="fas fa-pen"></i> Editando ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
         }
 
         function cancelarEdicao(store) {
             const tipo = store === 'receitas' ? 'receita' : 'despesa';
+            
+            // Limpa os campos
             document.getElementById(`${tipo}-id`).value = "";
             document.getElementById(`descricao-${tipo}`).value = "";
             document.getElementById(`valor-${tipo}`).value = "";
             document.getElementById(`data-${tipo}`).value = new Date().toISOString().split('T')[0];
+            
+            // Esconde botões extras
             document.getElementById(`del-${tipo}`).style.display = "none";
             document.getElementById(`btn-cancel-${tipo}`).style.display = "none";
+            
+            // RESTAURA VISUAL DO BOTÃO DE SALVAR
+            const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
+            if(btnSalvar) {
+                if(tipo === 'receita') btnSalvar.innerHTML = `<i class="fas fa-check"></i> Salvar Receita`;
+                else btnSalvar.innerHTML = `<i class="fas fa-money-bill-wave"></i> Confirmar Gasto`;
+            }
+
+            const titulo = document.getElementById(`titulo-${tipo}`);
+            if(titulo) {
+                if(tipo === 'receita') titulo.innerHTML = `<i class="fas fa-plus"></i> Nova Receita`;
+                else titulo.innerHTML = `<i class="fas fa-minus"></i> Novo Gasto`;
+            }
         }
 
         async function render() {
             if (!db) return;
             const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
+            
+            // Filtros e Cálculos
             const mesAtual = new Date().toISOString().substring(0, 7);
             const filtro = (document.getElementById('filtroMes') && document.getElementById('filtroMes').value) || mesAtual;
+            
             const totalR = r.reduce((s, i) => s + i.valor, 0);
             const totalD = d.reduce((s, i) => s + i.valor, 0);
             document.getElementById('dash-saldo').innerText = FORMAT_BRL.format(totalR - totalD);
+            
             const gastosMes = d.filter(i => i.data.startsWith(filtro)).reduce((s, i) => s + i.valor, 0);
             document.getElementById('dash-gastos-mes').innerText = FORMAT_BRL.format(gastosMes);
+            
+            // Renderização da Lista
             const listCont = document.getElementById('lista-detalhada');
             listCont.innerHTML = "";
+            
             const mesD = d.filter(i => i.data.startsWith(filtro));
             const fragment = document.createDocumentFragment();
-            [...r.filter(i => i.data.startsWith(filtro)).map(x => ({...x, t:'receita'})), ...mesD.map(x => ({...x, t:'despesa'}))]
+            
+            [...r.filter(i => i.data.startsWith(filtro)).map(x => ({...x, t:'receita'})), 
+             ...mesD.map(x => ({...x, t:'despesa'}))]
             .sort((a,b) => b.data.localeCompare(a.data))
             .forEach(item => {
                 const el = document.createElement('div');
                 el.className = 'item';
-                el.onclick = () => openEdit(item);
-                el.innerHTML = `<div><b>${item.descricao}</b><br><small>${item.data.split('-').reverse().join('/')}</small></div>
-                                <div style="color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
-                                ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}</div>`;
+                el.onclick = () => openEdit(item); // Ação de clique para editar
+                
+                // HTML MELHORADO COM ÍCONE DE EDIÇÃO
+                el.innerHTML = `
+                    <div style="flex: 1;">
+                        <b style="font-size: 0.95rem;">${item.descricao}</b>
+                        <br>
+                        <small style="color: #6b7280; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; margin-top: 4px;">
+                            <i class="far fa-calendar"></i> ${item.data.split('-').reverse().join('/')} 
+                            <span style="background: #e0e7ff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.65rem;">
+                                <i class="fas fa-pen"></i> Editar
+                            </span>
+                        </small>
+                    </div>
+                    <div style="font-weight: 700; font-size: 0.95rem; color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
+                        ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}
+                    </div>`;
                 fragment.appendChild(el);
             });
-            listCont.appendChild(fragment);
+            
+            if(fragment.childElementCount === 0) {
+                listCont.innerHTML = '<div style="text-align:center; padding: 20px; color: #9ca3af;">Nenhum lançamento neste mês.</div>';
+            } else {
+                listCont.appendChild(fragment);
+            }
+            
             updateChart(mesD);
         }
 
