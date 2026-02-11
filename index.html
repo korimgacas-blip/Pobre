@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pobre 3.1 - Pro (Turbo)</title>
+    <title>Pobre 3.1 - Pro (Turbo+)</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
@@ -20,26 +20,33 @@
     
     <style>
         :root {
-              --primary: #4f46e5;
-              --primary-dark: #4338ca;
-              --income: #059669;
-              --expense: #dc2626;
-              --bg: #f3f4f6;
-              --card-bg: #ffffff;
-              --radius: 20px;
-          }
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --income: #059669;
+            --expense: #dc2626;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --radius: 20px;
+            --chart-1: #4f46e5;
+            --chart-2: #10b981;
+            --chart-3: #f59e0b;
+            --chart-4: #ef4444;
+            --chart-5: #ec4899;
+            --chart-6: #8b5cf6;
+            --chart-7: #14b8a6;
+            --chart-8: #f97316;
+        }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body {
-              background: var(--bg);
-              margin: 0;
-              padding-bottom: 110px;
-              color: #111;
-              overflow-x: hidden;
+            background: var(--bg);
+            margin: 0;
+            padding-bottom: 110px;
+            color: #111;
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-          }
+        }
 
-        /* --- ACELERAÇÃO DE HARDWARE --- */
         .gpu-accelerated {
             transform: translate3d(0, 0, 0);
             backface-visibility: hidden;
@@ -47,14 +54,14 @@
         }
 
         header {
-              background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-              color: white;
-              padding: 20px 24px 70px;
-              border-radius: 0 0 36px 36px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px 24px 70px;
+            border-radius: 0 0 36px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
             position: relative;
             z-index: 10;
         }
@@ -63,24 +70,24 @@
         .user-greeting { font-size: 0.8rem; font-weight: 500; opacity: 0.9; margin-top: 4px; display: none; }
 
         .dashboard {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 16px;
-              padding: 0 24px;
-              margin-top: -50px;
-              position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 0 24px;
+            margin-top: -50px;
+            position: relative;
             z-index: 20;
         }
 
         .dash-card {
-              background: var(--card-bg);
-              padding: 20px 16px;
-              border-radius: var(--radius);
-              box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-              text-align: center;
-              contain: content;
-              transform: translateZ(0);
-          }
+            background: var(--card-bg);
+            padding: 20px 16px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            text-align: center;
+            contain: content;
+            transform: translateZ(0);
+        }
 
         .dash-card small { color: #6b7280; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
         .dash-card b { font-size: 1.2rem; display: block; margin-top: 5px; }
@@ -91,50 +98,98 @@
         .view.active { display: block; animation: fadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
 
         @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(15px) scale(0.98); }
-              to { opacity: 1; transform: translateY(0) scale(1); }
-          }
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
         .card {
-              background: white;
-              padding: 20px;
-              border-radius: var(--radius);
-              margin-bottom: 20px;
-              box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
-              transform: translateZ(0);
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+            transform: translateZ(0);
             transition: transform 0.2s;
         }
         .card:active { transform: scale(0.99) translateZ(0); }
 
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e5e7eb; background: #f9fafb; margin-bottom: 15px; font-size: 16px; }
-        button { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s; }
-        button:active { opacity: 0.8; }
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid #e5e7eb; 
+            background: #f9fafb; 
+            margin-bottom: 15px; 
+            font-size: 16px; 
+            transition: all 0.2s;
+        }
+        input:focus, select:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1); 
+            outline: none; 
+            background: white;
+        }
+        
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: none; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            transition: all 0.2s; 
+        }
+        button:active { transform: scale(0.98); opacity: 0.9; }
 
         .btn-income { background: var(--income); color: white; }
         .btn-expense { background: var(--expense); color: white; }
         .btn-delete { background: #fff1f2; color: #e11d48; margin-top: 10px; border: 1px solid #fecaca; }
         .btn-sec { background: #f3f4f6; color: #4b5563; margin-top: 10px; }
         .btn-primary { background: var(--primary); color: white; }
-        
         .btn-pix { background: #32bcad; color: white; }
         .btn-mp { background: #009ee3; color: white; }
         .btn-wpp { background: #25d366; color: white; }
-        .btn-tutorial { background: #8b5cf6; color: white; } /* Cor roxa para o tutorial */
+        .btn-tutorial { background: #8b5cf6; color: white; }
 
-        .category-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
-        .category-option { padding: 10px 5px; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center; font-size: 0.65rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .category-selector { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 8px; 
+            margin-bottom: 20px; 
+        }
+        .category-option { 
+            padding: 10px 5px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 12px; 
+            text-align: center; 
+            font-size: 0.65rem; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: white;
+        }
+        .category-option:hover { background: #f9fafb; }
         .category-option:active { transform: scale(0.95); }
-        .category-option.selected { background: #e0e7ff; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+        .category-option.selected { 
+            background: #e0e7ff; 
+            border-color: var(--primary); 
+            color: var(--primary); 
+            font-weight: 700; 
+            box-shadow: 0 2px 4px rgba(79,70,229,0.2);
+        }
 
         nav {
-              position: fixed; bottom: 20px; left: 16px; right: 16px;
-              background: rgba(255, 255, 255, 0.95);
-              backdrop-filter: blur(10px);
-              border-radius: 24px;
-              box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-              z-index: 100;
-              transform: translateZ(0);
-          }
+            position: fixed; bottom: 20px; left: 16px; right: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 100;
+            transform: translateZ(0);
+        }
         
         .nav-buttons { display: flex; height: 70px; justify-content: space-around; align-items: center; }
         .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; transition: color 0.2s; }
@@ -142,32 +197,44 @@
         .tab i { font-size: 1.2rem; margin-bottom: 2px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .tab.active i { transform: translateY(-3px); }
 
-        .item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f3f4f6; cursor: pointer; }
+        .item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 15px 0; 
+            border-bottom: 1px solid #f3f4f6; 
+            cursor: pointer; 
+            transition: background 0.1s;
+        }
+        .item:hover { background: #fafafa; }
 
         #toast {
-              position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0);
-              background: #333; color: white; padding: 12px 24px; border-radius: 50px;
-              opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none;
-              will-change: opacity;
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0);
+            background: #333; color: white; padding: 12px 24px; border-radius: 50px;
+            opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none;
+            will-change: opacity;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
         .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
         .info-section h4 { color: var(--primary); margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; }
         .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
         
-        canvas { transform: translateZ(0); }
+        canvas { 
+            transform: translateZ(0); 
+            max-height: 250px; 
+            width: 100% !important; 
+        }
 
-        /* --- GLASSMORPHISM MODALS (UI Vidro) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.35); /* Fundo escuro leve */
+            background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(6px);
             z-index: 5000; display: none; align-items: center; justify-content: center;
             padding: 20px;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.65); /* Quase transparente */
+            background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -191,10 +258,34 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
-        /* Lista do Tutorial */
         .tutorial-list { text-align: left; padding-left: 10px; list-style: none; margin: 15px 0; }
         .tutorial-list li { margin-bottom: 12px; font-size: 0.85rem; color: #4b5563; display: flex; gap: 10px; align-items: flex-start; }
         .tutorial-list li i { color: var(--primary); margin-top: 3px; }
+
+        .chart-container { 
+            position: relative; 
+            height: 250px; 
+            margin-bottom: 20px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 15px;
+            font-size: 0.75rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -217,6 +308,7 @@
         </div>
     </div>
 
+    <!-- MODAIS -->
     <div id="welcome-modal" class="modal-overlay">
         <div class="glass-card">
             <div style="font-size: 3rem; margin-bottom: 10px;">👋</div>
@@ -235,22 +327,10 @@
                 <i class="fas fa-book-open"></i> Como usar
             </h3>
             <ul class="tutorial-list">
-                <li>
-                    <i class="fas fa-arrow-up"></i>
-                    <div><b>Ganhar:</b> Registre seu salário, vendas ou pix recebido aqui.</div>
-                </li>
-                <li>
-                    <i class="fas fa-arrow-down"></i>
-                    <div><b>Gastar:</b> Anote cada centavo que sair do bolso.</div>
-                </li>
-                <li>
-                    <i class="fas fa-chart-pie"></i>
-                    <div><b>Análise:</b> Veja gráficos, extrato completo e opção de <b>Editar/Excluir</b> lançamentos.</div>
-                </li>
-                <li>
-                    <i class="fas fa-save"></i>
-                    <div><b>Backup:</b> Seus dados ficam só no celular. Faça backup (download) na aba Análise para não perder nada.</div>
-                </li>
+                <li><i class="fas fa-arrow-up"></i><div><b>Ganhar:</b> Registre seu salário, vendas ou pix recebido aqui.</div></li>
+                <li><i class="fas fa-arrow-down"></i><div><b>Gastar:</b> Anote cada centavo que sair do bolso.</div></li>
+                <li><i class="fas fa-chart-pie"></i><div><b>Análise:</b> Veja gráficos, extrato completo e opção de editar/excluir.</div></li>
+                <li><i class="fas fa-save"></i><div><b>Backup:</b> Seus dados ficam só no celular. Faça backup na aba Análise.</div></li>
             </ul>
             <button class="btn-primary" onclick="closeTutorialModal()">Entendi, vamos lá!</button>
         </div>
@@ -259,16 +339,13 @@
     <div id="pix-modal" class="modal-overlay">
         <div class="glass-card">
             <h3 style="color: var(--primary); margin-top: 0;">Ajude com um café ao dev ☕</h3>
-            
             <div style="background: white; padding: 15px; border-radius: 15px; display: inline-block; margin: 10px 0;">
                 <img src="qrcode.png" alt="QR Code PIX" style="width: 200px; height: 200px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+Ausente'">
             </div>
-
             <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 20px; line-height: 1.5;">
                 Seu apoio mantém as atualizações gratuitas!<br>
                 <b>Scaneie e ajude com um pix.</b>
             </p>
-
             <button class="btn-primary" onclick="closePixModal()" style="background: #374151;">
                 <i class="fas fa-times"></i> Fechar a janela
             </button>
@@ -276,6 +353,7 @@
     </div>
 
     <div class="container">
+        <!-- TELA DE RECEITA -->
         <div id="v-receita" class="view active">
             <div class="card">
                 <h3 id="titulo-receita"><i class="fas fa-plus"></i> Nova Receita</h3>
@@ -295,6 +373,7 @@
             </div>
         </div>
 
+        <!-- TELA DE DESPESA -->
         <div id="v-despesa" class="view">
             <div class="card">
                 <h3 id="titulo-despesa"><i class="fas fa-minus"></i> Novo Gasto</h3>
@@ -305,6 +384,10 @@
                     <div class="category-option" data-category="transporte" onclick="selectCategory('despesa', 'transporte')">🚗<br>Transporte</div>
                     <div class="category-option" data-category="lazer" onclick="selectCategory('despesa', 'lazer')">🍿<br>Lazer</div>
                     <div class="category-option" data-category="contas" onclick="selectCategory('despesa', 'contas')">🧾<br>Contas</div>
+                    <div class="category-option" data-category="moradia" onclick="selectCategory('despesa', 'moradia')">🏠<br>Moradia</div>
+                    <div class="category-option" data-category="saude" onclick="selectCategory('despesa', 'saude')">💊<br>Saúde</div>
+                    <div class="category-option" data-category="educacao" onclick="selectCategory('despesa', 'educacao')">📚<br>Educação</div>
+                    <div class="category-option" data-category="compras" onclick="selectCategory('despesa', 'compras')">🛒<br>Compras</div>
                 </div>
                 <input type="hidden" id="categoria-despesa" value="alimentacao">
                 <input type="number" id="valor-despesa" placeholder="Valor R$" step="0.01">
@@ -315,18 +398,31 @@
             </div>
         </div>
 
+        <!-- TELA DE ANÁLISE (GRÁFICOS + EXTRATO) -->
         <div id="v-consulta" class="view">
             <div class="card">
                 <h3><i class="fas fa-chart-pie"></i> Gastos por Categoria</h3>
                 <select id="filtroMes" onchange="render()"></select>
-                <div style="height:250px; position: relative;"><canvas id="graficoPizza"></canvas></div>
+                <div class="chart-container">
+                    <canvas id="graficoPizza"></canvas>
+                </div>
+                <div id="categoria-legend" class="legend"></div>
             </div>
+
+            <div class="card">
+                <h3><i class="fas fa-chart-line"></i> Evolução Mensal (Receitas vs Despesas)</h3>
+                <div class="chart-container">
+                    <canvas id="graficoMensal"></canvas>
+                </div>
+            </div>
+
             <div class="card">
                 <h3><i class="fas fa-history"></i> Extrato</h3>
                 <div id="lista-detalhada"></div>
             </div>
+
             <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+                <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF Completo</button>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn-sec" onclick="exportarBackup()"><i class="fas fa-download"></i> Backup</button>
                     <button class="btn-sec" onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
@@ -336,6 +432,7 @@
             </div>
         </div>
 
+        <!-- TELA APOIE - EXATAMENTE COMO SOLICITADO -->
         <div id="v-apoie" class="view">
             <div class="card">
                 <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> Por que apoiar?</h3>
@@ -344,21 +441,17 @@
                     <p>O <b>Pobre 3.1</b> não é apenas um app de finanças. É um manifesto de <b>Engenharia de Software Ética</b>. Veja o que torna este aplicativo único:</p>
                     
                     <h4><i class="fas fa-user-shield"></i> Privacidade Radical (Client-Side)</h4>
-                    <p>A maioria dos apps envia seus gastos para "a nuvem" (servidores), onde seus dados podem ser analisados ou vazados. 
-                    Aqui, usamos tecnologia <b>IndexedDB</b> criptografada. Isso significa que seus dados financeiros <b>nunca saem do seu aparelho</b>. 
-                    Nós literalmente <i>não conseguimos</i> ver o que você gasta.</p>
+                    <p>A maioria dos apps envia seus gastos para "a nuvem" (servidores), onde seus dados podem ser analisados ou vazados. Aqui, usamos tecnologia <b>IndexedDB</b> criptografada. Isso significa que seus dados financeiros <b>nunca saem do seu aparelho</b>. Nós literalmente <i>não conseguimos</i> ver o que você gasta.</p>
 
                     <h4><i class="fas fa-tachometer-alt"></i> Performance Extrema</h4>
-                    <p>Cansado de apps que travam ou aquecem o celular? O Pobre 3.1 utiliza <b>Aceleração de Hardware (GPU)</b> para renderizar as telas.
-                    Isso garante animações fluidas (60fps) e economiza sua bateria, rodando liso até em celulares mais antigos ou modestos.</p>
+                    <p>Cansado de apps que travam ou aquecem o celular? O Pobre 3.1 utiliza <b>Aceleração de Hardware (GPU)</b> para renderizar as telas. Isso garante animações fluidas (60fps) e economiza sua bateria, rodando liso até em celulares mais antigos ou modestos.</p>
 
                     <h4><i class="fas fa-wifi"></i> Soberania Digital (Offline)</h4>
                     <p>Você não precisa de internet para controlar seu dinheiro. Graças à tecnologia <b>PWA Offline-First</b>, o app funciona no modo avião, no metrô ou no sítio. Você é o único dono do seu backup (JSON).</p>
                     
                     <div class="privacy-box" style="background: #fff1f2; border-color: #e11d48; color: #9f1239;">
                         <p><i class="fas fa-mug-hot"></i> <b>Mantido por Doações</b><br>
-                        Este software é livre de mensalidades, livre de anúncios chatos e livre de rastreadores espiões.
-                        Desenvolver tecnologia independente, segura e de alta performance consome centenas de horas.
+                        Este software é livre de mensalidades, livre de anúncios chatos e livre de rastreadores espiões. Desenvolver tecnologia independente, segura e de alta performance consome centenas de horas.
                         <br><br>
                         Se este app te ajuda a economizar, considere me pagar um café. Isso mantém as atualizações vivas!</p>
                     </div>
@@ -400,6 +493,7 @@
     <div id="toast">Mensagem</div>
 
     <script>
+        // ==================== CONFIGURAÇÃO INICIAL ====================
         const channel = new BroadcastChannel('pobre_3_1_auth');
         channel.postMessage('ping');
         channel.onmessage = (event) => {
@@ -414,14 +508,26 @@
 
         let db;
         let chartInstancePie;
+        let chartInstanceMonthly;
         const FORMAT_BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
         const CATEGORIES = {
-            receita: { salario: "Salario", investimentos: "Invest.", outros: "Outros" },
-            despesa: { alimentacao: "Comida", transporte: "Transp.", moradia: "Casa", lazer: "Lazer", saude: "Saude", educacao: "Educ.", compras: "Compra", contas: "Contas" }
+            receita: { salario: "Salário", investimentos: "Investimentos", outros: "Outros" },
+            despesa: { 
+                alimentacao: "Alimentação", 
+                transporte: "Transporte", 
+                lazer: "Lazer", 
+                contas: "Contas",
+                moradia: "Moradia",
+                saude: "Saúde",
+                educacao: "Educação",
+                compras: "Compras"
+            }
         };
 
-        // --- SISTEMA DE IDENTIFICAÇÃO DO USUÁRIO ---
+        const CHART_COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316'];
+
+        // ==================== SISTEMA DE USUÁRIO ====================
         function checkUser() {
             const user = localStorage.getItem('pobre_user_name');
             if (!user) {
@@ -434,7 +540,6 @@
         function salvarUsuario() {
             const name = document.getElementById('user-name-input').value.trim();
             if (!name) return alert("Por favor, digite um nome.");
-            
             localStorage.setItem('pobre_user_name', name);
             document.getElementById('welcome-modal').style.display = 'none';
             updateUserUI(name);
@@ -455,27 +560,19 @@
             return getUserName().replace(/[^a-z0-9]/gi, '_');
         }
 
-        // --- MODAL PIX & TUTORIAL ---
-        function openPixModal() {
-            document.getElementById('pix-modal').style.display = 'flex';
-        }
-        function closePixModal() {
-            document.getElementById('pix-modal').style.display = 'none';
-        }
-        
-        // Funções do Novo Tutorial
-        function openTutorialModal() {
-            document.getElementById('tutorial-modal').style.display = 'flex';
-        }
-        function closeTutorialModal() {
-            document.getElementById('tutorial-modal').style.display = 'none';
-        }
+        // ==================== MODAIS ====================
+        function openPixModal() { document.getElementById('pix-modal').style.display = 'flex'; }
+        function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
+        function openTutorialModal() { document.getElementById('tutorial-modal').style.display = 'flex'; }
+        function closeTutorialModal() { document.getElementById('tutorial-modal').style.display = 'none'; }
 
+        // ==================== UTILITÁRIOS ====================
         function removerAcentos(str) {
             if (!str) return "";
             return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         }
 
+        // ==================== INDEXED DB ====================
         async function initDB() {
             return new Promise((resolve) => {
                 const request = indexedDB.open("GastosProDB", 3);
@@ -496,6 +593,7 @@
             });
         }
 
+        // ==================== CRUD ====================
         async function salvar(tipo) {
             const id = document.getElementById(`${tipo}-id`).value;
             const item = {
@@ -522,13 +620,13 @@
             tx.oncomplete = () => { showToast("Removido."); cancelarEdicao(storeName); render(); navTo('v-consulta', document.querySelectorAll('.tab')[2]); };
         }
 
+        // ==================== EXPORTAÇÃO / IMPORTAÇÃO ====================
         async function exportarBackup() {
             const data = { receitas: await getAll("receitas"), despesas: await getAll("despesas") };
-            const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            // NOME PERSONALIZADO NO BACKUP
             a.download = `backup_${getSafeFileName()}_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
         }
@@ -540,7 +638,10 @@
             reader.onload = async (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(confirm("Importar dados?")) {
+                    if(confirm("Importar dados? Isso substituirá todos os dados atuais.")) {
+                        await db.transaction("receitas", "readwrite").objectStore("receitas").clear();
+                        await db.transaction("despesas", "readwrite").objectStore("despesas").clear();
+                        
                         const txR = db.transaction("receitas", "readwrite");
                         data.receitas.forEach(r => { delete r.id; txR.objectStore("receitas").add(r); });
                         const txD = db.transaction("despesas", "readwrite");
@@ -552,9 +653,9 @@
             reader.readAsText(file);
         }
 
-        // --- GERAÇÃO DE PDF PERSONALIZADA ---
+        // ==================== PDF COMPLETO E PROFISSIONAL ====================
         async function gerarRelatorioPDF() {
-            showToast("Gerando relatório...");
+            showToast("Gerando relatório completo...");
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const mesSelecionado = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
 
@@ -564,88 +665,181 @@
             const totalReceitas = receitasMes.reduce((s, i) => s + i.valor, 0);
             const totalDespesas = despesasMes.reduce((s, i) => s + i.valor, 0);
             const saldoMes = totalReceitas - totalDespesas;
-            
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 14; 
+            const margin = 14;
+            
             const safeText = (txt) => removerAcentos(txt);
             const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
 
-            // Cabeçalho PDF
+            // ----- CABEÇALHO -----
             doc.setFillColor(79, 70, 229);
             doc.rect(0, 0, pageWidth, 55, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
+            doc.setFontSize(24);
             doc.setFont("helvetica", 'bold');
-            doc.text(safeText("RELATORIO FINANCEIRO"), pageWidth/2, 25, { align: 'center' });
-            
-            // NOME DO USUÁRIO NO PDF
-            doc.setFontSize(12);
+            doc.text(safeText("RELATÓRIO FINANCEIRO"), pageWidth/2, 22, { align: 'center' });
+            doc.setFontSize(14);
             doc.setFont("helvetica", 'normal');
-            doc.text(safeText(`Relatorio de: ${getUserName()}`), pageWidth/2, 38, { align: 'center' });
+            doc.text(safeText(`${getUserName()} • ${mesSelecionado.replace('-', '/')}`), pageWidth/2, 38, { align: 'center' });
             
             let yPos = 70;
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(10);
-            doc.text(`${safeText("Emissao")}: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`, margin, yPos);
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(9);
+            doc.text(`Emissão: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, margin, yPos);
             
-            // Resumo
+            // ----- RESUMO (CARD) -----
+            yPos += 10;
+            doc.setFillColor(245, 247, 250);
+            doc.roundedRect(margin, yPos, pageWidth - (margin*2), 35, 3, 3, 'F');
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", 'bold');
+            doc.text("RESUMO DO MÊS", margin + 5, yPos + 8);
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", 'normal');
+            doc.text("Receitas:", margin + 5, yPos + 20);
+            doc.text(fmtBRL(totalReceitas), margin + 50, yPos + 20);
+            doc.text("Despesas:", margin + 90, yPos + 20);
+            doc.text(fmtBRL(totalDespesas), margin + 135, yPos + 20);
+            doc.text("Saldo:", margin + 5, yPos + 30);
+            doc.setTextColor(saldoMes >= 0 ? 5 : 220, saldoMes >= 0 ? 150 : 38, saldoMes >= 0 ? 105 : 38);
+            doc.setFont("helvetica", 'bold');
+            doc.text(fmtBRL(saldoMes), margin + 50, yPos + 30);
+            
+            yPos += 45;
+
+            // ----- TABELA DE RECEITAS -----
+            doc.setTextColor(5, 150, 105);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", 'bold');
+            doc.text("RECEITAS", margin, yPos);
+            yPos += 5;
+            
+            const rowsReceitas = receitasMes.map(r => [
+                r.data.split('-').reverse().join('/'),
+                safeText(r.descricao),
+                safeText(CATEGORIES.receita[r.categoria] || r.categoria),
+                fmtBRL(r.valor)
+            ]);
+
             doc.autoTable({
-                startY: yPos + 10,
-                head: [[safeText('SALDO DO MES'), safeText('GASTOS DO MES')]],
-                body: [[fmtBRL(saldoMes), fmtBRL(totalDespesas)]],
-                theme: 'grid',
-                headStyles: { fillColor: [79, 70, 229], halign: 'center', fontStyle: 'bold' },
-                bodyStyles: { halign: 'center', fontSize: 14, fontStyle: 'bold' }
+                startY: yPos,
+                head: [['Data', 'Descrição', 'Categoria', 'Valor']],
+                body: rowsReceitas.length ? rowsReceitas : [['-', 'Nenhuma receita', '-', '-']],
+                theme: 'striped',
+                headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { cellWidth: 25 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 30 }, 3: { halign: 'right', cellWidth: 30 } },
+                styles: { fontSize: 9, cellPadding: 3 },
+                margin: { left: margin, right: margin }
             });
+            
             yPos = doc.lastAutoTable.finalY + 15;
 
-            // Extrato
-            doc.setFontSize(14); doc.setTextColor(220, 38, 38);
+            // ----- TABELA DE DESPESAS -----
+            doc.setTextColor(220, 38, 38);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", 'bold');
             doc.text("DESPESAS", margin, yPos);
-
-            const rowsDespesas = despesasMes.map(d => [d.data.split('-').reverse().join('/'), safeText(d.descricao), safeText(CATEGORIES.despesa[d.categoria] || d.categoria), fmtBRL(d.valor)]);
-
-            doc.autoTable({ startY: yPos + 5, head: [['Data', safeText('Descricao'), 'Categoria', 'Valor']], body: rowsDespesas.length ? rowsDespesas : [['-', 'Nenhuma despesa', '-', '-']], theme: 'striped', headStyles: { fillColor: [220, 38, 38] }, columnStyles: { 3: { halign: 'right' } } });
+            yPos += 5;
             
-            // NOME NO ARQUIVO
+            const rowsDespesas = despesasMes.map(d => [
+                d.data.split('-').reverse().join('/'),
+                safeText(d.descricao),
+                safeText(CATEGORIES.despesa[d.categoria] || d.categoria),
+                fmtBRL(d.valor)
+            ]);
+
+            doc.autoTable({
+                startY: yPos,
+                head: [['Data', 'Descrição', 'Categoria', 'Valor']],
+                body: rowsDespesas.length ? rowsDespesas : [['-', 'Nenhuma despesa', '-', '-']],
+                theme: 'striped',
+                headStyles: { fillColor: [220, 38, 38], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { cellWidth: 25 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 30 }, 3: { halign: 'right', cellWidth: 30 } },
+                styles: { fontSize: 9, cellPadding: 3 },
+                margin: { left: margin, right: margin }
+            });
+            
+            yPos = doc.lastAutoTable.finalY + 15;
+
+            // ----- GASTOS POR CATEGORIA -----
+            doc.setTextColor(79, 70, 229);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", 'bold');
+            doc.text("GASTOS POR CATEGORIA", margin, yPos);
+            yPos += 5;
+            
+            const gastosCat = {};
+            despesasMes.forEach(d => {
+                const cat = CATEGORIES.despesa[d.categoria] || d.categoria;
+                gastosCat[cat] = (gastosCat[cat] || 0) + d.valor;
+            });
+            
+            const rowsCategoria = Object.entries(gastosCat)
+                .sort((a,b) => b[1] - a[1])
+                .map(([cat, val]) => [cat, fmtBRL(val)]);
+
+            doc.autoTable({
+                startY: yPos,
+                head: [['Categoria', 'Total Gasto']],
+                body: rowsCategoria.length ? rowsCategoria : [['Nenhum gasto', '-']],
+                theme: 'grid',
+                headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { cellWidth: 'auto' }, 1: { halign: 'right', cellWidth: 40 } },
+                styles: { fontSize: 10, cellPadding: 4 },
+                margin: { left: margin, right: margin }
+            });
+
+            // ----- RODAPÉ -----
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Pobre 3.1 Pro+ • Relatório gerado automaticamente", pageWidth/2, finalY, { align: 'center' });
+
+            // ----- SALVAR PDF -----
             doc.save(`Relatorio_${getSafeFileName()}_${mesSelecionado}.pdf`);
-            showToast("Relatório PDF salvo!");
+            showToast("PDF completo salvo!");
         }
 
+        // ==================== NAVEGAÇÃO ====================
         function navTo(id, el) {
             requestAnimationFrame(() => {
                 document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
                 document.getElementById(id).classList.add('active');
                 el.classList.add('active');
-                if (id === 'v-consulta') popularFiltro();
+                if (id === 'v-consulta') {
+                    popularFiltro();
+                    render();
+                }
             });
         }
 
+        // ==================== CATEGORIAS ====================
         function selectCategory(tipo, cat) {
             document.querySelectorAll(`#categoria-${tipo}-selector .category-option`).forEach(e => e.classList.remove('selected'));
-            document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`).classList.add('selected');
+            const opt = document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`);
+            if (opt) opt.classList.add('selected');
             document.getElementById(`categoria-${tipo}`).value = cat;
         }
 
+        // ==================== EDIÇÃO ====================
         function openEdit(item) {
             const tipo = item.t;
-            // Navega para a tela correta
             navTo(tipo === 'receita' ? 'v-receita' : 'v-despesa', document.querySelectorAll('.tab')[tipo === 'receita' ? 0 : 1]);
             
-            // Preenche os dados
             document.getElementById(`${tipo}-id`).value = item.id;
             document.getElementById(`descricao-${tipo}`).value = item.descricao;
             document.getElementById(`valor-${tipo}`).value = item.valor;
             document.getElementById(`data-${tipo}`).value = item.data;
             selectCategory(tipo, item.categoria);
             
-            // Exibe botões de exclusão e cancelar
             document.getElementById(`del-${tipo}`).style.display = "block";
             document.getElementById(`btn-cancel-${tipo}`).style.display = "block";
             
-            // ATUALIZA VISUAL DO BOTÃO DE SALVAR
             const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
             if(btnSalvar) btnSalvar.innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
             
@@ -655,24 +849,18 @@
 
         function cancelarEdicao(store) {
             const tipo = store === 'receitas' ? 'receita' : 'despesa';
-            
-            // Limpa os campos
             document.getElementById(`${tipo}-id`).value = "";
             document.getElementById(`descricao-${tipo}`).value = "";
             document.getElementById(`valor-${tipo}`).value = "";
             document.getElementById(`data-${tipo}`).value = new Date().toISOString().split('T')[0];
-            
-            // Esconde botões extras
             document.getElementById(`del-${tipo}`).style.display = "none";
             document.getElementById(`btn-cancel-${tipo}`).style.display = "none";
             
-            // RESTAURA VISUAL DO BOTÃO DE SALVAR
             const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
             if(btnSalvar) {
                 if(tipo === 'receita') btnSalvar.innerHTML = `<i class="fas fa-check"></i> Salvar Receita`;
                 else btnSalvar.innerHTML = `<i class="fas fa-money-bill-wave"></i> Confirmar Gasto`;
             }
-
             const titulo = document.getElementById(`titulo-${tipo}`);
             if(titulo) {
                 if(tipo === 'receita') titulo.innerHTML = `<i class="fas fa-plus"></i> Nova Receita`;
@@ -680,11 +868,11 @@
             }
         }
 
+        // ==================== RENDERIZAÇÃO PRINCIPAL ====================
         async function render() {
             if (!db) return;
             const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             
-            // Filtros e Cálculos
             const mesAtual = new Date().toISOString().substring(0, 7);
             const filtro = (document.getElementById('filtroMes') && document.getElementById('filtroMes').value) || mesAtual;
             
@@ -695,38 +883,36 @@
             const gastosMes = d.filter(i => i.data.startsWith(filtro)).reduce((s, i) => s + i.valor, 0);
             document.getElementById('dash-gastos-mes').innerText = FORMAT_BRL.format(gastosMes);
             
-            // Renderização da Lista
+            // Lista detalhada
             const listCont = document.getElementById('lista-detalhada');
             listCont.innerHTML = "";
             
-            const mesD = d.filter(i => i.data.startsWith(filtro));
-            const fragment = document.createDocumentFragment();
+            const receitasMes = r.filter(i => i.data.startsWith(filtro));
+            const despesasMes = d.filter(i => i.data.startsWith(filtro));
             
-            [...r.filter(i => i.data.startsWith(filtro)).map(x => ({...x, t:'receita'})), 
-              ...mesD.map(x => ({...x, t:'despesa'}))]
-            .sort((a,b) => b.data.localeCompare(a.data))
-            .forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'item';
-                el.onclick = () => openEdit(item); // Ação de clique para editar
-                
-                // HTML MELHORADO COM ÍCONE DE EDIÇÃO
-                el.innerHTML = `
-                    <div style="flex: 1;">
-                        <b style="font-size: 0.95rem;">${item.descricao}</b>
-                        <br>
-                        <small style="color: #6b7280; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; margin-top: 4px;">
-                            <i class="far fa-calendar"></i> ${item.data.split('-').reverse().join('/')} 
-                            <span style="background: #e0e7ff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.65rem;">
-                                <i class="fas fa-pen"></i> Editar
-                            </span>
-                        </small>
-                    </div>
-                    <div style="font-weight: 700; font-size: 0.95rem; color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
-                        ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}
-                    </div>`;
-                fragment.appendChild(el);
-            });
+            const fragment = document.createDocumentFragment();
+            [...receitasMes.map(x => ({...x, t:'receita'})), ...despesasMes.map(x => ({...x, t:'despesa'}))]
+                .sort((a,b) => b.data.localeCompare(a.data))
+                .forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'item';
+                    el.onclick = () => openEdit(item);
+                    el.innerHTML = `
+                        <div style="flex: 1;">
+                            <b style="font-size: 0.95rem;">${item.descricao}</b>
+                            <br>
+                            <small style="color: #6b7280; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; margin-top: 4px;">
+                                <i class="far fa-calendar"></i> ${item.data.split('-').reverse().join('/')} 
+                                <span style="background: #e0e7ff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.65rem;">
+                                    <i class="fas fa-pen"></i> Editar
+                                </span>
+                            </small>
+                        </div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
+                            ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}
+                        </div>`;
+                    fragment.appendChild(el);
+                });
             
             if(fragment.childElementCount === 0) {
                 listCont.innerHTML = '<div style="text-align:center; padding: 20px; color: #9ca3af;">Nenhum lançamento neste mês.</div>';
@@ -734,35 +920,143 @@
                 listCont.appendChild(fragment);
             }
             
-            updateChart(mesD);
+            // Atualiza gráficos
+            updateChart(despesasMes);
+            updateMonthlyChart(r, d);
         }
 
+        // ==================== GRÁFICO DE PIZZA ====================
         function updateChart(dados) {
             const ctx = document.getElementById('graficoPizza').getContext('2d');
             if (chartInstancePie) chartInstancePie.destroy();
+            
             const cats = {};
             dados.forEach(d => cats[d.categoria] = (cats[d.categoria] || 0) + d.valor);
+            
+            const labels = Object.keys(cats).map(k => CATEGORIES.despesa[k] || k);
+            const values = Object.values(cats);
+            
+            const legendDiv = document.getElementById('categoria-legend');
+            legendDiv.innerHTML = '';
+            labels.forEach((label, i) => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `<span class="legend-color" style="background: ${CHART_COLORS[i % CHART_COLORS.length]}"></span> ${label} (${FORMAT_BRL.format(values[i])})`;
+                legendDiv.appendChild(item);
+            });
+            
             chartInstancePie = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(cats).map(k => CATEGORIES.despesa[k] || k),
-                    datasets: [{ data: Object.values(cats), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'], borderWidth: 0 }]
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: CHART_COLORS.slice(0, labels.length),
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
                 },
-                options: { maintainAspectRatio: false, responsive: true, elements: { arc: { borderWidth: 0 } } }
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.label}: ${FORMAT_BRL.format(ctx.raw)}`
+                            }
+                        }
+                    }
+                }
             });
         }
 
+        // ==================== GRÁFICO MENSAL ====================
+        function updateMonthlyChart(receitas, despesas) {
+            const ctx = document.getElementById('graficoMensal').getContext('2d');
+            if (chartInstanceMonthly) chartInstanceMonthly.destroy();
+            
+            const hoje = new Date();
+            const meses = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                meses.push(d.toISOString().substring(0, 7));
+            }
+            
+            const receitasPorMes = meses.map(m => 
+                receitas.filter(r => r.data.startsWith(m)).reduce((s, i) => s + i.valor, 0)
+            );
+            const despesasPorMes = meses.map(m => 
+                despesas.filter(d => d.data.startsWith(m)).reduce((s, i) => s + i.valor, 0)
+            );
+            
+            const labels = meses.map(m => {
+                const [ano, mes] = m.split('-');
+                return `${mes}/${ano.substring(2)}`;
+            });
+            
+            chartInstanceMonthly = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: receitasPorMes,
+                            backgroundColor: 'rgba(5, 150, 105, 0.7)',
+                            borderColor: '#059669',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Despesas',
+                            data: despesasPorMes,
+                            backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                            borderColor: '#dc2626',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: ${FORMAT_BRL.format(ctx.raw)}`
+                            }
+                        },
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => 'R$ ' + value.toFixed(0)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==================== FILTRO DE MÊS ====================
         function popularFiltro() {
             const sel = document.getElementById('filtroMes');
-            if (!sel || sel.options.length > 0) return;
-            const hoje = new Date();
-            for(let i=0; i<6; i++) {
-                const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-                const val = d.toISOString().substring(0, 7);
-                sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
+            if (!sel) return;
+            if (sel.options.length === 0) {
+                const hoje = new Date();
+                for(let i=0; i<6; i++) {
+                    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                    const val = d.toISOString().substring(0, 7);
+                    sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
+                }
             }
         }
 
+        // ==================== TOAST ====================
         function showToast(m) {
             const t = document.getElementById("toast");
             t.innerText = m; t.style.opacity = 1;
@@ -770,10 +1064,11 @@
         }
 
         function confirmarLimpeza() {
-            if(confirm("⚠️ Isso apagará TUDO. Continuar?")) {
+            if(confirm("⚠️ Isso apagará TODOS os dados permanentemente. Continuar?")) {
                 db.transaction("receitas", "readwrite").objectStore("receitas").clear();
                 db.transaction("despesas", "readwrite").objectStore("despesas").clear();
-                showToast("Tudo limpo!"); render();
+                showToast("Todos os dados foram limpos!");
+                render();
             }
         }
 
@@ -781,12 +1076,14 @@
             navigator.clipboard.writeText("Aquinogabriel@outlook.com").then(() => showToast("Chave PIX copiada!"));
         }
 
+        // ==================== INICIALIZAÇÃO ====================
         window.onload = async () => {
             await initDB();
-            checkUser(); // Verifica se usuário já existe
+            checkUser();
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('data-receita').value = hoje;
             document.getElementById('data-despesa').value = hoje;
+            popularFiltro();
             render();
         };
     </script>
