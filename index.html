@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chuchuzeiro</title>
+    <title>O app do Pobre</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1b5e20">
+    <meta name="theme-color" content="#4f46e5">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -20,37 +20,31 @@
     
     <style>
         :root {
-            --p: #1b5e20;
-            --p-dark: #0e3d12;
-            --income: #1b5e20;
-            --expense: #c62828;
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --income: #059669;
+            --expense: #dc2626;
             --bg: #f3f4f6;
             --card-bg: #ffffff;
             --radius: 20px;
-            --chart-line: #1b5e20;
+            --chart-1: #4f46e5;
+            --chart-2: #10b981;
+            --chart-3: #f59e0b;
+            --chart-4: #ef4444;
+            --chart-5: #ec4899;
+            --chart-6: #8b5cf6;
+            --chart-7: #14b8a6;
+            --chart-8: #f97316;
         }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body {
             background: var(--bg);
             margin: 0;
-            padding-bottom: 110px; /* Espaço original para o menu */
+            padding-bottom: 110px;
             color: #111;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            transition: padding-bottom 0.3s;
-        }
-
-        /* CLASSE AUXILIAR PARA QUANDO O TECLADO ABRE */
-        body.keyboard-open {
-            padding-bottom: 20px !important; /* Remove o espaço extra do menu */
-        }
-        
-        /* Esconde o menu quando a classe keyboard-open está no body */
-        body.keyboard-open nav {
-            transform: translateY(150%); /* Move para baixo da tela */
-            opacity: 0;
-            pointer-events: none;
         }
 
         .gpu-accelerated {
@@ -59,24 +53,22 @@
             perspective: 1000px;
         }
 
-        /* Header com gradiente verde */
         header {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
             padding: 20px 24px 70px;
             border-radius: 0 0 36px 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
             position: relative;
             z-index: 10;
         }
+
         .header-content { display: flex; flex-direction: column; justify-content: center; }
-        .app-title { font-weight: 800; font-size: 1.2rem; }
         .user-greeting { font-size: 0.8rem; font-weight: 500; opacity: 0.9; margin-top: 4px; display: none; }
 
-        /* Dashboard 2+1 cards */
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -86,6 +78,7 @@
             position: relative;
             z-index: 20;
         }
+
         .dash-card {
             background: var(--card-bg);
             padding: 20px 16px;
@@ -95,9 +88,9 @@
             contain: content;
             transform: translateZ(0);
         }
+
         .dash-card small { color: #6b7280; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
         .dash-card b { font-size: 1.2rem; display: block; margin-top: 5px; }
-        .dash-card.full-width { grid-column: span 2; display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 16px 24px; }
 
         .container { padding: 20px; max-width: 600px; margin: 0 auto; }
 
@@ -131,12 +124,12 @@
             transition: all 0.2s;
         }
         input:focus, select:focus { 
-            border-color: var(--p); 
-            box-shadow: 0 0 0 3px rgba(27,94,32,0.1); 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1); 
             outline: none; 
             background: white;
         }
-
+        
         button { 
             width: 100%; 
             padding: 15px; 
@@ -155,17 +148,39 @@
         .btn-income { background: var(--income); color: white; }
         .btn-expense { background: var(--expense); color: white; }
         .btn-delete { background: #fff1f2; color: #e11d48; margin-top: 10px; border: 1px solid #fecaca; }
-        .btn-sec { background: #f3f4f6; color: #4b5563; }
-        .btn-primary { background: var(--p); color: white; }
+        .btn-sec { background: #f3f4f6; color: #4b5563; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
         .btn-pix { background: #32bcad; color: white; }
         .btn-mp { background: #009ee3; color: white; }
         .btn-wpp { background: #25d366; color: white; }
         .btn-tutorial { background: #8b5cf6; color: white; }
-        .btn-pdf { background: #374151; color: white; }
-        .btn-pdf-year { background: #1e3a5f; color: white; }
-        .btn-update { background: #f59e0b; color: white; }
 
-        /* Navegação inferior flutuante */
+        .category-selector { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 8px; 
+            margin-bottom: 20px; 
+        }
+        .category-option { 
+            padding: 10px 5px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 12px; 
+            text-align: center; 
+            font-size: 0.65rem; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: white;
+        }
+        .category-option:hover { background: #f9fafb; }
+        .category-option:active { transform: scale(0.95); }
+        .category-option.selected { 
+            background: #e0e7ff; 
+            border-color: var(--primary); 
+            color: var(--primary); 
+            font-weight: 700; 
+            box-shadow: 0 2px 4px rgba(79,70,229,0.2);
+        }
+
         nav {
             position: fixed; bottom: 20px; left: 16px; right: 16px;
             background: rgba(255, 255, 255, 0.95);
@@ -173,16 +188,15 @@
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             z-index: 100;
-            transform: translateZ(0) translateY(0);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            transform: translateZ(0);
         }
+        
         .nav-buttons { display: flex; height: 70px; justify-content: space-around; align-items: center; }
         .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; transition: color 0.2s; }
-        .tab.active { color: var(--p); }
+        .tab.active { color: var(--primary); }
         .tab i { font-size: 1.2rem; margin-bottom: 2px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .tab.active i { transform: translateY(-3px); }
 
-        /* Lista de registros */
         .item { 
             display: flex; 
             justify-content: space-between; 
@@ -190,34 +204,27 @@
             border-bottom: 1px solid #f3f4f6; 
             cursor: pointer; 
             transition: background 0.1s;
-            align-items: center;
         }
         .item:hover { background: #fafafa; }
-        .item-date-box {
-            background: #f3f4f6; padding: 6px 10px; border-radius: 8px; text-align: center; min-width: 50px;
-        }
-        .item-date-box span { display: block; font-size: 0.7rem; color: #666; text-transform: uppercase; }
-        .item-date-box strong { display: block; font-size: 1.1rem; color: #333; line-height: 1; margin-top: 2px; }
-        .item-desc { margin-left: 12px; flex: 1; }
-        .item-desc b { display: block; font-size: 0.95rem; color: #1f2937; margin-bottom: 2px; }
-        .item-desc small { color: #6b7280; font-size: 0.8rem; }
 
-        /* Toast */
         #toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0);
             background: #333; color: white; padding: 12px 24px; border-radius: 50px;
             opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none;
-            will-change: opacity; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            will-change: opacity;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        /* Gráfico */
+        .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
+        .info-section h4 { color: var(--primary); margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; }
+        .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
+        
         canvas { 
             transform: translateZ(0); 
             max-height: 250px; 
             width: 100% !important; 
         }
 
-        /* MODAIS GLASS */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.35);
@@ -225,6 +232,7 @@
             z-index: 5000; display: none; align-items: center; justify-content: center;
             padding: 20px;
         }
+
         .glass-card {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(20px);
@@ -236,20 +244,21 @@
             transform: translateZ(0);
             animation: floatUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         .glass-input {
             background: rgba(255,255,255,0.8);
             border: 2px solid transparent;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
             text-align: center;
         }
-        .glass-input:focus { border-color: var(--p); background: white; }
+        .glass-input:focus { border-color: var(--primary); background: white; }
 
         @keyframes floatUp {
             from { opacity: 0; transform: translateY(30px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-
-        /* Tutorial */
+        
+        /* --- ESTILOS EXPANDIDOS PARA O TUTORIAL --- */
         .tutorial-list {
             text-align: left;
             padding-left: 0;
@@ -258,7 +267,7 @@
         }
         .tutorial-list h4 {
             margin: 20px 0 8px;
-            color: var(--p);
+            color: var(--primary);
             font-size: 0.95rem;
             font-weight: 700;
             display: flex;
@@ -266,6 +275,9 @@
             gap: 6px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 5px;
+        }
+        .tutorial-list h4:first-of-type {
+            margin-top: 5px;
         }
         .tutorial-list ul {
             padding-left: 20px;
@@ -281,218 +293,147 @@
             align-items: flex-start;
             line-height: 1.4;
         }
-        .tutorial-list li i { color: var(--p); margin-top: 2px; min-width: 18px; text-align: center; }
-
-        /* Backup alert */
-        .backup-alert {
-            background: #eff6ff; border: 1px solid #dbeafe; padding: 12px 16px; border-radius: 12px;
-            margin-bottom: 20px; display: none; align-items: center; justify-content: space-between;
-        }
-
-        /* Info e privacidade */
-        .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
-        .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
-
-        /* Modal de confirmação */
-        #custom-modal .modal-box {
-            background: white; width: 85%; max-width: 320px; padding: 24px; border-radius: 20px; text-align: center;
-            transform: scale(0.9); transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-        }
-        #custom-modal.open { display: flex; }
-        .modal-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-        .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: #111; }
-
-        /* Grid para botões de PDF */
-        .pdf-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        /* Estilos para os níveis de apoio (tiers) */
-        .tiers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-            margin-bottom: 15px;
-        }
-        .tier-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px 14px;
+        .tutorial-list li i {
+            color: var(--primary);
+            margin-top: 2px;
+            min-width: 18px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
-            transition: transform 0.15s;
-            border: 1px solid #f0f0f0;
-            position: relative;
         }
-        .tier-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(27,94,32,0.08);
+        .tutorial-list li div {
+            flex: 1;
         }
-        .tier-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
+        
+        .chart-container { 
+            position: relative; 
+            height: 250px; 
+            margin-bottom: 20px;
         }
-        .tier-title {
-            font-weight: 800;
-            color: var(--p);
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-        .tier-price {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #2d3748;
-            margin-bottom: 8px;
-        }
-        .tier-description {
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 15px;
             font-size: 0.75rem;
-            color: #4b5563;
-            margin-bottom: 15px;
-            line-height: 1.5;
         }
-        .tier-qr {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
-            background: #f9fafb;
-            padding: 5px;
-            cursor: zoom-in;
-        }
-        .zoom-hint {
-            font-size: 0.75rem;
-            color: var(--p);
-            margin-top: 8px;
-            cursor: pointer;
-            font-weight: 700;
+        .legend-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 5px;
-            transition: transform 0.2s;
+            gap: 6px;
         }
-        .zoom-hint:active { transform: scale(0.95); }
-
-        .badge-popular {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--p);
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(27,94,32,0.3);
-            white-space: nowrap;
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <header class="gpu-accelerated">
         <div class="header-content">
-            <div class="app-title"><i class="fas fa-leaf"></i> CHUCHUZEIRO</div>
+            <div class="app-title" style="font-weight: 800; font-size: 1.2rem;">💸 Pobre 3.1</div>
             <div id="user-greeting" class="user-greeting"></div>
         </div>
-        <div id="status-tag"><i class="fas fa-cloud-sun"></i> ONLINE</div>
+        <div id="status-tag"><i class="fas fa-piggy-bank"></i></div>
     </header>
 
     <div class="dashboard">
         <div class="dash-card">
-            <small><i class="fas fa-boxes"></i> Volume Mês</small>
-            <b id="dash-cx">0</b>
-            <span style="font-size:0.7rem; color:#666">caixas</span>
+            <small>Saldo Geral</small>
+            <b id="dash-saldo">R$ 0,00</b>
         </div>
         <div class="dash-card">
-            <small><i class="fas fa-coins"></i> Saldo Líquido</small>
-            <b id="dash-rs">R$ 0,00</b>
-        </div>
-        <div class="dash-card full-width">
-            <div>
-                <small style="margin-bottom:0"><i class="fas fa-chart-line"></i> Margem de Lucro</small>
-                <b id="dash-margin" style="font-size:1.2rem;">0%</b>
-            </div>
-            <div style="text-align: right;">
-                <div style="font-size:0.75rem; color:var(--p)"><i class="fas fa-arrow-up"></i> Entrada: <span id="dash-in">R$ 0</span></div>
-                <div style="font-size:0.75rem; color:var(--expense)"><i class="fas fa-arrow-down"></i> Saída: <span id="dash-out">R$ 0</span></div>
-            </div>
+            <small>Gastos (Mês)</small>
+            <b id="dash-gastos-mes" style="color: var(--expense)">R$ 0,00</b>
         </div>
     </div>
 
+    <!-- MODAIS -->
     <div id="welcome-modal" class="modal-overlay">
         <div class="glass-card">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🌱</div>
-            <h2 style="color: var(--p); margin: 0 0 10px;">Bem-vindo(a)!</h2>
+            <div style="font-size: 3rem; margin-bottom: 10px;">👋</div>
+            <h2 style="color: var(--primary); margin: 0 0 10px;">Bem-vindo(a)!</h2>
             <p style="color: #4b5563; font-size: 0.9rem; margin-bottom: 20px;">
-                Como você quer ser chamado(a) nos relatórios?
+                Para personalizar seus backups e relatórios, como você quer ser chamado?
             </p>
-            <input type="text" id="user-name-input" class="glass-input" placeholder="Ex: Sítio Esperança, Sr. João...">
+            <input type="text" id="user-name-input" class="glass-input" placeholder="Ex: Gabriel, Casa, Loja...">
             <button class="btn-primary" onclick="salvarUsuario()">Começar</button>
         </div>
     </div>
 
+    <!-- ========== TUTORIAL EXPANDIDO E MELHORADO ========== -->
     <div id="tutorial-modal" class="modal-overlay">
         <div class="glass-card" style="max-height: 85vh; overflow-y: auto; padding: 25px 20px; text-align: left;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="color: var(--p); margin: 0; display: flex; align-items: center; gap: 8px;">
+                <h3 style="color: var(--primary); margin: 0; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-book-open"></i> Guia Completo
                 </h3>
                 <i class="fas fa-times" onclick="closeTutorialModal()" style="font-size: 1.5rem; color: #9ca3af; cursor: pointer;"></i>
             </div>
             
             <div class="tutorial-list">
-                <h4><i class="fas fa-seedling"></i> Registrar Colheita (Venda)</h4>
+                <!-- 1. RECEITAS -->
+                <h4><i class="fas fa-arrow-up"></i> Registrar Receitas</h4>
                 <ul>
-                    <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Colheita":</b> informe a quantidade de caixas, preço por caixa e data.</div></li>
-                    <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Confirmar Venda"</strong>. O valor total é calculado automaticamente.</div></li>
-                    <li><i class="fas fa-edit"></i> <div>Para editar, clique sobre o item na aba "Relatórios".</div></li>
+                    <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Ganhar":</b> preencha descrição, categoria, valor e data.</div></li>
+                    <li><i class="fas fa-tags"></i> <div><b>Categorias disponíveis:</b> Salário, Investimentos, Outros.</div></li>
+                    <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Salvar Receita"</strong>.</div></li>
                 </ul>
-
-                <h4><i class="fas fa-tools"></i> Registrar Despesas</h4>
+                
+                <!-- 2. DESPESAS -->
+                <h4><i class="fas fa-arrow-down"></i> Registrar Despesas</h4>
                 <ul>
-                    <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Despesas":</b> descreva o gasto, valor e data.</div></li>
-                    <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Registrar Gasto"</strong>.</div></li>
-                    <li><i class="fas fa-edit"></i> <div>Edição rápida: toque no extrato e altere os dados.</div></li>
+                    <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Gastar":</b> descrição, categoria, valor e data.</div></li>
+                    <li><i class="fas fa-tags"></i> <div><b>Categorias (8 opções):</b> Alimentação, Transporte, Lazer, Contas, Moradia, Saúde, Educação, Compras.</div></li>
+                    <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Confirmar Gasto"</strong>.</div></li>
                 </ul>
-
-                <h4><i class="fas fa-chart-pie"></i> Relatórios e Gráficos</h4>
+                
+                <!-- 3. EDIÇÃO / EXCLUSÃO -->
+                <h4><i class="fas fa-pen"></i> Editar e Excluir Lançamentos</h4>
                 <ul>
-                    <li><i class="fas fa-calendar-alt"></i> <div><b>Filtro por mês:</b> selecione o período no topo da aba "Relatórios".</div></li>
-                    <li><i class="fas fa-chart-line"></i> <div><b>Gráfico de linhas:</b> mostra a quantidade de caixas vendidas por dia no mês.</div></li>
-                    <li><i class="fas fa-tachometer-alt"></i> <div><b>Dashboard:</b> volume, saldo, margem de lucro e entradas/saídas.</div></li>
-                    <li><i class="fas fa-list-ul"></i> <div><b>Extrato completo:</b> todas as vendas e despesas do mês, com edição.</div></li>
+                    <li><i class="fas fa-mouse-pointer"></i> <div>Na aba <strong>"Análise"</strong>, clique sobre qualquer item do extrato.</div></li>
+                    <li><i class="fas fa-sync-alt"></i> <div>O formulário será preenchido para edição – altere e clique em <strong>"Atualizar"</strong>.</div></li>
+                    <li><i class="fas fa-trash"></i> <div>O botão <strong>"Excluir"</strong> aparece ao editar; confirme a remoção.</div></li>
+                    <li><i class="fas fa-undo-alt"></i> <div>Use o botão <strong>"Voltar"</strong> para cancelar a edição.</div></li>
                 </ul>
-
-                <h4><i class="fas fa-file-pdf"></i> Backup e Relatórios</h4>
+                
+                <!-- 4. DASHBOARD E GRÁFICOS -->
+                <h4><i class="fas fa-chart-pie"></i> Análise e Relatórios</h4>
                 <ul>
-                    <li><i class="fas fa-file-pdf"></i> <div><b>PDF profissional:</b> relatório mensal com tabelas, resumo e cabeçalho personalizado.</div></li>
-                    <li><i class="fab fa-whatsapp"></i> <div><b>Enviar no WhatsApp:</b> compartilhe o PDF ou um resumo com seu contador/sócio.</div></li>
-                    <li><i class="fas fa-database"></i> <div><b>Backup JSON:</b> exporte seus dados para guardar no e-mail, Drive ou PC.</div></li>
-                    <li><i class="fas fa-upload"></i> <div><b>Importar:</b> restaure um backup anterior a qualquer momento.</div></li>
-                    <li><i class="fas fa-bell"></i> <div><b>Alerta de backup:</b> se passarem 7 dias sem backup, o app lembra você.</div></li>
+                    <li><i class="fas fa-tachometer-alt"></i> <div><b>Dashboard:</b> saldo geral e gastos do mês no topo da tela.</div></li>
+                    <li><i class="fas fa-filter"></i> <div><b>Filtro de mês:</b> selecione o período no topo da aba "Análise".</div></li>
+                    <li><i class="fas fa-chart-pie"></i> <div><b>Gráfico de pizza:</b> gastos por categoria no mês filtrado.</div></li>
+                    <li><i class="fas fa-chart-line"></i> <div><b>Gráfico de barras:</b> evolução mensal (receitas vs despesas) dos últimos 6 meses.</div></li>
+                    <li><i class="fas fa-list-ul"></i> <div><b>Extrato:</b> todos os lançamentos do mês, com ícones de edição.</div></li>
+                    <li><i class="fas fa-file-pdf"></i> <div><b>Exportar PDF:</b> gera um relatório profissional com resumo, tabelas e categorias.</div></li>
                 </ul>
-
+                
+                <!-- 5. BACKUP E SEGURANÇA -->
+                <h4><i class="fas fa-database"></i> Backup e Segurança</h4>
+                <ul>
+                    <li><i class="fas fa-download"></i> <div><b>Backup:</b> exporta um arquivo .json com todos os seus dados (armazenado onde quiser).</div></li>
+                    <li><i class="fas fa-upload"></i> <div><b>Restaurar:</b> importe um backup prévio para recuperar os dados.</div></li>
+                    <li><i class="fas fa-trash-alt"></i> <div><b>Limpar Dados:</b> remove permanentemente todas as informações.</div></li>
+                    <li><i class="fas fa-lock"></i> <div><b>Privacidade radical:</b> seus dados NUNCA saem do seu celular (IndexedDB local).</div></li>
+                </ul>
+                
+                <!-- 6. RECURSOS AVANÇADOS -->
                 <h4><i class="fas fa-microchip"></i> Recursos Avançados</h4>
                 <ul>
                     <li><i class="fas fa-mobile-alt"></i> <div><b>Instale como App (PWA):</b> no Chrome, use "Adicionar à tela inicial".</div></li>
-                    <li><i class="fas fa-wifi-slash"></i> <div><b>Funciona offline:</b> use no campo, sem internet – os dados ficam no seu celular.</div></li>
-                    <li><i class="fas fa-user-secret"></i> <div><b>Privacidade radical:</b> NENHUM dado sai do seu dispositivo (IndexedDB).</div></li>
+                    <li><i class="fas fa-wifi-slash"></i> <div><b>Funciona offline:</b> use no avião, no sítio, sem internet.</div></li>
+                    <li><i class="fas fa-tachometer-alt"></i> <div><b>Aceleração GPU:</b> animações suaves (60fps) e economia de bateria.</div></li>
+                    <li><i class="fas fa-user-secret"></i> <div><b>Sem rastreadores:</b> zero trackers, zero anúncios, zero servidores.</div></li>
                 </ul>
-
-                <h4><i class="fas fa-heart"></i> Apoie o Projeto</h4>
+                
+                <!-- 7. APOIE O PROJETO -->
+                <h4><i class="fas fa-heart"></i> Apoie o Desenvolvimento</h4>
                 <ul>
-                    <li><i class="fas fa-qrcode"></i> <div><b>PIX:</b> QR Code na aba "Apoie".</div></li>
-                    <li><i class="fas fa-credit-card"></i> <div><b>Mercado Pago:</b> doe com cartão ou boleto.</div></li>
-                    <li><i class="fab fa-whatsapp"></i> <div><b>Contato direto:</b> fale com o desenvolvedor.</div></li>
-                    <li><i class="fas fa-book-reader"></i> <div><b>Tutorial:</b> este guia está sempre disponível na aba Apoie.</div></li>
+                    <li><i class="fas fa-qrcode"></i> <div><b>PIX:</b> QR Code disponível na aba "Apoie".</div></li>
+                    <li><i class="fas fa-credit-card"></i> <div><b>Mercado Pago:</b> botão para doação via cartão ou boleto.</div></li>
+                    <li><i class="fab fa-whatsapp"></i> <div><b>Contato:</b> fale direto com o desenvolvedor pelo WhatsApp.</div></li>
+                    <li><i class="fas fa-book-reader"></i> <div><b>Tutorial:</b> este guia está sempre disponível no botão "Tutorial" da aba Apoie.</div></li>
                 </ul>
             </div>
             
@@ -502,206 +443,146 @@
         </div>
     </div>
 
-    <div id="pix-modal" class="modal-overlay" onclick="closePixModal()">
-        <div class="glass-card" onclick="event.stopPropagation()">
-            <h3 id="modal-qr-title" style="color: var(--p); margin-top: 0;">Mantenha o projeto vivo ☕</h3>
+    <div id="pix-modal" class="modal-overlay">
+        <div class="glass-card">
+            <h3 style="color: var(--primary); margin-top: 0;">Ajude com um café ao dev ☕</h3>
             <div style="background: white; padding: 15px; border-radius: 15px; display: inline-block; margin: 10px 0;">
-                <img id="modal-qr-img" src="" alt="QR Code Ampliado" style="width: 250px; height: 250px; object-fit: contain; display: block;">
+                <img src="qrcode.png" alt="QR Code PIX" style="width: 200px; height: 200px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+Ausente'">
             </div>
             <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 20px; line-height: 1.5;">
-                Escaneie o código acima usando o aplicativo do seu banco para apoiar o <b>Chuchuzeiro</b>.
+                Seu apoio mantém as atualizações gratuitas!<br>
+                <b>Scaneie e ajude com um pix.</b>
             </p>
             <button class="btn-primary" onclick="closePixModal()" style="background: #374151;">
-                <i class="fas fa-times"></i> Fechar
+                <i class="fas fa-times"></i> Fechar a janela
             </button>
         </div>
     </div>
 
     <div class="container">
-
-        <div id="v-venda" class="view active">
+        <!-- TELA DE RECEITA -->
+        <div id="v-receita" class="view active">
             <div class="card">
-                <h3 id="titulo-venda"><i class="fas fa-seedling" style="color: var(--p);"></i> Registrar Colheita</h3>
-                <input type="hidden" id="venda-id">
-                
-                <label>Quantidade de Caixas</label>
-                <input type="number" id="q" placeholder="Ex: 50" inputmode="numeric" onfocus="this.select()">
-                
-                <label>Preço por Caixa (R$)</label>
-                <input type="number" id="p" placeholder="0,00" step="0.01" inputmode="decimal" onfocus="this.select()">
-                
-                <label>Data</label>
-                <input type="date" id="dv">
-                
-                <button id="btn-acao-venda" class="btn-income" onclick="salvarVenda()"><i class="fas fa-check"></i> Confirmar Venda</button>
-                <button id="btn-cancel-venda" class="btn-sec" style="display:none;" onclick="cancelarEdicao('vendas')"><i class="fas fa-undo-alt"></i> Cancelar</button>
+                <h3 id="titulo-receita"><i class="fas fa-plus"></i> Nova Receita</h3>
+                <input type="hidden" id="receita-id">
+                <input type="text" id="descricao-receita" placeholder="Ex: Salário Freelance">
+                <div class="category-selector" id="categoria-receita-selector">
+                    <div class="category-option selected" data-category="salario" onclick="selectCategory('receita', 'salario')">💼<br>Salário</div>
+                    <div class="category-option" data-category="investimentos" onclick="selectCategory('receita', 'investimentos')">📈<br>Invest.</div>
+                    <div class="category-option" data-category="outros" onclick="selectCategory('receita', 'outros')">🎁<br>Outros</div>
+                </div>
+                <input type="hidden" id="categoria-receita" value="salario">
+                <input type="number" id="valor-receita" placeholder="Valor R$" step="0.01">
+                <input type="date" id="data-receita">
+                <button id="btn-salvar-receita" class="btn-income" onclick="salvar('receita')"><i class="fas fa-check"></i> Salvar Receita</button>
+                <button id="del-receita" class="btn-delete" style="display:none;" onclick="deletarRegistro('receita')"><i class="fas fa-trash"></i> Excluir</button>
+                <button id="btn-cancel-receita" class="btn-sec" style="display:none;" onclick="cancelarEdicao('receitas')">Voltar</button>
             </div>
         </div>
 
-        <div id="v-gasto" class="view">
+        <!-- TELA DE DESPESA -->
+        <div id="v-despesa" class="view">
             <div class="card">
-                <h3 id="titulo-gasto"><i class="fas fa-tools" style="color: var(--expense);"></i> Registrar Despesa</h3>
-                <input type="hidden" id="gasto-id">
-                
-                <label>Descrição</label>
-                <input type="text" id="d" placeholder="Ex: Adubo, Combustível..." autocomplete="off">
-                
-                <label>Valor (R$)</label>
-                <input type="number" id="v" placeholder="0,00" step="0.01" inputmode="decimal" onfocus="this.select()">
-                
-                <label>Data</label>
-                <input type="date" id="dg">
-                
-                <button id="btn-acao-gasto" class="btn-expense" onclick="salvarGasto()"><i class="fas fa-money-bill-wave"></i> Registrar Gasto</button>
-                <button id="btn-cancel-gasto" class="btn-sec" style="display:none;" onclick="cancelarEdicao('gastos')"><i class="fas fa-undo-alt"></i> Cancelar</button>
+                <h3 id="titulo-despesa"><i class="fas fa-minus"></i> Novo Gasto</h3>
+                <input type="hidden" id="despesa-id">
+                <input type="text" id="descricao-despesa" placeholder="Onde você gastou?">
+                <div class="category-selector" id="categoria-despesa-selector">
+                    <div class="category-option selected" data-category="alimentacao" onclick="selectCategory('despesa', 'alimentacao')">🍕<br>Comida</div>
+                    <div class="category-option" data-category="transporte" onclick="selectCategory('despesa', 'transporte')">🚗<br>Transporte</div>
+                    <div class="category-option" data-category="lazer" onclick="selectCategory('despesa', 'lazer')">🍿<br>Lazer</div>
+                    <div class="category-option" data-category="contas" onclick="selectCategory('despesa', 'contas')">🧾<br>Contas</div>
+                    <div class="category-option" data-category="moradia" onclick="selectCategory('despesa', 'moradia')">🏠<br>Moradia</div>
+                    <div class="category-option" data-category="saude" onclick="selectCategory('despesa', 'saude')">💊<br>Saúde</div>
+                    <div class="category-option" data-category="educacao" onclick="selectCategory('despesa', 'educacao')">📚<br>Educação</div>
+                    <div class="category-option" data-category="compras" onclick="selectCategory('despesa', 'compras')">🛒<br>Compras</div>
+                </div>
+                <input type="hidden" id="categoria-despesa" value="alimentacao">
+                <input type="number" id="valor-despesa" placeholder="Valor R$" step="0.01">
+                <input type="date" id="data-despesa">
+                <button id="btn-salvar-despesa" class="btn-expense" onclick="salvar('despesa')"><i class="fas fa-money-bill-wave"></i> Confirmar Gasto</button>
+                <button id="del-despesa" class="btn-delete" style="display:none;" onclick="deletarRegistro('despesa')"><i class="fas fa-trash"></i> Excluir Registro</button>
+                <button id="btn-cancel-despesa" class="btn-sec" style="display:none;" onclick="cancelarEdicao('despesas')">Voltar</button>
             </div>
         </div>
 
+        <!-- TELA DE ANÁLISE (GRÁFICOS + EXTRATO) -->
         <div id="v-consulta" class="view">
             <div class="card">
-                <h3><i class="fas fa-chart-line" style="color: var(--p);"></i> Desempenho</h3>
+                <h3><i class="fas fa-chart-pie"></i> Gastos por Categoria</h3>
                 <select id="filtroMes" onchange="render()"></select>
-
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 15px; margin-top: 15px;">
-                    <h4 style="margin: 0 0 10px; color: var(--p-dark); font-size: 0.9rem; display: flex; justify-content: space-between;">
-                        <span><i class="fas fa-calendar-alt"></i> Safra <span id="lbl-ano-safra">----</span></span>
-                        <small style="font-weight: normal; opacity: 0.8">Jan a Dez</small>
-                    </h4>
-                    
-                    <div style="display: flex; justify-content: space-between; text-align: center;">
-                        <div>
-                            <small style="color: #666; font-size: 0.7rem;">RECEITA ANUAL</small>
-                            <div id="safra-total-venda" style="color: var(--income); font-weight: 800; font-size: 0.9rem;">R$ 0,00</div>
-                        </div>
-                        <div>
-                            <small style="color: #666; font-size: 0.7rem;">CUSTO ANUAL</small>
-                            <div id="safra-total-gasto" style="color: var(--expense); font-weight: 800; font-size: 0.9rem;">R$ 0,00</div>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #dcfce7; text-align: center;">
-                         <small style="color: #666; font-size: 0.7rem; text-transform: uppercase;">Resultado da Safra</small>
-                         <div id="safra-saldo-final" style="font-size: 1.3rem; font-weight: 900;">R$ 0,00</div>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="graficoPizza"></canvas>
                 </div>
-                <div style="height:200px; width:100%; margin-top:10px;">
-                    <canvas id="graficoLinha"></canvas>
+                <div id="categoria-legend" class="legend"></div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-chart-line"></i> Evolução Mensal (Receitas vs Despesas)</h3>
+                <div class="chart-container">
+                    <canvas id="graficoMensal"></canvas>
                 </div>
             </div>
 
             <div class="card">
-                <h3><i class="fas fa-history"></i> Histórico</h3>
-                <div id="lista-detalhada" class="list-container"></div>
+                <h3><i class="fas fa-history"></i> Extrato</h3>
+                <div id="lista-detalhada"></div>
             </div>
 
             <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
-                <div id="backup-alert" class="backup-alert">
-                    <div>
-                        <div style="font-weight:700; color:#1e40af; font-size:0.85rem">Backup Pendente</div>
-                        <div style="font-size:0.75rem; color:#60a5fa">Recomendado fazer backup.</div>
-                    </div>
-                    <button style="width: auto; padding: 8px 16px; font-size: 0.75rem; background: #2563eb; color: white;" onclick="exportarManual()"><i class="fas fa-download"></i> BAIXAR</button>
-                </div>
-
-                <div class="pdf-buttons">
-                    <button class="btn-pdf" onclick="gerarPDF('mes')"><i class="fas fa-file-pdf"></i> PDF (Mês)</button>
-                    <button class="btn-pdf-year" onclick="gerarPDF('ano')"><i class="fas fa-layer-group"></i> PDF (Safra)</button>
-                </div>
-
-                <button class="btn-wpp" onclick="compartilharWhatsapp()"><i class="fab fa-whatsapp"></i> Enviar no WhatsApp</button>
-                
+                <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF Completo</button>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="btn-sec" onclick="exportarManual()"><i class="fas fa-download"></i> Backup JSON</button>
-                    <button class="btn-sec" onclick="document.getElementById('fileInput').click()"><i class="fas fa-upload"></i> Importar JSON</button>
-                    <input type="file" id="fileInput" style="display:none" accept=".json" onchange="iniciarImportacao(event)">
+                    <button class="btn-sec" onclick="exportarBackup()"><i class="fas fa-download"></i> Backup</button>
+                    <button class="btn-sec" onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
+                    <input type="file" id="restore-file" style="display:none" accept=".json" onchange="restaurarBackup(this)">
                 </div>
-
-                <button class="btn-delete" onclick="confirmAction('Apagar Tudo', 'Tem certeza? Todos os dados serão perdidos.', limparBancoDados, '⚠️', '#ef4444')">
-                    <i class="fas fa-trash-alt"></i> Resetar App
-                </button>
+                <button onclick="confirmarLimpeza()" style="color: var(--expense); background: #fee2e2;"><i class="fas fa-trash-alt"></i> Limpar Dados</button>
             </div>
         </div>
 
+        <!-- TELA APOIE -->
         <div id="v-apoie" class="view">
             <div class="card">
-                <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> O Chuchuzeiro ajudou sua safra?</h3>
+                <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> Por que apoiar?</h3>
                 
                 <div class="info-section">
-                    <p>O <b>Chuchuzeiro</b> foi criado para colocar o controle financeiro da sua roça na palma da mão, garantindo que <b>nenhum centavo do seu suor passe despercebido</b>.</p>
+                    <p>O <b>Pobre 3.1</b> não é apenas um app de finanças. É um manifesto de <b>Engenharia de Software Ética</b>. Veja o que torna este aplicativo único:</p>
                     
-                    <h4><i class="fas fa-chart-line"></i> O Fim do Caderno (Lucro Real)</h4>
-                    <p>Chega de contas de cabeça ou anotações perdidas Saiba exatamente quantas caixas saíram, qual é a sua <b>margem de lucro real</b> e não deixe dinheiro na mesa.</p>
+                    <h4><i class="fas fa-user-shield"></i> Privacidade Radical (Client-Side)</h4>
+                    <p>A maioria dos apps envia seus gastos para "a nuvem" (servidores), onde seus dados podem ser analisados ou vazados. Aqui, usamos tecnologia <b>IndexedDB</b> criptografada. Isso significa que seus dados financeiros <b>nunca saem do seu aparelho</b>. Nós literalmente <i>não conseguimos</i> ver o que você gasta.</p>
 
-                    <h4><i class="fas fa-wifi-slash"></i> 100% Offline (Feito para o Campo)</h4>
-                    <p>Tá no meio da roça ou na estrada sem sinal? Sem problema. O app funciona perfeitamente sem internet e é super leve para <b>economizar a bateria do seu celular</b> o dia todo.</p>
+                    <h4><i class="fas fa-tachometer-alt"></i> Performance Extrema</h4>
+                    <p>Cansado de apps que travam ou aquecem o celular? O Pobre 3.1 utiliza <b>Aceleração de Hardware (GPU)</b> para renderizar as telas. Isso garante animações fluidas (60fps) e economiza sua bateria, rodando liso até em celulares mais antigos ou modestos.</p>
 
-                    <h4><i class="fas fa-user-shield"></i> Ninguém Espiona Suas Contas</h4>
-                    <p>Diferente de grandes empresas, <b>nós não temos acesso aos seus dados</b>. Tudo fica trancado e seguro apenas no seu aparelho. O dinheiro é seu, a informação também.</p>
+                    <h4><i class="fas fa-wifi"></i> Soberania Digital (Offline)</h4>
+                    <p>Você não precisa de internet para controlar seu dinheiro. Graças à tecnologia <b>PWA Offline-First</b>, o app funciona no modo avião, no metrô ou no sítio. Você é o único dono do seu backup (JSON).</p>
                     
                     <div class="privacy-box" style="background: #fff1f2; border-color: #e11d48; color: #9f1239;">
-                        <p><i class="fas fa-ban"></i> <b>Zero Mensalidades. Zero Anúncios.</b><br>
-                        Outros aplicativos agrícolas chegam a cobrar centenas de reais por ano. O Chuchuzeiro é <b>gratuito</b>. Se o app já fez você economizar tempo, organizar a colheita ou não perder dinheiro, considere retribuir!</p>
-                    </div>
-                </div>
-
-                <div style="margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
-                    <h4 style="color: var(--p); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-gift"></i> Escolha como apoiar o projeto
-                    </h4>
-                    <div class="tiers-grid">
-                        
-                        <div class="tier-card">
-                            <div class="tier-icon">☕</div>
-                            <div class="tier-title">O "Cafézinho"</div>
-                            <div class="tier-price">R$ 5,00 a R$ 10,00</div>
-                            <div class="tier-description">
-                                Valor simbólico e rápido! Se o app te ajudou hoje, esse apoio paga o café do desenvolvedor e dá aquele empurrão de motivação para criar novas melhorias.
-                            </div>
-                            <img src="qrcode.png" alt="QR Code PIX - Cafézinho" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Cafézinho ☕')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
-                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'O Cafézinho ☕')"><i class="fas fa-search-plus"></i> Clique para ampliar</div>
-                        </div>
-
-                        <div class="tier-card" style="background: #f0fdf4; border-color: #bbf7d0;">
-                            <div class="badge-popular">✨ Mais Escolhido</div>
-                            <div class="tier-icon">🚜</div>
-                            <div class="tier-title">O Valor Justo</div>
-                            <div class="tier-price">R$ 15,00 a R$ 25,00</div>
-                            <div class="tier-description">
-                                O preço de <b>uma única mensalidade</b> de outros apps, mas pago uma vez só! Retribua pelas horas economizadas e pelos relatórios profissionais gerados para você.
-                            </div>
-                            <img src="qrcode.png" alt="QR Code PIX - Assinatura" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Valor Justo 🚜')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
-                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'O Valor Justo 🚜')"><i class="fas fa-search-plus"></i> Clique para ampliar</div>
-                        </div>
-
-                        <div class="tier-card" style="background: #fef9e7; border-color: #fde68a;">
-                            <div class="tier-icon">🏆</div>
-                            <div class="tier-title">Sócio Produtor</div>
-                            <div class="tier-price">R$ 50,00 ou mais</div>
-                            <div class="tier-description">
-                                O app virou a ferramenta central do seu negócio? Apoie como um verdadeiro "sócio". Seu apoio garante que o aplicativo continue existindo, sem taxas ocultas e focado no pequeno produtor.
-                            </div>
-                            <img src="qrcode.png" alt="QR Code PIX - Apoiador Pro" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'Sócio Produtor 🏆')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
-                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'Sócio Produtor 🏆')"><i class="fas fa-search-plus"></i> Clique para ampliar</div>
-                        </div>
+                        <p><i class="fas fa-mug-hot"></i> <b>Mantido por Doações</b><br>
+                        Este software é livre de mensalidades, livre de anúncios chatos e livre de rastreadores espiões. Desenvolver tecnologia independente, segura e de alta performance consome centenas de horas.
+                        <br><br>
+                        Se este app te ajuda a economizar, considere me pagar um café. Isso mantém as atualizações vivas!</p>
                     </div>
                 </div>
         
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
                     <button class="btn-tutorial" onclick="openTutorialModal()">
-                        <i class="fas fa-book-reader"></i> Tutorial: Conheça todos os recursos
+                        <i class="fas fa-book-reader"></i> Tutorial: Como usar o App
+                    </button>
+
+                    <button class="btn-pix" onclick="openPixModal()">
+                        <i class="fas fa-qrcode"></i> Apoiar via PIX (QR Code)
                     </button>
 
                     <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')">
                         <i class="fas fa-credit-card"></i> Apoiar via Cartão/MP
                     </button>
-                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996057007?text=Quero%20suporte%20do%20app%20chuchuzeiro', '_blank')">
+                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149', '_blank')">
                         <i class="fab fa-whatsapp"></i> Contato do Desenvolvedor
                     </button>
                 </div>
                 
                 <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 0.7rem;">
-                    Versão 2.0 • Feito com 🌱 para agricultura familiar<br>
-                    <i class="fas fa-shield-alt"></i> Dados 100% seguros no seu aparelho
+                    Versão 3.1 Pro • Build 2023.10<br>Feito com ódio aos juros abusivos.
                 </div>
             </div>
         </div>
@@ -709,30 +590,18 @@
 
     <nav>
         <div class="nav-buttons">
-            <div class="tab active" onclick="navTo('v-venda',this)"><i class="fas fa-seedling"></i><span>Colheita</span></div>
-            <div class="tab" onclick="navTo('v-gasto',this)"><i class="fas fa-tools"></i><span>Despesas</span></div>
-            <div class="tab" onclick="navTo('v-consulta',this)"><i class="fas fa-chart-bar"></i><span>Relatórios</span></div>
+            <div class="tab active" onclick="navTo('v-receita',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
+            <div class="tab" onclick="navTo('v-despesa',this)"><i class="fas fa-arrow-down"></i><span>Gastar</span></div>
+            <div class="tab" onclick="navTo('v-consulta',this)"><i class="fas fa-chart-bar"></i><span>Análise</span></div>
             <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
         </div>
     </nav>
 
-    <div id="custom-modal" class="modal-overlay">
-        <div class="modal-box">
-            <span class="modal-icon" id="modal-icon">🤔</span>
-            <div class="modal-title" id="modal-title">Título</div>
-            <div class="modal-desc" id="modal-desc">Descrição</div>
-            <div class="modal-actions">
-                <button class="btn-sec" id="modal-btn-cancel">Cancelar</button>
-                <button class="btn-v" id="modal-btn-confirm">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast">Notificação</div>
+    <div id="toast">Mensagem</div>
 
     <script>
-        // -------------------- PREVENÇÃO DE MULTIPLAS ABAS (BroadcastChannel) --------------------
-        const channel = new BroadcastChannel('chuchuzeiro_auth');
+        // ==================== CONFIGURAÇÃO INICIAL ====================
+        const channel = new BroadcastChannel('pobre_3_1_auth');
         channel.postMessage('ping');
         channel.onmessage = (event) => {
             if (event.data === 'ping') channel.postMessage('pong');
@@ -742,640 +611,587 @@
             }
         };
 
-        // -------------------- VAR GLOBAIS --------------------
+        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+
         let db;
-        let chartInstance;
-        const DB_NAME = "ChuchuProDB_v2";
-        const DB_VERSION = 1;
+        let chartInstancePie;
+        let chartInstanceMonthly;
         const FORMAT_BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-        const BACKUP_KEY = "chuchu_last_backup_date";
-        const AUTO_BACKUP_KEY = "chuchu_auto_mirror";
-        let pendingAction = null;
 
-        // -------------------- DETECÇÃO DE TECLADO (UX/UI FIX) --------------------
-        function setupKeyboardHelpers() {
-            const inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('focus', (e) => {
-                    document.body.classList.add('keyboard-open');
-                    setTimeout(() => {
-                        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                });
-                input.addEventListener('blur', () => {
-                    setTimeout(() => {
-                        const active = document.activeElement;
-                        const isInput = active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA';
-                        if (!isInput) {
-                            document.body.classList.remove('keyboard-open');
-                        }
-                    }, 100);
-                });
-            });
-        }
+        const CATEGORIES = {
+            receita: { salario: "Salário", investimentos: "Investimentos", outros: "Outros" },
+            despesa: { 
+                alimentacao: "Alimentação", 
+                transporte: "Transporte", 
+                lazer: "Lazer", 
+                contas: "Contas",
+                moradia: "Moradia",
+                saude: "Saúde",
+                educacao: "Educação",
+                compras: "Compras"
+            }
+        };
 
-        // -------------------- UTILITÁRIOS --------------------
-        function removerAcentos(str) {
-            if (!str) return "";
-            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        }
-        function getUserName() {
-            return localStorage.getItem('chuchuzeiro_user_name') || "Produtor";
-        }
-        function getSafeFileName() {
-            return getUserName().replace(/[^a-z0-9]/gi, '_');
-        }
+        const CHART_COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316'];
 
-        // -------------------- MODAIS (boas vindas, tutorial, pix) --------------------
+        // ==================== SISTEMA DE USUÁRIO ====================
         function checkUser() {
-            const user = localStorage.getItem('chuchuzeiro_user_name');
+            const user = localStorage.getItem('pobre_user_name');
             if (!user) {
                 document.getElementById('welcome-modal').style.display = 'flex';
             } else {
                 updateUserUI(user);
             }
         }
+
         function salvarUsuario() {
             const name = document.getElementById('user-name-input').value.trim();
             if (!name) return alert("Por favor, digite um nome.");
-            localStorage.setItem('chuchuzeiro_user_name', name);
+            localStorage.setItem('pobre_user_name', name);
             document.getElementById('welcome-modal').style.display = 'none';
             updateUserUI(name);
-            showToast(`Bem-vindo, ${name}!`, 'success');
+            showToast(`Bem-vindo, ${name}!`);
         }
+
         function updateUserUI(name) {
             const el = document.getElementById('user-greeting');
-            el.innerText = `🌱 Olá, ${name}`;
+            el.innerText = `Olá, ${name}`;
             el.style.display = 'block';
         }
 
+        function getUserName() {
+            return localStorage.getItem('pobre_user_name') || "Usuário";
+        }
+        
+        function getSafeFileName() {
+            return getUserName().replace(/[^a-z0-9]/gi, '_');
+        }
+
+        // ==================== MODAIS ====================
+        function openPixModal() { document.getElementById('pix-modal').style.display = 'flex'; }
+        function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
         function openTutorialModal() { document.getElementById('tutorial-modal').style.display = 'flex'; }
         function closeTutorialModal() { document.getElementById('tutorial-modal').style.display = 'none'; }
-        
-        // FUNÇÕES DO NOVO MODAL DE QR CODE
-        function abrirQrCodeZoom(imageSrc, titulo) {
-            document.getElementById('modal-qr-img').src = imageSrc;
-            document.getElementById('modal-qr-title').innerText = titulo;
-            document.getElementById('pix-modal').style.display = 'flex';
-        }
-        function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
 
-        // -------------------- TOAST --------------------
-        function showToast(msg, type = 'success') {
-            const t = document.getElementById("toast");
-            t.innerHTML = (type === 'success' ? '✅ ' : '⚠️ ') + msg;
-            t.style.opacity = 1;
-            setTimeout(() => t.style.opacity = 0, 3000);
+        // ==================== UTILITÁRIOS ====================
+        function removerAcentos(str) {
+            if (!str) return "";
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         }
 
-        // -------------------- CONFIRMAÇÃO MODAL --------------------
-        function confirmAction(title, desc, action, icon = '⚠️', confirmColor = null) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-desc').innerText = desc;
-            document.getElementById('modal-icon').innerText = icon;
-            const btn = document.getElementById('modal-btn-confirm');
-            btn.style.background = confirmColor || 'var(--p)';
-            pendingAction = action;
-            document.getElementById('custom-modal').classList.add('open');
-        }
-        function closeModal() {
-            document.getElementById('custom-modal').classList.remove('open');
-            pendingAction = null;
-        }
-        document.getElementById('modal-btn-cancel').onclick = closeModal;
-        document.getElementById('modal-btn-confirm').onclick = () => {
-            if(pendingAction) pendingAction();
-            closeModal();
-        };
-
-        // -------------------- INDEXED DB --------------------
-        function initDB() {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-            request.onupgradeneeded = e => {
-                db = e.target.result;
-                if(!db.objectStoreNames.contains("vendas")) db.createObjectStore("vendas", { keyPath: "id", autoIncrement: true });
-                if(!db.objectStoreNames.contains("gastos")) db.createObjectStore("gastos", { keyPath: "id", autoIncrement: true });
-            };
-            request.onsuccess = e => { 
-                db = e.target.result; 
-                popularFiltroMeses();
-                render();
-                verificarBackupSemanal();
-            };
-        }
-
-        function transaction(storeName, mode) { return db.transaction(storeName, mode).objectStore(storeName); }
-        function getAll(storeName) {
-            return new Promise(resolve => {
-                if(!db) return resolve([]);
-                const req = transaction(storeName, "readonly").getAll();
-                req.onsuccess = () => resolve(req.result);
+        // ==================== INDEXED DB ====================
+        async function initDB() {
+            return new Promise((resolve) => {
+                const request = indexedDB.open("GastosProDB", 3);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("receitas")) db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
+                    if (!db.objectStoreNames.contains("despesas")) db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
+                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(); };
             });
         }
 
-        // -------------------- DATAS --------------------
-        function setTodayDate() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('dv').value = today;
-            document.getElementById('dg').value = today;
-        }
-        function isDataFutura(dateString) {
-            const inputDate = new Date(dateString + 'T00:00:00');
-            const today = new Date(); today.setHours(0,0,0,0);
-            return inputDate > today;
-        }
-
-        // -------------------- CRUD VENDAS --------------------
-        function salvarVenda() {
-            const id = document.getElementById('venda-id').value;
-            const q = parseFloat(document.getElementById('q').value);
-            const p = parseFloat(document.getElementById('p').value);
-            const dt = document.getElementById('dv').value;
-            if(!q || !p || !dt) return showToast("Preencha todos os campos", "error");
-            if(isDataFutura(dt)) return showToast("Data futura não permitida", "error");
-            const item = { q, p, dt, t: (q * p) };
-            if(id) item.id = parseInt(id);
-            transaction("vendas", "readwrite").put(item).onsuccess = () => {
-                showToast(id ? "Venda atualizada" : "Venda registrada", "success");
-                espelharDadosAutomatico();
-                resetForm('vendas');
-                render();
-            };
-        }
-
-        function salvarGasto() {
-            const id = document.getElementById('gasto-id').value;
-            const d = document.getElementById('d').value;
-            const v = parseFloat(document.getElementById('v').value);
-            const dt = document.getElementById('dg').value;
-            if(!d || !v || !dt) return showToast("Preencha todos os campos", "error");
-            if(isDataFutura(dt)) return showToast("Data futura não permitida", "error");
-            const item = { d, v, dt };
-            if(id) item.id = parseInt(id);
-            transaction("gastos", "readwrite").put(item).onsuccess = () => {
-                showToast(id ? "Gasto atualizado" : "Gasto registrado", "success");
-                espelharDadosAutomatico();
-                resetForm('gastos');
-                render();
-            };
-        }
-
-        // -------------------- RESET E CANCEL --------------------
-        function resetForm(type) {
-            setTodayDate();
-            if(type === 'vendas') {
-                document.getElementById('venda-id').value = "";
-                document.getElementById('q').value = "";
-                document.getElementById('p').value = "";
-                document.getElementById('titulo-venda').innerHTML = '<i class="fas fa-seedling" style="color: var(--p);"></i> Registrar Colheita';
-                const btn = document.getElementById('btn-acao-venda');
-                btn.innerHTML = '<i class="fas fa-check"></i> Confirmar Venda';
-                btn.className = "btn-income";
-                document.getElementById('btn-cancel-venda').style.display = 'none';
-            } else {
-                document.getElementById('gasto-id').value = "";
-                document.getElementById('d').value = "";
-                document.getElementById('v').value = "";
-                document.getElementById('titulo-gasto').innerHTML = '<i class="fas fa-tools" style="color: var(--expense);"></i> Registrar Despesa';
-                const btn = document.getElementById('btn-acao-gasto');
-                btn.innerHTML = '<i class="fas fa-money-bill-wave"></i> Registrar Gasto';
-                btn.className = "btn-expense";
-                document.getElementById('btn-cancel-gasto').style.display = 'none';
-            }
-        }
-
-        function cancelarEdicao(type) { resetForm(type); }
-
-        // -------------------- EDIÇÃO --------------------
-        function editarItem(type, id) {
-            transaction(type, "readonly").get(id).onsuccess = (e) => {
-                const data = e.target.result;
-                if (type === 'vendas') {
-                    document.getElementById('venda-id').value = data.id;
-                    document.getElementById('q').value = data.q;
-                    document.getElementById('p').value = data.p;
-                    document.getElementById('dv').value = data.dt;
-                    document.getElementById('titulo-venda').innerHTML = '<i class="fas fa-edit"></i> Editando Venda';
-                    const btn = document.getElementById('btn-acao-venda');
-                    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Salvar Alterações';
-                    btn.className = "btn-update";
-                    document.getElementById('btn-cancel-venda').style.display = 'block';
-                    navTo('v-venda', document.querySelectorAll('.tab')[0]);
-                } else {
-                    document.getElementById('gasto-id').value = data.id;
-                    document.getElementById('d').value = data.d;
-                    document.getElementById('v').value = data.v;
-                    document.getElementById('dg').value = data.dt;
-                    document.getElementById('titulo-gasto').innerHTML = '<i class="fas fa-edit"></i> Editando Gasto';
-                    const btn = document.getElementById('btn-acao-gasto');
-                    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Salvar Alterações';
-                    btn.className = "btn-update";
-                    document.getElementById('btn-cancel-gasto').style.display = 'block';
-                    navTo('v-gasto', document.querySelectorAll('.tab')[1]);
-                }
-            };
-        }
-
-        function apagarItem(type, id) {
-            transaction(type, "readwrite").delete(id).onsuccess = () => {
-                showToast("Item removido", "success");
-                espelharDadosAutomatico();
-                render();
-            };
-        }
-
-        // -------------------- RENDERIZAÇÃO --------------------
-        async function render() {
-            if (!db) return;
-            if (document.getElementById('filtroMes').options.length === 0) await popularFiltroMeses();
-            
-            const filtro = document.getElementById('filtroMes').value; // YYYY-MM
-            const anoAtual = filtro.split('-')[0];
-
-            const allV = await getAll("vendas");
-            const allG = await getAll("gastos");
-
-            const v = allV.filter(i => i.dt.startsWith(filtro));
-            const g = allG.filter(i => i.dt.startsWith(filtro));
-
-            const tCx = v.reduce((sum, i) => sum + i.q, 0);
-            const tV = v.reduce((sum, i) => sum + i.t, 0);
-            const tG = g.reduce((sum, i) => sum + i.v, 0);
-            const saldo = tV - tG;
-            const margin = tV > 0 ? ((saldo / tV) * 100).toFixed(0) : 0;
-
-            document.getElementById('dash-cx').innerText = tCx;
-            document.getElementById('dash-rs').innerText = FORMAT_BRL.format(saldo);
-            document.getElementById('dash-rs').style.color = saldo >= 0 ? '#1b5e20' : '#c62828';
-            document.getElementById('dash-margin').innerText = margin + "%";
-            document.getElementById('dash-margin').style.color = margin > 0 ? 'var(--p)' : (margin < 0 ? 'var(--expense)' : '#666');
-            document.getElementById('dash-in').innerText = FORMAT_BRL.format(tV);
-            document.getElementById('dash-out').innerText = FORMAT_BRL.format(tG);
-
-            // SAFRA
-            const vSafra = allV.filter(i => i.dt.startsWith(anoAtual));
-            const gSafra = allG.filter(i => i.dt.startsWith(anoAtual));
-
-            const totalVSafra = vSafra.reduce((sum, i) => sum + i.t, 0);
-            const totalGSafra = gSafra.reduce((sum, i) => sum + i.v, 0);
-            const saldoSafra = totalVSafra - totalGSafra;
-
-            document.getElementById('lbl-ano-safra').innerText = anoAtual;
-            document.getElementById('safra-total-venda').innerText = FORMAT_BRL.format(totalVSafra);
-            document.getElementById('safra-total-gasto').innerText = FORMAT_BRL.format(totalGSafra);
-            
-            const elSaldoSafra = document.getElementById('safra-saldo-final');
-            elSaldoSafra.innerText = FORMAT_BRL.format(saldoSafra);
-            elSaldoSafra.style.color = saldoSafra >= 0 ? '#1b5e20' : '#c62828';
-
-            // Lista
-            const lista = document.getElementById('lista-detalhada');
-            lista.innerHTML = '';
-            const combined = [
-                ...v.map(i => ({...i, type: 'vendas'})),
-                ...g.map(i => ({...i, type: 'gastos'}))
-            ].sort((a,b) => new Date(b.dt) - new Date(a.dt) || b.id - a.id);
-
-            if (combined.length === 0) {
-                lista.innerHTML = '<div class="empty-state" style="text-align:center; padding:20px; color:#9ca3af;">📭 Nenhum registro neste mês.</div>';
-            } else {
-                combined.forEach(item => {
-                    const el = criarElementoLista(item);
-                    lista.appendChild(el);
-                });
-            }
-            atualizarGrafico(v, g);
-        }
-
-        function criarElementoLista(item) {
-            const isV = item.type === 'vendas';
-            const val = isV ? item.t : item.v;
-            const dia = item.dt.split('-')[2];
-            const mesAbrev = new Date(item.dt).toLocaleString('pt-BR', {month:'short'}).replace('.','');
-            
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = `
-                <div class="item-date-box">
-                    <span>${mesAbrev}</span>
-                    <strong>${dia}</strong>
-                </div>
-                <div class="item-desc">
-                    <b>${isV ? item.q + ' Caixas' : item.d}</b>
-                    <small>${isV ? FORMAT_BRL.format(item.p) + '/un' : 'Despesa'}</small>
-                </div>
-                <div class="item-value">
-                    <b style="color:${isV?'var(--income)':'var(--expense)'}">${isV?'+':'-'} ${FORMAT_BRL.format(val)}</b>
-                    <div class="actions" style="margin-top:6px; display:flex; gap:8px; justify-content:flex-end;">
-                        <span class="btn-mini edit" style="background:#e0f2fe; color:#0284c7; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:600; cursor:pointer;"><i class="fas fa-pen"></i> Editar</span>
-                        <span class="btn-mini del" style="background:#fee2e2; color:#dc2626; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:600; cursor:pointer;"><i class="fas fa-trash"></i> Excluir</span>
-                    </div>
-                </div>
-            `;
-            div.querySelector('.edit').onclick = (e) => { e.stopPropagation(); editarItem(item.type, item.id); };
-            div.querySelector('.del').onclick = (e) => { e.stopPropagation(); confirmAction("Apagar Item", "Deseja remover este registro?", () => apagarItem(item.type, item.id), '🗑️', '#ef4444'); };
-            return div;
-        }
-
-        // -------------------- GRÁFICO DE LINHA --------------------
-        function atualizarGrafico(vendas, gastos) {
-            const ctx = document.getElementById('graficoLinha').getContext('2d');
-            if(chartInstance) chartInstance.destroy();
-            
-            const map = {};
-            vendas.forEach(i => { const d = parseInt(i.dt.split('-')[2]); map[d] = (map[d] || 0) + i.q; });
-            const labels = Object.keys(map).map(Number).sort((a,b)=>a-b);
-            
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(27, 94, 32, 0.2)');
-            gradient.addColorStop(1, 'rgba(27, 94, 32, 0.0)');
-
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Caixas',
-                        data: labels.map(d=>map[d]),
-                        borderColor: '#1b5e20',
-                        backgroundColor: gradient,
-                        borderWidth: 2,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#1b5e20',
-                        pointRadius: 4,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-                    scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { font: {size: 10} } }, x: { grid: { display: false }, ticks: { font: {size: 10} } } },
-                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
-                }
+        async function getAll(storeName) {
+            const tx = db.transaction(storeName, "readonly");
+            return new Promise(r => { 
+                const req = tx.objectStore(storeName).getAll();
+                req.onsuccess = () => r(req.result || []);
             });
         }
 
-        // -------------------- FILTRO MÊS --------------------
-        async function popularFiltroMeses() {
-            const vendas = await getAll("vendas");
-            const gastos = await getAll("gastos");
-            const todos = [...vendas, ...gastos];
-            const meses = [...new Set(todos.map(i => i.dt.slice(0, 7)))].sort().reverse();
-            
-            const select = document.getElementById('filtroMes');
-            const valorAtual = select.value;
-            select.innerHTML = "";
+        // ==================== CRUD ====================
+        async function salvar(tipo) {
+            const id = document.getElementById(`${tipo}-id`).value;
+            const item = {
+                descricao: document.getElementById(`descricao-${tipo}`).value,
+                categoria: document.getElementById(`categoria-${tipo}`).value,
+                valor: parseFloat(document.getElementById(`valor-${tipo}`).value),
+                data: document.getElementById(`data-${tipo}`).value
+            };
+            if (!item.descricao || isNaN(item.valor) || !item.data) { showToast("Preencha tudo certinho!"); return; }
+            if (id) item.id = parseInt(id);
 
-            if(meses.length === 0) { meses.push(new Date().toISOString().slice(0,7)); }
-
-            meses.forEach(mes => {
-                const [ano, m] = mes.split('-');
-                const nomeMes = new Date(ano, m - 1).toLocaleString('pt-BR', { month: 'long' });
-                const opt = document.createElement('option');
-                opt.value = mes;
-                opt.text = `${nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1)} ${ano}`;
-                select.appendChild(opt);
-            });
-
-            if(meses.includes(valorAtual)) select.value = valorAtual;
+            const storeName = tipo === 'receita' ? "receitas" : "despesas";
+            const tx = db.transaction(storeName, "readwrite");
+            tx.objectStore(storeName).put(item);
+            tx.oncomplete = () => { showToast(id ? "Atualizado!" : "Salvo!"); cancelarEdicao(storeName); render(); };
         }
 
-        // -------------------- BACKUP AUTOMÁTICO E ALERTA --------------------
-        async function espelharDadosAutomatico() {
-            try {
-                const v = await getAll("vendas");
-                const g = await getAll("gastos");
-                localStorage.setItem(AUTO_BACKUP_KEY, JSON.stringify({vendas: v, gastos: g}));
-            } catch (e) { console.error("Erro backup auto", e); }
+        async function deletarRegistro(tipo) {
+            const id = parseInt(document.getElementById(`${tipo}-id`).value);
+            if (!id || !confirm("Quer apagar mesmo?")) return;
+            const storeName = tipo === 'receita' ? "receitas" : "despesas";
+            const tx = db.transaction(storeName, "readwrite");
+            tx.objectStore(storeName).delete(id);
+            tx.oncomplete = () => { showToast("Removido."); cancelarEdicao(storeName); render(); navTo('v-consulta', document.querySelectorAll('.tab')[2]); };
         }
 
-        function verificarBackupSemanal() {
-            const lastBackup = localStorage.getItem(BACKUP_KEY);
-            if (lastBackup) {
-                const diffDays = Math.ceil(Math.abs(new Date() - new Date(lastBackup)) / (86400000)); 
-                if (diffDays >= 7) document.getElementById('backup-alert').style.display = 'flex';
-            } else {
-                getAll("vendas").then(v => { if (v.length > 0) document.getElementById('backup-alert').style.display = 'flex'; });
-            }
+        // ==================== EXPORTAÇÃO / IMPORTAÇÃO ====================
+        async function exportarBackup() {
+            const data = { receitas: await getAll("receitas"), despesas: await getAll("despesas") };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `backup_${getSafeFileName()}_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
         }
 
-        // -------------------- PDF PROFISSIONAL (MÊS OU SAFRA) --------------------
-        async function gerarPDF(tipo) {
-            showToast("Gerando PDF...");
+        async function restaurarBackup(input) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(confirm("Importar dados? Isso substituirá todos os dados atuais.")) {
+                        await db.transaction("receitas", "readwrite").objectStore("receitas").clear();
+                        await db.transaction("despesas", "readwrite").objectStore("despesas").clear();
+                        
+                        const txR = db.transaction("receitas", "readwrite");
+                        data.receitas.forEach(r => { delete r.id; txR.objectStore("receitas").add(r); });
+                        const txD = db.transaction("despesas", "readwrite");
+                        data.despesas.forEach(d => { delete d.id; txD.objectStore("despesas").add(d); });
+                        showToast("Dados restaurados!"); render();
+                    }
+                } catch(err) { showToast("Erro no arquivo!"); }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==================== PDF COMPLETO E PROFISSIONAL ====================
+        async function gerarRelatorioPDF() {
+            showToast("Gerando relatório completo...");
+            const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
+            const mesSelecionado = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
+
+            const receitasMes = receitas.filter(r => r.data.startsWith(mesSelecionado));
+            const despesasMes = despesas.filter(d => d.data.startsWith(mesSelecionado));
+
+            const totalReceitas = receitasMes.reduce((s, i) => s + i.valor, 0);
+            const totalDespesas = despesasMes.reduce((s, i) => s + i.valor, 0);
+            const saldoMes = totalReceitas - totalDespesas;
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 14;
             
-            const filtroRaw = document.getElementById('filtroMes').value; // ex: 2026-03
-            const [anoF, mesF] = filtroRaw.split('-');
-            
-            let filtroFinal;
-            let tituloRelatorio;
+            const safeText = (txt) => removerAcentos(txt);
+            const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
 
-            if(tipo === 'ano') {
-                filtroFinal = anoF; // Filtra tudo que começa com o Ano
-                tituloRelatorio = `SAFRA COMPLETA • ${anoF}`;
-            } else {
-                filtroFinal = filtroRaw; // Filtra tudo que começa com Ano-Mes
-                const nomeMes = new Date(anoF, mesF - 1).toLocaleString('pt-BR', { month: 'long' }).toUpperCase();
-                tituloRelatorio = `${nomeMes}/${anoF}`;
-            }
-            
-            const allV = await getAll("vendas");
-            const allG = await getAll("gastos");
-            
-            const v = allV.filter(i => i.dt.startsWith(filtroFinal));
-            const g = allG.filter(i => i.dt.startsWith(filtroFinal));
-            
-            const totalV = v.reduce((s, i) => s + i.t, 0);
-            const totalG = g.reduce((s, i) => s + i.v, 0);
-            const saldo = totalV - totalG;
-            const totalCx = v.reduce((s, i) => s + i.q, 0);
-
-            // Cabeçalho verde
-            doc.setFillColor(27, 94, 32); 
-            doc.rect(0, 0, doc.internal.pageSize.getWidth(), 45, 'F');
+            // ----- CABEÇALHO -----
+            doc.setFillColor(79, 70, 229);
+            doc.rect(0, 0, pageWidth, 55, 'F');
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(24);
             doc.setFont("helvetica", 'bold');
-            doc.text("CHUCHUZEIRO", doc.internal.pageSize.getWidth()/2, 20, { align: 'center' });
-            doc.setFontSize(12);
+            doc.text(safeText("RELATÓRIO FINANCEIRO"), pageWidth/2, 22, { align: 'center' });
+            doc.setFontSize(14);
             doc.setFont("helvetica", 'normal');
-            doc.text(`${removerAcentos(getUserName())} • ${tituloRelatorio}`, doc.internal.pageSize.getWidth()/2, 35, { align: 'center' });
+            doc.text(safeText(`${getUserName()} • ${mesSelecionado.replace('-', '/')}`), pageWidth/2, 38, { align: 'center' });
             
-            let yPos = 55;
-            doc.setFillColor(232, 245, 233); doc.rect(14, yPos, 55, 25, 'F');
-            doc.setTextColor(27, 94, 32); doc.setFontSize(10); doc.text("ENTRADAS", 18, yPos+8);
-            doc.setFontSize(12); doc.text(FORMAT_BRL.format(totalV), 18, yPos+18);
+            let yPos = 70;
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(9);
+            doc.text(`Emissão: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, margin, yPos);
             
-            doc.setFillColor(255, 235, 238); doc.rect(77, yPos, 55, 25, 'F');
-            doc.setTextColor(198, 40, 40); doc.setFontSize(10); doc.text("SAÍDAS", 81, yPos+8);
-            doc.setFontSize(12); doc.text(FORMAT_BRL.format(totalG), 81, yPos+18);
+            // ----- RESUMO (CARD) -----
+            yPos += 10;
+            doc.setFillColor(245, 247, 250);
+            doc.roundedRect(margin, yPos, pageWidth - (margin*2), 35, 3, 3, 'F');
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", 'bold');
+            doc.text("RESUMO DO MÊS", margin + 5, yPos + 8);
             
-            doc.setFillColor(243, 244, 246); doc.rect(140, yPos, 55, 25, 'F');
-            doc.setTextColor(31, 41, 55); doc.setFontSize(10); doc.text("SALDO LÍQUIDO", 144, yPos+8);
-            doc.setFontSize(12); doc.text(FORMAT_BRL.format(saldo), 144, yPos+18);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", 'normal');
+            doc.text("Receitas:", margin + 5, yPos + 20);
+            doc.text(fmtBRL(totalReceitas), margin + 50, yPos + 20);
+            doc.text("Despesas:", margin + 90, yPos + 20);
+            doc.text(fmtBRL(totalDespesas), margin + 135, yPos + 20);
+            doc.text("Saldo:", margin + 5, yPos + 30);
+            doc.setTextColor(saldoMes >= 0 ? 5 : 220, saldoMes >= 0 ? 150 : 38, saldoMes >= 0 ? 105 : 38);
+            doc.setFont("helvetica", 'bold');
+            doc.text(fmtBRL(saldoMes), margin + 50, yPos + 30);
+            
+            yPos += 45;
 
-            doc.setTextColor(100); doc.setFontSize(9);
-            doc.text(`Total de Caixas: ${totalCx}`, 14, yPos + 30);
-            doc.text(`Margem de Lucro: ${totalV > 0 ? ((saldo/totalV)*100).toFixed(0) : 0}%`, 14, yPos + 35);
+            // ----- TABELA DE RECEITAS -----
+            doc.setTextColor(5, 150, 105);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", 'bold');
+            doc.text("RECEITAS", margin, yPos);
+            yPos += 5;
+            
+            const rowsReceitas = receitasMes.map(r => [
+                r.data.split('-').reverse().join('/'),
+                safeText(r.descricao),
+                safeText(CATEGORIES.receita[r.categoria] || r.categoria),
+                fmtBRL(r.valor)
+            ]);
 
-            let nextY = yPos + 38;
+            doc.autoTable({
+                startY: yPos,
+                head: [['Data', 'Descrição', 'Categoria', 'Valor']],
+                body: rowsReceitas.length ? rowsReceitas : [['-', 'Nenhuma receita', '-', '-']],
+                theme: 'striped',
+                headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { cellWidth: 25 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 30 }, 3: { halign: 'right', cellWidth: 30 } },
+                styles: { fontSize: 9, cellPadding: 3 },
+                margin: { left: margin, right: margin }
+            });
+            
+            yPos = doc.lastAutoTable.finalY + 15;
 
-            // Se for MÊS, mostra contexto da safra
-            if(tipo === 'mes') {
-                const vSafra = allV.filter(i => i.dt.startsWith(anoF));
-                const gSafra = allG.filter(i => i.dt.startsWith(anoF));
-                const totalVSafra = vSafra.reduce((s, i) => s + i.t, 0);
-                const totalGSafra = gSafra.reduce((s, i) => s + i.v, 0);
-                const saldoSafra = totalVSafra - totalGSafra;
+            // ----- TABELA DE DESPESAS -----
+            doc.setTextColor(220, 38, 38);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", 'bold');
+            doc.text("DESPESAS", margin, yPos);
+            yPos += 5;
+            
+            const rowsDespesas = despesasMes.map(d => [
+                d.data.split('-').reverse().join('/'),
+                safeText(d.descricao),
+                safeText(CATEGORIES.despesa[d.categoria] || d.categoria),
+                fmtBRL(d.valor)
+            ]);
 
-                doc.setDrawColor(200); 
-                doc.setFillColor(248, 250, 252);
-                doc.roundedRect(14, nextY, 181, 20, 3, 3, 'FD');
+            doc.autoTable({
+                startY: yPos,
+                head: [['Data', 'Descrição', 'Categoria', 'Valor']],
+                body: rowsDespesas.length ? rowsDespesas : [['-', 'Nenhuma despesa', '-', '-']],
+                theme: 'striped',
+                headStyles: { fillColor: [220, 38, 38], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { cellWidth: 25 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 30 }, 3: { halign: 'right', cellWidth: 30 } },
+                styles: { fontSize: 9, cellPadding: 3 },
+                margin: { left: margin, right: margin }
+            });
+            
+            yPos = doc.lastAutoTable.finalY + 15;
 
-                doc.setFontSize(9);
-                doc.setTextColor(100);
-                doc.text(`CONTEXTO: SAFRA ${anoF} ACUMULADA`, 18, nextY + 6);
+            // ----- GASTOS POR CATEGORIA -----
+            doc.setTextColor(79, 70, 229);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", 'bold');
+            doc.text("GASTOS POR CATEGORIA", margin, yPos);
+            yPos += 5;
+            
+            const gastosCat = {};
+            despesasMes.forEach(d => {
+                const cat = CATEGORIES.despesa[d.categoria] || d.categoria;
+                gastosCat[cat] = (gastosCat[cat] || 0) + d.valor;
+            });
+            
+            const rowsCategoria = Object.entries(gastosCat)
+                .sort((a,b) => b[1] - a[1])
+                .map(([cat, val]) => [cat, fmtBRL(val)]);
 
-                doc.setFontSize(10);
-                doc.setTextColor(0); 
-                doc.text(`Receita: ${FORMAT_BRL.format(totalVSafra)}`, 18, nextY + 14);
-                doc.text(`Despesas: ${FORMAT_BRL.format(totalGSafra)}`, 70, nextY + 14);
+            doc.autoTable({
+                startY: yPos,
+                head: [['Categoria', 'Total Gasto']],
+                body: rowsCategoria.length ? rowsCategoria : [['Nenhum gasto', '-']],
+                theme: 'grid',
+                headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                columnStyles: { 0: { cellWidth: 'auto' }, 1: { halign: 'right', cellWidth: 40 } },
+                styles: { fontSize: 10, cellPadding: 4 },
+                margin: { left: margin, right: margin }
+            });
 
-                if(saldoSafra >= 0) doc.setTextColor(27, 94, 32); else doc.setTextColor(198, 40, 40);
-                doc.setFont("helvetica", "bold");
-                doc.text(`Resultado Safra: ${FORMAT_BRL.format(saldoSafra)}`, 120, nextY + 14);
-                doc.setFont("helvetica", "normal");
-                
-                nextY += 25;
+            // ----- RODAPÉ -----
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Pobre 3.1 Pro+ • Relatório gerado automaticamente", pageWidth/2, finalY, { align: 'center' });
+
+            // ----- SALVAR PDF -----
+            doc.save(`Relatorio_${getSafeFileName()}_${mesSelecionado}.pdf`);
+            showToast("PDF completo salvo!");
+        }
+
+        // ==================== NAVEGAÇÃO ====================
+        function navTo(id, el) {
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                el.classList.add('active');
+                if (id === 'v-consulta') {
+                    popularFiltro();
+                    render();
+                }
+            });
+        }
+
+        // ==================== CATEGORIAS ====================
+        function selectCategory(tipo, cat) {
+            document.querySelectorAll(`#categoria-${tipo}-selector .category-option`).forEach(e => e.classList.remove('selected'));
+            const opt = document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`);
+            if (opt) opt.classList.add('selected');
+            document.getElementById(`categoria-${tipo}`).value = cat;
+        }
+
+        // ==================== EDIÇÃO ====================
+        function openEdit(item) {
+            const tipo = item.t;
+            navTo(tipo === 'receita' ? 'v-receita' : 'v-despesa', document.querySelectorAll('.tab')[tipo === 'receita' ? 0 : 1]);
+            
+            document.getElementById(`${tipo}-id`).value = item.id;
+            document.getElementById(`descricao-${tipo}`).value = item.descricao;
+            document.getElementById(`valor-${tipo}`).value = item.valor;
+            document.getElementById(`data-${tipo}`).value = item.data;
+            selectCategory(tipo, item.categoria);
+            
+            document.getElementById(`del-${tipo}`).style.display = "block";
+            document.getElementById(`btn-cancel-${tipo}`).style.display = "block";
+            
+            const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
+            if(btnSalvar) btnSalvar.innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
+            
+            const titulo = document.getElementById(`titulo-${tipo}`);
+            if(titulo) titulo.innerHTML = `<i class="fas fa-pen"></i> Editando ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
+        }
+
+        function cancelarEdicao(store) {
+            const tipo = store === 'receitas' ? 'receita' : 'despesa';
+            document.getElementById(`${tipo}-id`).value = "";
+            document.getElementById(`descricao-${tipo}`).value = "";
+            document.getElementById(`valor-${tipo}`).value = "";
+            document.getElementById(`data-${tipo}`).value = new Date().toISOString().split('T')[0];
+            document.getElementById(`del-${tipo}`).style.display = "none";
+            document.getElementById(`btn-cancel-${tipo}`).style.display = "none";
+            
+            const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
+            if(btnSalvar) {
+                if(tipo === 'receita') btnSalvar.innerHTML = `<i class="fas fa-check"></i> Salvar Receita`;
+                else btnSalvar.innerHTML = `<i class="fas fa-money-bill-wave"></i> Confirmar Gasto`;
             }
+            const titulo = document.getElementById(`titulo-${tipo}`);
+            if(titulo) {
+                if(tipo === 'receita') titulo.innerHTML = `<i class="fas fa-plus"></i> Nova Receita`;
+                else titulo.innerHTML = `<i class="fas fa-minus"></i> Novo Gasto`;
+            }
+        }
 
-            const tableBody = [
-                ...v.map(i => [new Date(i.dt).toLocaleDateString('pt-BR'), `${i.q} Caixas`, `R$ ${i.p.toFixed(2)}`, `+ ${FORMAT_BRL.format(i.t)}`]),
-                ...g.map(i => [new Date(i.dt).toLocaleDateString('pt-BR'), i.d, '-', `- ${FORMAT_BRL.format(i.v)}`])
-            ].sort((a,b) => b[0].split('/').reverse().join('-').localeCompare(a[0].split('/').reverse().join('')));
+        // ==================== RENDERIZAÇÃO PRINCIPAL ====================
+        async function render() {
+            if (!db) return;
+            const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             
-            if(tableBody.length > 0) {
-                doc.autoTable({
-                    startY: nextY,
-                    head: [['Data', 'Descrição', 'Unitário/Obs', 'Valor']],
-                    body: tableBody,
-                    theme: 'striped',
-                    headStyles: { fillColor: [27, 94, 32], textColor: 255, fontStyle: 'bold' },
-                    columnStyles: { 0: { cellWidth: 30 }, 3: { halign: 'right', fontStyle: 'bold' } }
+            const mesAtual = new Date().toISOString().substring(0, 7);
+            const filtro = (document.getElementById('filtroMes') && document.getElementById('filtroMes').value) || mesAtual;
+            
+            const totalR = r.reduce((s, i) => s + i.valor, 0);
+            const totalD = d.reduce((s, i) => s + i.valor, 0);
+            document.getElementById('dash-saldo').innerText = FORMAT_BRL.format(totalR - totalD);
+            
+            const gastosMes = d.filter(i => i.data.startsWith(filtro)).reduce((s, i) => s + i.valor, 0);
+            document.getElementById('dash-gastos-mes').innerText = FORMAT_BRL.format(gastosMes);
+            
+            // Lista detalhada
+            const listCont = document.getElementById('lista-detalhada');
+            listCont.innerHTML = "";
+            
+            const receitasMes = r.filter(i => i.data.startsWith(filtro));
+            const despesasMes = d.filter(i => i.data.startsWith(filtro));
+            
+            const fragment = document.createDocumentFragment();
+            [...receitasMes.map(x => ({...x, t:'receita'})), ...despesasMes.map(x => ({...x, t:'despesa'}))]
+                .sort((a,b) => b.data.localeCompare(a.data))
+                .forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'item';
+                    el.onclick = () => openEdit(item);
+                    el.innerHTML = `
+                        <div style="flex: 1;">
+                            <b style="font-size: 0.95rem;">${item.descricao}</b>
+                            <br>
+                            <small style="color: #6b7280; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; margin-top: 4px;">
+                                <i class="far fa-calendar"></i> ${item.data.split('-').reverse().join('/')} 
+                                <span style="background: #e0e7ff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.65rem;">
+                                    <i class="fas fa-pen"></i> Editar
+                                </span>
+                            </small>
+                        </div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
+                            ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}
+                        </div>`;
+                    fragment.appendChild(el);
                 });
+            
+            if(fragment.childElementCount === 0) {
+                listCont.innerHTML = '<div style="text-align:center; padding: 20px; color: #9ca3af;">Nenhum lançamento neste mês.</div>';
+            } else {
+                listCont.appendChild(fragment);
             }
-            doc.save(`Chuchuzeiro_${tipo}_${getSafeFileName()}_${filtroRaw}.pdf`);
-            showToast("PDF salvo!");
-        }
-
-        // -------------------- COMPARTILHAR WHATSAPP --------------------
-        async function compartilharWhatsapp() {
-            showToast("Preparando...");
-            const filtro = document.getElementById('filtroMes').value;
-            const [ano, mes] = filtro.split('-');
-            const nomeMes = new Date(ano, mes - 1).toLocaleString('pt-BR', { month: 'long' }).toUpperCase();
             
-            const allV = await getAll("vendas");
-            const allG = await getAll("gastos");
-            const v = allV.filter(i => i.dt.startsWith(filtro));
-            const g = allG.filter(i => i.dt.startsWith(filtro));
+            // Atualiza gráficos
+            updateChart(despesasMes);
+            updateMonthlyChart(r, d);
+        }
+
+        // ==================== GRÁFICO DE PIZZA ====================
+        function updateChart(dados) {
+            const ctx = document.getElementById('graficoPizza').getContext('2d');
+            if (chartInstancePie) chartInstancePie.destroy();
             
-            const totalV = v.reduce((s, i) => s + i.t, 0);
-            const totalG = g.reduce((s, i) => s + i.v, 0);
-            const saldo = totalV - totalG;
-            const totalCx = v.reduce((s, i) => s + i.q, 0);
-
-            const vSafra = allV.filter(i => i.dt.startsWith(ano));
-            const gSafra = allG.filter(i => i.dt.startsWith(ano));
-            const totalVSafra = vSafra.reduce((s, i) => s + i.t, 0);
-            const totalGSafra = gSafra.reduce((s, i) => s + i.v, 0);
-            const saldoSafra = totalVSafra - totalGSafra;
-
-            let msg = `*CHUCHUZEIRO - RELATÓRIO*\n`;
-            msg += `👤 ${getUserName()}\n🗓 ${nomeMes}/${ano}\n\n`;
-            msg += `*RESUMO DO MÊS:*\n`;
-            msg += `📦 Caixas: ${totalCx}\n`;
-            msg += `✅ Entradas: ${FORMAT_BRL.format(totalV)}\n`;
-            msg += `🔻 Saídas: ${FORMAT_BRL.format(totalG)}\n`;
-            msg += `💰 *Saldo Mês: ${FORMAT_BRL.format(saldo)}*\n\n`;
-            msg += `*RESUMO DA SAFRA (${ano}):*\n`;
-            msg += `📈 Receita: ${FORMAT_BRL.format(totalVSafra)}\n`;
-            msg += `📉 Custo: ${FORMAT_BRL.format(totalGSafra)}\n`;
-            msg += `🚜 *Resultado Safra: ${FORMAT_BRL.format(saldoSafra)}*\n\n`;
-            msg += `_Gerado pelo App Chuchuzeiro_`;
-
-            const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
-        }
-
-        // -------------------- EXPORTAR/IMPORTAR BACKUP --------------------
-        async function exportarManual() {
-            const [v, g] = await Promise.all([getAll("vendas"), getAll("gastos")]);
-            const dataHoje = new Date().toISOString().split('T')[0];
-            const blob = new Blob([JSON.stringify({vendas: v, gastos: g})], {type: "application/json"});
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = `Chuchuzeiro_Backup_${getSafeFileName()}_${dataHoje}.json`;
-            a.click();
+            const cats = {};
+            dados.forEach(d => cats[d.categoria] = (cats[d.categoria] || 0) + d.valor);
             
-            localStorage.setItem(BACKUP_KEY, new Date().toISOString());
-            document.getElementById('backup-alert').style.display = 'none';
-            showToast("Backup salvo!");
-        }
-
-        function iniciarImportacao(e) {
-            const file = e.target.files[0];
-            if(!file) return;
+            const labels = Object.keys(cats).map(k => CATEGORIES.despesa[k] || k);
+            const values = Object.values(cats);
             
-            confirmAction("Restaurar Dados", "Isso irá mesclar os dados do arquivo com os dados atuais.", () => {
-                const reader = new FileReader();
-                reader.onload = f => {
-                    try {
-                        const data = JSON.parse(f.target.result);
-                        const txV = db.transaction("vendas", "readwrite");
-                        data.vendas.forEach(i => { delete i.id; txV.objectStore("vendas").put(i); });
-                        const txG = db.transaction("gastos", "readwrite");
-                        data.gastos.forEach(i => { delete i.id; txG.objectStore("gastos").put(i); });
-                        txG.oncomplete = () => { showToast("Dados restaurados!"); espelharDadosAutomatico(); render(); };
-                    } catch(err) { showToast("Arquivo inválido", "error"); }
-                };
-                reader.readAsText(file);
-            }, '📥');
+            const legendDiv = document.getElementById('categoria-legend');
+            legendDiv.innerHTML = '';
+            labels.forEach((label, i) => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `<span class="legend-color" style="background: ${CHART_COLORS[i % CHART_COLORS.length]}"></span> ${label} (${FORMAT_BRL.format(values[i])})`;
+                legendDiv.appendChild(item);
+            });
+            
+            chartInstancePie = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: CHART_COLORS.slice(0, labels.length),
+                        borderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.label}: ${FORMAT_BRL.format(ctx.raw)}`
+                            }
+                        }
+                    }
+                }
+            });
         }
 
-        function limparBancoDados() {
-            const tx = db.transaction(["vendas", "gastos"], "readwrite");
-            tx.objectStore("vendas").clear();
-            tx.objectStore("gastos").clear();
-            tx.oncomplete = () => { 
-                localStorage.removeItem(AUTO_BACKUP_KEY); 
-                showToast("Tudo limpo!"); 
-                render(); 
-            };
+        // ==================== GRÁFICO MENSAL ====================
+        function updateMonthlyChart(receitas, despesas) {
+            const ctx = document.getElementById('graficoMensal').getContext('2d');
+            if (chartInstanceMonthly) chartInstanceMonthly.destroy();
+            
+            const hoje = new Date();
+            const meses = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                meses.push(d.toISOString().substring(0, 7));
+            }
+            
+            const receitasPorMes = meses.map(m => 
+                receitas.filter(r => r.data.startsWith(m)).reduce((s, i) => s + i.valor, 0)
+            );
+            const despesasPorMes = meses.map(m => 
+                despesas.filter(d => d.data.startsWith(m)).reduce((s, i) => s + i.valor, 0)
+            );
+            
+            const labels = meses.map(m => {
+                const [ano, mes] = m.split('-');
+                return `${mes}/${ano.substring(2)}`;
+            });
+            
+            chartInstanceMonthly = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: receitasPorMes,
+                            backgroundColor: 'rgba(5, 150, 105, 0.7)',
+                            borderColor: '#059669',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Despesas',
+                            data: despesasPorMes,
+                            backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                            borderColor: '#dc2626',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: ${FORMAT_BRL.format(ctx.raw)}`
+                            }
+                        },
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => 'R$ ' + value.toFixed(0)
+                            }
+                        }
+                    }
+                }
+            });
         }
 
-        // -------------------- NAVEGAÇÃO ENTRE ABAS --------------------
-        function navTo(viewId, tabEl) {
-            document.querySelectorAll('.view, .tab').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            tabEl.classList.add('active');
-            if(viewId === 'v-consulta') {
-                popularFiltroMeses().then(render);
+        // ==================== FILTRO DE MÊS ====================
+        function popularFiltro() {
+            const sel = document.getElementById('filtroMes');
+            if (!sel) return;
+            if (sel.options.length === 0) {
+                const hoje = new Date();
+                for(let i=0; i<6; i++) {
+                    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                    const val = d.toISOString().substring(0, 7);
+                    sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
+                }
             }
         }
 
-        // -------------------- INICIALIZAÇÃO --------------------
-        window.onload = () => {
-            initDB();
-            setTodayDate();
+        // ==================== TOAST ====================
+        function showToast(m) {
+            const t = document.getElementById("toast");
+            t.innerText = m; t.style.opacity = 1;
+            setTimeout(() => t.style.opacity = 0, 3000);
+        }
+
+        function confirmarLimpeza() {
+            if(confirm("⚠️ Isso apagará TODOS os dados permanentemente. Continuar?")) {
+                db.transaction("receitas", "readwrite").objectStore("receitas").clear();
+                db.transaction("despesas", "readwrite").objectStore("despesas").clear();
+                showToast("Todos os dados foram limpos!");
+                render();
+            }
+        }
+
+        function copiarPix() {
+            navigator.clipboard.writeText("Aquinogabriel@outlook.com").then(() => showToast("Chave PIX copiada!"));
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        window.onload = async () => {
+            await initDB();
             checkUser();
-            setupKeyboardHelpers();
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
-            }
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data-receita').value = hoje;
+            document.getElementById('data-despesa').value = hoje;
+            popularFiltro();
+            render();
         };
     </script>
 </body>
