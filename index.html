@@ -11,6 +11,8 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Pobre 3.1">
+    <meta name="application-name" content="Pobre 3.1">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,14 +29,8 @@
             --bg: #f3f4f6;
             --card-bg: #ffffff;
             --radius: 20px;
-            --chart-1: #4f46e5;
-            --chart-2: #10b981;
-            --chart-3: #f59e0b;
-            --chart-4: #ef4444;
-            --chart-5: #ec4899;
-            --chart-6: #8b5cf6;
-            --chart-7: #14b8a6;
-            --chart-8: #f97316;
+            --chart-1: #4f46e5; --chart-2: #10b981; --chart-3: #f59e0b; --chart-4: #ef4444;
+            --chart-5: #ec4899; --chart-6: #8b5cf6; --chart-7: #14b8a6; --chart-8: #f97316;
         }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
@@ -45,7 +41,13 @@
             color: #111;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
+            /* Sensação de App Nativo */
+            user-select: none; 
+            -webkit-user-select: none;
         }
+
+        /* Permite selecionar texto apenas em inputs */
+        input, textarea { user-select: text; -webkit-user-select: text; }
 
         .gpu-accelerated {
             transform: translate3d(0, 0, 0);
@@ -113,36 +115,36 @@
         }
         .card:active { transform: scale(0.99) translateZ(0); }
 
-        input, select { 
-             width: 100%; 
-             padding: 14px; 
-             border-radius: 12px; 
-             border: 1px solid #e5e7eb; 
-             background: #f9fafb; 
-             margin-bottom: 15px; 
-             font-size: 16px; 
-             transition: all 0.2s;
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            margin-bottom: 15px;
+            font-size: 16px;
+            transition: all 0.2s;
         }
-        input:focus, select:focus { 
-             border-color: var(--primary); 
-             box-shadow: 0 0 0 3px rgba(79,70,229,0.1); 
-             outline: none; 
-             background: white;
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            outline: none;
+            background: white;
         }
         
-        button { 
-             width: 100%; 
-             padding: 15px; 
-             border-radius: 12px; 
-             border: none; 
-             font-weight: 700; 
-             cursor: pointer; 
-             display: flex; 
-             align-items: center; 
-             justify-content: center; 
-             gap: 8px; 
-             transition: all 0.2s; 
-         }
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
         button:active { transform: scale(0.98); opacity: 0.9; }
 
         .btn-income { background: var(--income); color: white; }
@@ -155,30 +157,30 @@
         .btn-wpp { background: #25d366; color: white; }
         .btn-tutorial { background: #8b5cf6; color: white; }
 
-        .category-selector { 
-             display: grid; 
-             grid-template-columns: repeat(4, 1fr); 
-             gap: 8px; 
-             margin-bottom: 20px; 
-         }
-        .category-option { 
-             padding: 10px 5px; 
-             border: 1px solid #e5e7eb; 
-             border-radius: 12px; 
-             text-align: center; 
-             font-size: 0.65rem; 
-             cursor: pointer; 
-             transition: all 0.2s; 
-             background: white;
+        .category-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .category-option {
+            padding: 10px 5px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
         }
         .category-option:hover { background: #f9fafb; }
         .category-option:active { transform: scale(0.95); }
-        .category-option.selected { 
-             background: #e0e7ff; 
-             border-color: var(--primary); 
-             color: var(--primary); 
-             font-weight: 700; 
-             box-shadow: 0 2px 4px rgba(79,70,229,0.2);
+        .category-option.selected {
+            background: #e0e7ff;
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(79,70,229,0.2);
         }
 
         nav {
@@ -197,13 +199,13 @@
         .tab i { font-size: 1.2rem; margin-bottom: 2px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .tab.active i { transform: translateY(-3px); }
 
-        .item { 
-             display: flex; 
-             justify-content: space-between; 
-             padding: 15px 0; 
-             border-bottom: 1px solid #f3f4f6; 
-             cursor: pointer; 
-             transition: background 0.1s;
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.1s;
         }
         .item:hover { background: #fafafa; }
 
@@ -219,11 +221,11 @@
         .info-section h4 { color: var(--primary); margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; }
         .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
         
-        canvas { 
-             transform: translateZ(0); 
-             max-height: 250px; 
-             width: 100% !important; 
-         }
+        canvas {
+            transform: translateZ(0);
+            max-height: 250px;
+            width: 100% !important;
+        }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -294,67 +296,27 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(79, 70, 229, 0.08);
         }
-        .tier-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-        .tier-title {
-            font-weight: 800;
-            color: var(--primary);
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-        .tier-price {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #2d3748;
-            margin-bottom: 8px;
-        }
-        .tier-description {
-            font-size: 0.75rem;
-            color: #4b5563;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
+        .tier-icon { font-size: 2rem; margin-bottom: 8px; }
+        .tier-title { font-weight: 800; color: var(--primary); font-size: 1rem; margin-bottom: 4px; }
+        .tier-price { font-weight: 700; font-size: 1.1rem; color: #2d3748; margin-bottom: 8px; }
+        .tier-description { font-size: 0.75rem; color: #4b5563; margin-bottom: 15px; line-height: 1.5; }
         .tier-qr {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
-            background: #f9fafb;
-            padding: 5px;
+            width: 120px; height: 120px; object-fit: contain; display: block;
+            margin: 0 auto; border-radius: 8px; background: #f9fafb; padding: 5px;
             cursor: zoom-in;
         }
         .zoom-hint {
-            font-size: 0.75rem;
-            color: var(--primary);
-            margin-top: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            transition: transform 0.2s;
+            font-size: 0.75rem; color: var(--primary); margin-top: 8px; cursor: pointer;
+            font-weight: 700; display: flex; align-items: center; justify-content: center;
+            gap: 5px; transition: transform 0.2s;
         }
         .zoom-hint:active { transform: scale(0.95); }
 
         .badge-popular {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
-            white-space: nowrap;
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: white; font-size: 0.65rem; font-weight: 800;
+            padding: 4px 12px; border-radius: 20px; text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3); white-space: nowrap;
         }
     </style>
 </head>
@@ -410,7 +372,7 @@
                 <h4><i class="fas fa-arrow-down"></i> Registrar Despesas</h4>
                 <ul>
                     <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Gastar":</b> descrição, categoria, valor e data.</div></li>
-                    <li><i class="fas fa-tags"></i> <div><b>Categorias (8 opções):</b> Alimentação, Transporte, Lazer, Contas, Moradia, Saúde, Educação, Compras.</div></li>
+                    <li><i class="fas fa-tags"></i> <div><b>Categorias (8 opções):</b> Alimentação, Transporte, Lazer, etc.</div></li>
                     <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Confirmar Gasto"</strong>.</div></li>
                 </ul>
                 
@@ -418,39 +380,19 @@
                 <ul>
                     <li><i class="fas fa-mouse-pointer"></i> <div>Na aba <strong>"Análise"</strong>, clique sobre qualquer item do extrato.</div></li>
                     <li><i class="fas fa-sync-alt"></i> <div>O formulário será preenchido para edição – altere e clique em <strong>"Atualizar"</strong>.</div></li>
-                    <li><i class="fas fa-trash"></i> <div>O botão <strong>"Excluir"</strong> aparece ao editar; confirme a remoção.</div></li>
-                    <li><i class="fas fa-undo-alt"></i> <div>Use o botão <strong>"Voltar"</strong> para cancelar a edição.</div></li>
                 </ul>
                 
                 <h4><i class="fas fa-chart-pie"></i> Análise e Relatórios</h4>
                 <ul>
                     <li><i class="fas fa-tachometer-alt"></i> <div><b>Dashboard:</b> saldo geral e gastos do mês no topo da tela.</div></li>
-                    <li><i class="fas fa-filter"></i> <div><b>Filtro de mês:</b> selecione o período no topo da aba "Análise".</div></li>
-                    <li><i class="fas fa-chart-pie"></i> <div><b>Gráfico de pizza:</b> gastos por categoria no mês filtrado.</div></li>
-                    <li><i class="fas fa-chart-line"></i> <div><b>Gráfico de barras:</b> evolução mensal (receitas vs despesas) dos últimos 6 meses.</div></li>
-                    <li><i class="fas fa-list-ul"></i> <div><b>Extrato:</b> todos os lançamentos do mês, com ícones de edição.</div></li>
-                    <li><i class="fas fa-file-pdf"></i> <div><b>Exportar PDF:</b> gera um relatório profissional com resumo, tabelas e categorias.</div></li>
+                    <li><i class="fas fa-file-pdf"></i> <div><b>Exportar PDF:</b> gera um relatório profissional com resumo e tabelas.</div></li>
                 </ul>
                 
                 <h4><i class="fas fa-database"></i> Backup e Segurança</h4>
                 <ul>
-                    <li><i class="fas fa-download"></i> <div><b>Backup:</b> exporta um arquivo .json com todos os seus dados (armazenado onde quiser).</div></li>
-                    <li><i class="fas fa-upload"></i> <div><b>Restaurar:</b> importe um backup prévio para recuperar os dados.</div></li>
-                    <li><i class="fas fa-trash-alt"></i> <div><b>Limpar Dados:</b> remove permanentemente todas as informações.</div></li>
-                    <li><i class="fas fa-lock"></i> <div><b>Privacidade radical:</b> seus dados NUNCA saem do seu celular (IndexedDB local).</div></li>
-                </ul>
-                
-                <h4><i class="fas fa-microchip"></i> Recursos Avançados</h4>
-                <ul>
-                    <li><i class="fas fa-mobile-alt"></i> <div><b>Instale como App (PWA):</b> no Chrome, use "Adicionar à tela inicial".</div></li>
-                    <li><i class="fas fa-wifi-slash"></i> <div><b>Funciona offline:</b> use no avião, no sítio, sem internet.</div></li>
-                </ul>
-                
-                <h4><i class="fas fa-heart"></i> Apoie o Desenvolvimento</h4>
-                <ul>
-                    <li><i class="fas fa-qrcode"></i> <div><b>PIX:</b> QR Code disponível na aba "Apoie".</div></li>
-                    <li><i class="fas fa-credit-card"></i> <div><b>Mercado Pago:</b> botão para doação via cartão ou boleto.</div></li>
-                    <li><i class="fab fa-whatsapp"></i> <div><b>Contato:</b> fale direto com o desenvolvedor pelo WhatsApp.</div></li>
+                    <li><i class="fas fa-download"></i> <div><b>Backup:</b> exporta um arquivo .json (guarde onde quiser).</div></li>
+                    <li><i class="fas fa-upload"></i> <div><b>Restaurar:</b> importe um backup prévio para recuperar dados.</div></li>
+                    <li><i class="fas fa-lock"></i> <div><b>Privacidade:</b> seus dados NUNCA saem do seu celular.</div></li>
                 </ul>
             </div>
             
@@ -646,18 +588,36 @@
     <div id="toast">Mensagem</div>
 
     <script>
-        // ==================== CONFIGURAÇÃO INICIAL ====================
-        const channel = new BroadcastChannel('pobre_3_1_auth');
-        channel.postMessage('ping');
-        channel.onmessage = (event) => {
-            if (event.data === 'ping') channel.postMessage('pong');
-            else if (event.data === 'pong') {
-                document.body.innerHTML = '<div style="display:flex;height:100vh;align-items:center;justify-content:center;"><h1>⚠️ App já aberto</h1></div>';
-                window.stop();
-            }
-        };
+        // ==================== CONFIGURAÇÃO INICIAL E SINGLE TAB ====================
+        if ('BroadcastChannel' in window) {
+            const channel = new BroadcastChannel('pobre_3_1_auth');
+            let isAnotherTabOpen = false;
 
-        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+            channel.onmessage = (event) => {
+                if (event.data === 'ping') {
+                    channel.postMessage('pong');
+                } else if (event.data === 'pong') {
+                    isAnotherTabOpen = true;
+                    document.body.innerHTML = `
+                        <div style="display:flex;height:100vh;align-items:center;justify-content:center;text-align:center;padding:20px;flex-direction:column;">
+                            <h1>⚠️ App já aberto</h1>
+                            <p>O Pobre 3.1 já está rodando em outra aba ou janela.</p>
+                        </div>`;
+                    window.stop();
+                }
+            };
+            // Pequeno delay para permitir que a outra aba responda
+            setTimeout(() => channel.postMessage('ping'), 100);
+        }
+
+        // --- CORREÇÃO DE CACHE/SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                // Força atualização para evitar versões antigas presas
+                regs.forEach(reg => reg.update());
+            });
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+        }
 
         let db;
         let chartInstancePie;
@@ -714,8 +674,6 @@
         }
 
         // ==================== MODAIS ====================
-        
-        // FUNÇÃO DE ZOOM DO QR CODE (DA NOVA ABA APOIE)
         function abrirQrCodeZoom(imageSrc, titulo) {
             document.getElementById('modal-qr-img').src = imageSrc;
             document.getElementById('modal-qr-title').innerText = titulo;
@@ -729,40 +687,93 @@
         // ==================== UTILITÁRIOS ====================
         function removerAcentos(str) {
             if (!str) return "";
-            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+            return str.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         }
 
-        // ==================== INDEXED DB ====================
+        // ==================== INDEXED DB (CORRIGIDO E BLINDADO) ====================
         async function initDB() {
-            return new Promise((resolve) => {
-                const request = indexedDB.open("GastosProDB", 3);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains("receitas")) db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
-                    if (!db.objectStoreNames.contains("despesas")) db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
-                };
-                request.onsuccess = (e) => { db = e.target.result; resolve(); };
+            return new Promise((resolve, reject) => {
+
+                function abrirBanco() {
+                    // Tenta abrir o banco
+                    const request = indexedDB.open("GastosProDB", 3);
+
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains("receitas")) {
+                            db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
+                        }
+                        if (!db.objectStoreNames.contains("despesas")) {
+                            db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
+                        }
+                    };
+
+                    request.onsuccess = (e) => {
+                        db = e.target.result;
+                        // Adiciona listener para fechar conexão se outra aba tentar atualizar
+                        db.onversionchange = () => {
+                            db.close();
+                            alert("Uma nova versão do app está disponível. Por favor, recarregue a página.");
+                        };
+                        resolve();
+                    };
+
+                    // SE DER ERRO (Corrupção ou Travamento)
+                    request.onerror = async (e) => {
+                        console.warn("Banco corrompido ou versão antiga presa. Tentando recuperar...", e);
+                        
+                        // Fecha qualquer conexão pendente
+                        if(db) db.close();
+
+                        // Apaga o banco corrompido
+                        const deleteReq = indexedDB.deleteDatabase("GastosProDB");
+
+                        deleteReq.onsuccess = () => {
+                            console.log("Banco corrompido apagado com sucesso. Recriando...");
+                            // Chama a função novamente para criar do zero
+                            abrirBanco();
+                        };
+
+                        deleteReq.onerror = () => {
+                            console.error("Falha crítica: Não foi possível apagar o banco corrompido.");
+                            reject("Erro crítico no banco de dados.");
+                        };
+                    };
+
+                    request.onblocked = () => {
+                        console.warn("Banco bloqueado. Feche outras abas do app.");
+                    };
+                }
+
+                // Inicia o processo
+                abrirBanco();
             });
         }
 
         async function getAll(storeName) {
+            if(!db) return [];
             const tx = db.transaction(storeName, "readonly");
             return new Promise(r => { 
                 const req = tx.objectStore(storeName).getAll();
                 req.onsuccess = () => r(req.result || []);
+                req.onerror = () => r([]);
             });
         }
 
-        // ==================== CRUD ====================
+        // ==================== CRUD COM VALIDAÇÃO ====================
         async function salvar(tipo) {
             const id = document.getElementById(`${tipo}-id`).value;
-            const item = {
-                descricao: document.getElementById(`descricao-${tipo}`).value,
-                categoria: document.getElementById(`categoria-${tipo}`).value,
-                valor: parseFloat(document.getElementById(`valor-${tipo}`).value),
-                data: document.getElementById(`data-${tipo}`).value
-            };
-            if (!item.descricao || isNaN(item.valor) || !item.data) { showToast("Preencha tudo certinho!"); return; }
+            const desc = document.getElementById(`descricao-${tipo}`).value.trim();
+            const cat = document.getElementById(`categoria-${tipo}`).value;
+            const valor = parseFloat(document.getElementById(`valor-${tipo}`).value);
+            const data = document.getElementById(`data-${tipo}`).value;
+
+            // VALIDAÇÕES RÍGIDAS
+            if (!desc) { showToast("Descrição obrigatória!"); return; }
+            if (!data) { showToast("Data obrigatória!"); return; }
+            if (isNaN(valor) || valor <= 0) { showToast("Valor deve ser maior que zero!"); return; }
+
+            const item = { descricao: desc, categoria: cat, valor: valor, data: data };
             if (id) item.id = parseInt(id);
 
             const storeName = tipo === 'receita' ? "receitas" : "despesas";
@@ -780,7 +791,7 @@
             tx.oncomplete = () => { showToast("Removido."); cancelarEdicao(storeName); render(); navTo('v-consulta', document.querySelectorAll('.tab')[2]); };
         }
 
-        // ==================== EXPORTAÇÃO / IMPORTAÇÃO ====================
+        // ==================== EXPORTAÇÃO / IMPORTAÇÃO ATÔMICA ====================
         async function exportarBackup() {
             const data = { receitas: await getAll("receitas"), despesas: await getAll("despesas") };
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
@@ -798,22 +809,29 @@
             reader.onload = async (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(confirm("Importar dados? Isso substituirá todos os dados atuais.")) {
-                        await db.transaction("receitas", "readwrite").objectStore("receitas").clear();
-                        await db.transaction("despesas", "readwrite").objectStore("despesas").clear();
+                    if(confirm("Importar dados? Isso substituirá TODOS os dados atuais.")) {
+                        // TRANSAÇÃO ÚNICA E SEGURA
+                        const tx = db.transaction(["receitas", "despesas"], "readwrite");
                         
-                        const txR = db.transaction("receitas", "readwrite");
-                        data.receitas.forEach(r => { delete r.id; txR.objectStore("receitas").add(r); });
-                        const txD = db.transaction("despesas", "readwrite");
-                        data.despesas.forEach(d => { delete d.id; txD.objectStore("despesas").add(d); });
-                        showToast("Dados restaurados!"); render();
+                        tx.objectStore("receitas").clear();
+                        tx.objectStore("despesas").clear();
+
+                        if (data.receitas) {
+                            data.receitas.forEach(r => { delete r.id; tx.objectStore("receitas").add(r); });
+                        }
+                        if (data.despesas) {
+                            data.despesas.forEach(d => { delete d.id; tx.objectStore("despesas").add(d); });
+                        }
+
+                        tx.oncomplete = () => { showToast("Dados restaurados com sucesso!"); render(); };
+                        tx.onerror = () => { showToast("Erro ao restaurar. Nada foi alterado."); };
                     }
-                } catch(err) { showToast("Erro no arquivo!"); }
+                } catch(err) { showToast("Erro no arquivo de backup!"); console.error(err); }
             };
             reader.readAsText(file);
         }
 
-        // ==================== PDF COMPLETO E PROFISSIONAL ====================
+        // ==================== PDF COMPLETO ====================
         async function gerarRelatorioPDF() {
             showToast("Gerando relatório completo...");
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
@@ -831,6 +849,7 @@
             const pageWidth = doc.internal.pageSize.getWidth();
             const margin = 14;
             
+            // Safe Text para evitar erros com Emojis
             const safeText = (txt) => removerAcentos(txt);
             const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
 
@@ -872,7 +891,7 @@
             
             yPos += 45;
 
-            // ----- TABELA DE RECEITAS -----
+            // ----- TABELAS -----
             doc.setTextColor(5, 150, 105);
             doc.setFontSize(14);
             doc.setFont("helvetica", 'bold');
@@ -899,7 +918,6 @@
             
             yPos = doc.lastAutoTable.finalY + 15;
 
-            // ----- TABELA DE DESPESAS -----
             doc.setTextColor(220, 38, 38);
             doc.setFontSize(14);
             doc.setFont("helvetica", 'bold');
@@ -960,7 +978,6 @@
             doc.setTextColor(150, 150, 150);
             doc.text("Pobre 3.1 Pro+ • Relatório gerado automaticamente", pageWidth/2, finalY, { align: 'center' });
 
-            // ----- SALVAR PDF -----
             doc.save(`Relatorio_${getSafeFileName()}_${mesSelecionado}.pdf`);
             showToast("PDF completo salvo!");
         }
@@ -1028,13 +1045,18 @@
             }
         }
 
-        // ==================== RENDERIZAÇÃO PRINCIPAL ====================
+        // ==================== RENDERIZAÇÃO ====================
         async function render() {
             if (!db) return;
             const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             
-            const mesAtual = new Date().toISOString().substring(0, 7);
-            const filtro = (document.getElementById('filtroMes') && document.getElementById('filtroMes').value) || mesAtual;
+            // FILTRO DE MÊS CORRIGIDO
+            let filtro = document.getElementById('filtroMes') ? document.getElementById('filtroMes').value : '';
+            if(!filtro) {
+                filtro = new Date().toISOString().substring(0, 7);
+                const el = document.getElementById('filtroMes');
+                if(el) el.value = filtro;
+            }
             
             const totalR = r.reduce((s, i) => s + i.valor, 0);
             const totalD = d.reduce((s, i) => s + i.valor, 0);
@@ -1080,12 +1102,11 @@
                 listCont.appendChild(fragment);
             }
             
-            // Atualiza gráficos
             updateChart(despesasMes);
             updateMonthlyChart(r, d);
         }
 
-        // ==================== GRÁFICO DE PIZZA ====================
+        // ==================== GRÁFICO DE PIZZA (CORES CORRIGIDAS) ====================
         function updateChart(dados) {
             const ctx = document.getElementById('graficoPizza').getContext('2d');
             if (chartInstancePie) chartInstancePie.destroy();
@@ -1101,7 +1122,9 @@
             labels.forEach((label, i) => {
                 const item = document.createElement('div');
                 item.className = 'legend-item';
-                item.innerHTML = `<span class="legend-color" style="background: ${CHART_COLORS[i % CHART_COLORS.length]}"></span> ${label} (${FORMAT_BRL.format(values[i])})`;
+                // CORREÇÃO DE COR: Usar módulo para evitar crash se labels > colors
+                const color = CHART_COLORS[i % CHART_COLORS.length];
+                item.innerHTML = `<span class="legend-color" style="background: ${color}"></span> ${label} (${FORMAT_BRL.format(values[i])})`;
                 legendDiv.appendChild(item);
             });
             
@@ -1111,7 +1134,7 @@
                     labels: labels,
                     datasets: [{
                         data: values,
-                        backgroundColor: CHART_COLORS.slice(0, labels.length),
+                        backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
                         borderWidth: 0,
                         hoverOffset: 8
                     }]
@@ -1202,18 +1225,23 @@
             });
         }
 
-        // ==================== FILTRO DE MÊS ====================
+        // ==================== FILTRO DE MÊS AUTOMÁTICO ====================
         function popularFiltro() {
             const sel = document.getElementById('filtroMes');
             if (!sel) return;
-            if (sel.options.length === 0) {
-                const hoje = new Date();
-                for(let i=0; i<6; i++) {
-                    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-                    const val = d.toISOString().substring(0, 7);
-                    sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
-                }
+            
+            // Se já tem opções, não recria
+            if (sel.options.length > 0) return;
+
+            const hoje = new Date();
+            // Gera últimos 6 meses
+            for(let i=0; i<6; i++) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+                const val = d.toISOString().substring(0, 7);
+                sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
             }
+            // Define automaticamente o mês atual
+            sel.value = hoje.toISOString().substring(0, 7);
         }
 
         // ==================== TOAST ====================
@@ -1236,13 +1264,23 @@
             navigator.clipboard.writeText("Aquinogabriel@outlook.com").then(() => showToast("Chave PIX copiada!"));
         }
 
-        // ==================== INICIALIZAÇÃO ====================
+        // ==================== INICIALIZAÇÃO CORRIGIDA ====================
         window.onload = async () => {
-            await initDB();
+            try {
+                // Tenta iniciar o banco com a nova função blindada
+                await initDB();
+            } catch (err) {
+                console.error("Falha fatal ao iniciar DB:", err);
+                showToast("Erro crítico. Tente limpar o cache do navegador.");
+                return;
+            }
+
             checkUser();
+            
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('data-receita').value = hoje;
             document.getElementById('data-despesa').value = hoje;
+            
             popularFiltro();
             render();
         };
