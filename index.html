@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -115,35 +114,35 @@
         .card:active { transform: scale(0.99) translateZ(0); }
 
         input, select { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 12px; 
-            border: 1px solid #e5e7eb; 
-            background: #f9fafb; 
-            margin-bottom: 15px; 
-            font-size: 16px; 
-            transition: all 0.2s;
+             width: 100%; 
+             padding: 14px; 
+             border-radius: 12px; 
+             border: 1px solid #e5e7eb; 
+             background: #f9fafb; 
+             margin-bottom: 15px; 
+             font-size: 16px; 
+             transition: all 0.2s;
         }
         input:focus, select:focus { 
-            border-color: var(--primary); 
-            box-shadow: 0 0 0 3px rgba(79,70,229,0.1); 
-            outline: none; 
-            background: white;
+             border-color: var(--primary); 
+             box-shadow: 0 0 0 3px rgba(79,70,229,0.1); 
+             outline: none; 
+             background: white;
         }
         
         button { 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 12px; 
-            border: none; 
-            font-weight: 700; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            transition: all 0.2s; 
-        }
+             width: 100%; 
+             padding: 15px; 
+             border-radius: 12px; 
+             border: none; 
+             font-weight: 700; 
+             cursor: pointer; 
+             display: flex; 
+             align-items: center; 
+             justify-content: center; 
+             gap: 8px; 
+             transition: all 0.2s; 
+         }
         button:active { transform: scale(0.98); opacity: 0.9; }
 
         .btn-income { background: var(--income); color: white; }
@@ -157,29 +156,29 @@
         .btn-tutorial { background: #8b5cf6; color: white; }
 
         .category-selector { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 8px; 
-            margin-bottom: 20px; 
-        }
+             display: grid; 
+             grid-template-columns: repeat(4, 1fr); 
+             gap: 8px; 
+             margin-bottom: 20px; 
+         }
         .category-option { 
-            padding: 10px 5px; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 12px; 
-            text-align: center; 
-            font-size: 0.65rem; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            background: white;
+             padding: 10px 5px; 
+             border: 1px solid #e5e7eb; 
+             border-radius: 12px; 
+             text-align: center; 
+             font-size: 0.65rem; 
+             cursor: pointer; 
+             transition: all 0.2s; 
+             background: white;
         }
         .category-option:hover { background: #f9fafb; }
         .category-option:active { transform: scale(0.95); }
         .category-option.selected { 
-            background: #e0e7ff; 
-            border-color: var(--primary); 
-            color: var(--primary); 
-            font-weight: 700; 
-            box-shadow: 0 2px 4px rgba(79,70,229,0.2);
+             background: #e0e7ff; 
+             border-color: var(--primary); 
+             color: var(--primary); 
+             font-weight: 700; 
+             box-shadow: 0 2px 4px rgba(79,70,229,0.2);
         }
 
         nav {
@@ -199,12 +198,12 @@
         .tab.active i { transform: translateY(-3px); }
 
         .item { 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 15px 0; 
-            border-bottom: 1px solid #f3f4f6; 
-            cursor: pointer; 
-            transition: background 0.1s;
+             display: flex; 
+             justify-content: space-between; 
+             padding: 15px 0; 
+             border-bottom: 1px solid #f3f4f6; 
+             cursor: pointer; 
+             transition: background 0.1s;
         }
         .item:hover { background: #fafafa; }
 
@@ -221,10 +220,10 @@
         .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
         
         canvas { 
-            transform: translateZ(0); 
-            max-height: 250px; 
-            width: 100% !important; 
-        }
+             transform: translateZ(0); 
+             max-height: 250px; 
+             width: 100% !important; 
+         }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -259,74 +258,103 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
-        /* --- ESTILOS EXPANDIDOS PARA O TUTORIAL --- */
-        .tutorial-list {
-            text-align: left;
-            padding-left: 0;
-            list-style: none;
-            margin: 10px 0;
+        /* --- ESTILOS DO TUTORIAL --- */
+        .tutorial-list { text-align: left; padding-left: 0; list-style: none; margin: 10px 0; }
+        .tutorial-list h4 { margin: 20px 0 8px; color: var(--primary); font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+        .tutorial-list h4:first-of-type { margin-top: 5px; }
+        .tutorial-list ul { padding-left: 20px; margin: 0 0 5px 0; list-style: none; }
+        .tutorial-list li { margin-bottom: 10px; font-size: 0.8rem; color: #4b5563; display: flex; gap: 10px; align-items: flex-start; line-height: 1.4; }
+        .tutorial-list li i { color: var(--primary); margin-top: 2px; min-width: 18px; text-align: center; }
+        .tutorial-list li div { flex: 1; }
+        
+        .chart-container { position: relative; height: 250px; margin-bottom: 20px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 15px; font-size: 0.75rem; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 4px; }
+
+        /* --- ESTILOS: TIERS DE APOIO --- */
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 15px;
         }
-        .tutorial-list h4 {
-            margin: 20px 0 8px;
+        .tier-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 14px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+            transition: transform 0.15s;
+            border: 1px solid #f0f0f0;
+            position: relative;
+        }
+        .tier-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.08);
+        }
+        .tier-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        .tier-title {
+            font-weight: 800;
             color: var(--primary);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .tier-price {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        .tier-description {
+            font-size: 0.75rem;
+            color: #4b5563;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .tier-qr {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            background: #f9fafb;
+            padding: 5px;
+            cursor: zoom-in;
+        }
+        .zoom-hint {
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-top: 8px;
+            cursor: pointer;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 5px;
-        }
-        .tutorial-list h4:first-of-type {
-            margin-top: 5px;
-        }
-        .tutorial-list ul {
-            padding-left: 20px;
-            margin: 0 0 5px 0;
-            list-style: none;
-        }
-        .tutorial-list li {
-            margin-bottom: 10px;
-            font-size: 0.8rem;
-            color: #4b5563;
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            line-height: 1.4;
-        }
-        .tutorial-list li i {
-            color: var(--primary);
-            margin-top: 2px;
-            min-width: 18px;
-            text-align: center;
-        }
-        .tutorial-list li div {
-            flex: 1;
-        }
-        
-        .chart-container { 
-            position: relative; 
-            height: 250px; 
-            margin-bottom: 20px;
-        }
-        
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
             justify-content: center;
-            margin-top: 15px;
-            font-size: 0.75rem;
+            gap: 5px;
+            transition: transform 0.2s;
         }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 4px;
+        .zoom-hint:active { transform: scale(0.95); }
+
+        .badge-popular {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -350,7 +378,6 @@
         </div>
     </div>
 
-    <!-- MODAIS -->
     <div id="welcome-modal" class="modal-overlay">
         <div class="glass-card">
             <div style="font-size: 3rem; margin-bottom: 10px;">👋</div>
@@ -363,7 +390,6 @@
         </div>
     </div>
 
-    <!-- ========== TUTORIAL EXPANDIDO E MELHORADO ========== -->
     <div id="tutorial-modal" class="modal-overlay">
         <div class="glass-card" style="max-height: 85vh; overflow-y: auto; padding: 25px 20px; text-align: left;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -374,7 +400,6 @@
             </div>
             
             <div class="tutorial-list">
-                <!-- 1. RECEITAS -->
                 <h4><i class="fas fa-arrow-up"></i> Registrar Receitas</h4>
                 <ul>
                     <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Ganhar":</b> preencha descrição, categoria, valor e data.</div></li>
@@ -382,7 +407,6 @@
                     <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Salvar Receita"</strong>.</div></li>
                 </ul>
                 
-                <!-- 2. DESPESAS -->
                 <h4><i class="fas fa-arrow-down"></i> Registrar Despesas</h4>
                 <ul>
                     <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Gastar":</b> descrição, categoria, valor e data.</div></li>
@@ -390,7 +414,6 @@
                     <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Confirmar Gasto"</strong>.</div></li>
                 </ul>
                 
-                <!-- 3. EDIÇÃO / EXCLUSÃO -->
                 <h4><i class="fas fa-pen"></i> Editar e Excluir Lançamentos</h4>
                 <ul>
                     <li><i class="fas fa-mouse-pointer"></i> <div>Na aba <strong>"Análise"</strong>, clique sobre qualquer item do extrato.</div></li>
@@ -399,7 +422,6 @@
                     <li><i class="fas fa-undo-alt"></i> <div>Use o botão <strong>"Voltar"</strong> para cancelar a edição.</div></li>
                 </ul>
                 
-                <!-- 4. DASHBOARD E GRÁFICOS -->
                 <h4><i class="fas fa-chart-pie"></i> Análise e Relatórios</h4>
                 <ul>
                     <li><i class="fas fa-tachometer-alt"></i> <div><b>Dashboard:</b> saldo geral e gastos do mês no topo da tela.</div></li>
@@ -410,7 +432,6 @@
                     <li><i class="fas fa-file-pdf"></i> <div><b>Exportar PDF:</b> gera um relatório profissional com resumo, tabelas e categorias.</div></li>
                 </ul>
                 
-                <!-- 5. BACKUP E SEGURANÇA -->
                 <h4><i class="fas fa-database"></i> Backup e Segurança</h4>
                 <ul>
                     <li><i class="fas fa-download"></i> <div><b>Backup:</b> exporta um arquivo .json com todos os seus dados (armazenado onde quiser).</div></li>
@@ -419,22 +440,17 @@
                     <li><i class="fas fa-lock"></i> <div><b>Privacidade radical:</b> seus dados NUNCA saem do seu celular (IndexedDB local).</div></li>
                 </ul>
                 
-                <!-- 6. RECURSOS AVANÇADOS -->
                 <h4><i class="fas fa-microchip"></i> Recursos Avançados</h4>
                 <ul>
                     <li><i class="fas fa-mobile-alt"></i> <div><b>Instale como App (PWA):</b> no Chrome, use "Adicionar à tela inicial".</div></li>
                     <li><i class="fas fa-wifi-slash"></i> <div><b>Funciona offline:</b> use no avião, no sítio, sem internet.</div></li>
-                    <li><i class="fas fa-tachometer-alt"></i> <div><b>Aceleração GPU:</b> animações suaves (60fps) e economia de bateria.</div></li>
-                    <li><i class="fas fa-user-secret"></i> <div><b>Sem rastreadores:</b> zero trackers, zero anúncios, zero servidores.</div></li>
                 </ul>
                 
-                <!-- 7. APOIE O PROJETO -->
                 <h4><i class="fas fa-heart"></i> Apoie o Desenvolvimento</h4>
                 <ul>
                     <li><i class="fas fa-qrcode"></i> <div><b>PIX:</b> QR Code disponível na aba "Apoie".</div></li>
                     <li><i class="fas fa-credit-card"></i> <div><b>Mercado Pago:</b> botão para doação via cartão ou boleto.</div></li>
                     <li><i class="fab fa-whatsapp"></i> <div><b>Contato:</b> fale direto com o desenvolvedor pelo WhatsApp.</div></li>
-                    <li><i class="fas fa-book-reader"></i> <div><b>Tutorial:</b> este guia está sempre disponível no botão "Tutorial" da aba Apoie.</div></li>
                 </ul>
             </div>
             
@@ -444,24 +460,22 @@
         </div>
     </div>
 
-    <div id="pix-modal" class="modal-overlay">
-        <div class="glass-card">
-            <h3 style="color: var(--primary); margin-top: 0;">Ajude com um café ao dev ☕</h3>
+    <div id="pix-modal" class="modal-overlay" onclick="closePixModal()">
+        <div class="glass-card" onclick="event.stopPropagation()">
+            <h3 id="modal-qr-title" style="color: var(--primary); margin-top: 0;">Ajude com um café ao dev ☕</h3>
             <div style="background: white; padding: 15px; border-radius: 15px; display: inline-block; margin: 10px 0;">
-                <img src="qrcode.png" alt="QR Code PIX" style="width: 200px; height: 200px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+Ausente'">
+                <img id="modal-qr-img" src="qrcode.png" alt="QR Code Ampliado" style="width: 250px; height: 250px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
             </div>
             <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 20px; line-height: 1.5;">
-                Seu apoio mantém as atualizações gratuitas!<br>
-                <b>Scaneie e ajude com um pix.</b>
+                Escaneie o código acima usando o aplicativo do seu banco.<br>Obrigado por fortalecer o projeto!
             </p>
             <button class="btn-primary" onclick="closePixModal()" style="background: #374151;">
-                <i class="fas fa-times"></i> Fechar a janela
+                <i class="fas fa-times"></i> Fechar
             </button>
         </div>
     </div>
 
     <div class="container">
-        <!-- TELA DE RECEITA -->
         <div id="v-receita" class="view active">
             <div class="card">
                 <h3 id="titulo-receita"><i class="fas fa-plus"></i> Nova Receita</h3>
@@ -481,7 +495,6 @@
             </div>
         </div>
 
-        <!-- TELA DE DESPESA -->
         <div id="v-despesa" class="view">
             <div class="card">
                 <h3 id="titulo-despesa"><i class="fas fa-minus"></i> Novo Gasto</h3>
@@ -506,7 +519,6 @@
             </div>
         </div>
 
-        <!-- TELA DE ANÁLISE (GRÁFICOS + EXTRATO) -->
         <div id="v-consulta" class="view">
             <div class="card">
                 <h3><i class="fas fa-chart-pie"></i> Gastos por Categoria</h3>
@@ -518,7 +530,7 @@
             </div>
 
             <div class="card">
-                <h3><i class="fas fa-chart-line"></i> Evolução Mensal (Receitas vs Despesas)</h3>
+                <h3><i class="fas fa-chart-line"></i> Evolução Mensal</h3>
                 <div class="chart-container">
                     <canvas id="graficoMensal"></canvas>
                 </div>
@@ -540,50 +552,83 @@
             </div>
         </div>
 
-        <!-- TELA APOIE -->
         <div id="v-apoie" class="view">
             <div class="card">
-                <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> Por que apoiar?</h3>
+                <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> O App do Pobre ajudou seu bolso?</h3>
                 
                 <div class="info-section">
-                    <p>O <b>Pobre 3.1</b> não é apenas um app de finanças. É um manifesto de <b>Engenharia de Software Ética</b>. Veja o que torna este aplicativo único:</p>
+                    <p>O <b>Pobre 3.1</b> foi criado para colocar o controle financeiro na palma da sua mão, sem frescura e <b>sem vender seus dados</b>.</p>
                     
-                    <h4><i class="fas fa-user-shield"></i> Privacidade Radical (Client-Side)</h4>
-                    <p>A maioria dos apps envia seus gastos para "a nuvem" (servidores), onde seus dados podem ser analisados ou vazados. Aqui, usamos tecnologia <b>IndexedDB</b> criptografada. Isso significa que seus dados financeiros <b>nunca saem do seu aparelho</b>. Nós literalmente <i>não conseguimos</i> ver o que você gasta.</p>
+                    <h4><i class="fas fa-calculator"></i> Roda até em calculadora</h4>
+                    <p>Feito leve de propósito. Não trava seu celular tijolão, gasta pouca bateria e funciona sem internet. É tecnologia de ponta para quem conta as moedas.</p>
 
-                    <h4><i class="fas fa-tachometer-alt"></i> Performance Extrema</h4>
-                    <p>Cansado de apps que travam ou aquecem o celular? O Pobre 3.1 utiliza <b>Aceleração de Hardware (GPU)</b> para renderizar as telas. Isso garante animações fluidas (60fps) e economiza sua bateria, rodando liso até em celulares mais antigos ou modestos.</p>
-
-                    <h4><i class="fas fa-wifi"></i> Soberania Digital (Offline)</h4>
-                    <p>Você não precisa de internet para controlar seu dinheiro. Graças à tecnologia <b>PWA Offline-First</b>, o app funciona no modo avião, no metrô ou no sítio. Você é o único dono do seu backup (JSON).</p>
+                    <h4><i class="fas fa-user-secret"></i> Contra o Sistema</h4>
+                    <p>Diferente dos apps de banco, <b>nós não espiamos o que você compra</b>. Tudo fica salvo apenas no seu aparelho. O dinheiro é seu, a privacidade também.</p>
                     
                     <div class="privacy-box" style="background: #fff1f2; border-color: #e11d48; color: #9f1239;">
-                        <p><i class="fas fa-mug-hot"></i> <b>Mantido por Doações</b><br>
-                        Este software é livre de mensalidades, livre de anúncios chatos e livre de rastreadores espiões. Desenvolver tecnologia independente, segura e de alta performance consome centenas de horas.
-                        <br><br>
-                        Se este app te ajuda a economizar, considere me pagar um café. Isso mantém as atualizações vivas!</p>
+                        <p><i class="fas fa-ban"></i> <b>Zero Taxas. Zero Anúncios.</b><br>
+                        Manter esse app no ar custa tempo e café. Se ele te ajudou a economizar e não pagar juros pro banco, considere apoiar o desenvolvedor!</p>
                     </div>
                 </div>
-        
+
+                <div style="margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-gift"></i> Escolha como fortalecer
+                    </h4>
+                    
+                    <div class="tiers-grid">
+                        
+                        <div class="tier-card">
+                            <div class="tier-icon">☕</div>
+                            <div class="tier-title">O Café da Firma</div>
+                            <div class="tier-price">R$ 5,00 a R$ 10,00</div>
+                            <div class="tier-description">
+                                Valor simbólico! Pra eu não dormir em cima do teclado enquanto programo novas funções. Ajuda demais!
+                            </div>
+                            <img src="qrcode.png" alt="QR Code PIX - Café" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Café da Firma ☕')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
+                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'O Café da Firma ☕')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                        </div>
+
+                        <div class="tier-card" style="background: #f0fdf4; border-color: #bbf7d0;">
+                            <div class="badge-popular">✨ Mais Escolhido</div>
+                            <div class="tier-icon">🥪</div>
+                            <div class="tier-title">O Preço de um Lanche</div>
+                            <div class="tier-price">R$ 15,00 a R$ 25,00</div>
+                            <div class="tier-description">
+                                Mais barato que pagar taxa de manutenção de conta! Retribua pelas horas economizadas e pelos relatórios em PDF.
+                            </div>
+                            <img src="qrcode.png" alt="QR Code PIX - Lanche" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Preço de um Lanche 🥪')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
+                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'O Preço de um Lanche 🥪')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                        </div>
+
+                        <div class="tier-card" style="background: #fef9e7; border-color: #fde68a;">
+                            <div class="tier-icon">👑</div>
+                            <div class="tier-title">Patrão do App</div>
+                            <div class="tier-price">R$ 50,00 ou mais</div>
+                            <div class="tier-description">
+                                Virou a ferramenta oficial da casa? Vire sócio moral do projeto. Garante que o app continue existindo pra sempre.
+                            </div>
+                            <img src="qrcode.png" alt="QR Code PIX - Patrão" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'Patrão do App 👑')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
+                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'Patrão do App 👑')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
                     <button class="btn-tutorial" onclick="openTutorialModal()">
-                        <i class="fas fa-book-reader"></i> Tutorial: Como usar o App
-                    </button>
-
-                    <button class="btn-pix" onclick="openPixModal()">
-                        <i class="fas fa-qrcode"></i> Apoiar via PIX (QR Code)
+                        <i class="fas fa-book-reader"></i> Tutorial: Ver recursos
                     </button>
 
                     <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')">
                         <i class="fas fa-credit-card"></i> Apoiar via Cartão/MP
                     </button>
-                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149', '_blank')">
-                        <i class="fab fa-whatsapp"></i> Contato do Desenvolvedor
+                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149?text=Opa,%20vim%20pelo%20App%20do%20Pobre!', '_blank')">
+                        <i class="fab fa-whatsapp"></i> Falar com o Desenvolvedor
                     </button>
                 </div>
                 
                 <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 0.7rem;">
-                    Versão 3.1 Pro • Build 2023.10<br>Feito com ódio aos juros abusivos.
+                    Versão 3.1 Pro • <i class="fas fa-shield-alt"></i> Dados 100% seguros
                 </div>
             </div>
         </div>
@@ -669,7 +714,14 @@
         }
 
         // ==================== MODAIS ====================
-        function openPixModal() { document.getElementById('pix-modal').style.display = 'flex'; }
+        
+        // FUNÇÃO DE ZOOM DO QR CODE (DA NOVA ABA APOIE)
+        function abrirQrCodeZoom(imageSrc, titulo) {
+            document.getElementById('modal-qr-img').src = imageSrc;
+            document.getElementById('modal-qr-title').innerText = titulo;
+            document.getElementById('pix-modal').style.display = 'flex';
+        }
+        
         function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
         function openTutorialModal() { document.getElementById('tutorial-modal').style.display = 'flex'; }
         function closeTutorialModal() { document.getElementById('tutorial-modal').style.display = 'none'; }
