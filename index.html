@@ -1,5 +1,7 @@
 
-<html lang="pt-br"><head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>O app do Pobre</title>
@@ -10,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -230,13 +232,13 @@
     <header>
         <div class="user-area">
             <div class="user-greeting">
-                <span id="status-icon" class="status-badge status-neg" style="display: inline-block;">-1</span>
+                <span id="status-icon" class="status-badge" style="display: none;">-1</span>
                 Olá,
             </div>
-            <div class="user-name" id="username-header">Gab</div>
+            <div class="user-name" id="username-header">...</div>
         </div>
         
-        <div id="header-title" style="display: block;">Análise Financeira</div> 
+        <div id="header-title"></div> 
         <i class="fas fa-circle-half-stroke" onclick="toggleTheme()" style="cursor: pointer; font-size: 1.2rem; color: var(--primary); padding: 10px;"></i>
     </header>
 
@@ -245,15 +247,15 @@
         <div id="dashboard-main" class="dashboard">
             <div class="dash-card">
                 <small>Saldo Total</small>
-                <b id="dash-saldo">-R$&nbsp;550,00</b>
+                <b id="dash-saldo">R$ 0,00</b>
             </div>
             <div class="dash-card">
                 <small>Saída (Mês)</small>
-                <b id="dash-gastos" style="color: var(--expense);">R$&nbsp;5.780,00</b>
+                <b id="dash-gastos" style="color: var(--expense);">R$ 0,00</b>
             </div>
         </div>
 
-        <div id="v-ganhar" class="view">
+        <div id="v-ganhar" class="view active">
             <div class="card">
                 <h3 id="form-title-ganhar" style="margin:0; color: var(--income); font-size: 1.1rem; margin-bottom: 20px;"><i class="fas fa-plus-circle"></i> Nova Receita</h3>
                 <input type="hidden" id="edit-id-ganhar">
@@ -305,20 +307,20 @@
             </div>
         </div>
 
-        <div id="v-analise" class="view active">
+        <div id="v-analise" class="view">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
                     <h3 style="margin:0; font-size: 1rem;">Visão Geral</h3>
-                    <select id="filtroMes" onchange="render()" style="width: auto; padding: 5px; background: transparent; border: none; font-weight: 700; color: var(--primary);"><option value="2026-02">fevereiro de 2026</option><option value="2026-01">janeiro de 2026</option><option value="2025-12">dezembro de 2025</option><option value="2025-11">novembro de 2025</option><option value="2025-10">outubro de 2025</option><option value="2025-09">setembro de 2025</option><option value="2025-08">agosto de 2025</option><option value="2025-07">julho de 2025</option><option value="2025-06">junho de 2025</option><option value="2025-05">maio de 2025</option><option value="2025-04">abril de 2025</option><option value="2025-03">março de 2025</option></select>
+                    <select id="filtroMes" onchange="render()" style="width: auto; padding: 5px; background: transparent; border: none; font-weight: 700; color: var(--primary);"></select>
                 </div>
                 
                 <div id="charts-wrapper">
                     <div class="chart-grid">
                         <div class="chart-container">
-                            <canvas id="chart-doughnut" width="300" height="200" style="display: block; box-sizing: border-box; height: 200px; width: 300px;"></canvas>
+                            <canvas id="chart-doughnut"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="chart-bar" width="300" height="200" style="display: block; box-sizing: border-box; height: 200px; width: 300px;"></canvas>
+                            <canvas id="chart-bar"></canvas>
                         </div>
                     </div>
                 </div>
@@ -328,31 +330,11 @@
                     <p>Nada por aqui ainda...<br>Cadastre uma receita ou despesa!</p>
                 </div>
 
-                <div id="lista-detalhada" style="margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px;"><div class="item"><div><b>Agiotagem</b><br><small>15/02/2026</small></div>
-                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;10,00</div></div><div class="item"><div><b>Agiotagem</b><br><small>15/02/2026</small></div>
-                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;20,00</div></div><div class="item"><div><b>IPTU </b><br><small>15/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;250,00</div></div><div class="item"><div><b>IPVA </b><br><small>15/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;150,00</div></div><div class="item"><div><b>Taxa do lixo </b><br><small>15/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;250,00</div></div><div class="item"><div><b>Caixa apart</b><br><small>15/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;500,00</div></div><div class="item"><div><b>INSS</b><br><small>10/02/2026</small></div>
-                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;1.900,00</div></div><div class="item"><div><b>Salário Whirlpool</b><br><small>10/02/2026</small></div>
-                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;3.300,00</div></div><div class="item"><div><b>Luz</b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;380,00</div></div><div class="item"><div><b>Cartão Samsung </b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;1.200,00</div></div><div class="item"><div><b>Cartão Itaú </b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;300,00</div></div><div class="item"><div><b>Gás </b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;30,00</div></div><div class="item"><div><b>Ciano </b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;175,00</div></div><div class="item"><div><b>Taxa de lixo</b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;250,00</div></div><div class="item"><div><b>Mercado </b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;28,00</div></div><div class="item"><div><b>Gás </b><br><small>07/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;30,00</div></div><div class="item"><div><b>Internet </b><br><small>06/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;129,00</div></div><div class="item"><div><b>Pizza </b><br><small>05/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;50,00</div></div><div class="item"><div><b>Cartão Inter </b><br><small>04/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;1.608,00</div></div><div class="item"><div><b>Condominio </b><br><small>02/02/2026</small></div>
-                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;450,00</div></div></div>
+                <div id="lista-detalhada" style="margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px;"></div>
             </div>
 
             <div class="card">
-                <h3 style="margin-top:0">Dados &amp; Exportação</h3>
+                <h3 style="margin-top:0">Dados & Exportação</h3>
                 
                 <button class="btn-primary" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
                 <button class="btn-whatsapp" onclick="compartilharZap()"><i class="fab fa-whatsapp"></i> Enviar Resumo no Zap</button>
@@ -375,7 +357,7 @@
             <div class="card">
                 <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-rocket"></i> Guia Pro</h3>
                 <p style="font-size: 0.85rem; color: var(--text-sec); margin: 10px 0;">Aprenda a instalar o app e dominar suas finanças.</p>
-                <button class="btn-primary" onclick="openModal('modal-tutorial')"><i class="fas fa-book"></i> Abrir Guia &amp; Manual</button>
+                <button class="btn-primary" onclick="openModal('modal-tutorial')"><i class="fas fa-book"></i> Abrir Guia & Manual</button>
             </div>
 
             <div class="card">
@@ -429,9 +411,9 @@
     </div>
 
     <nav id="main-nav">
-        <div class="tab" onclick="navTo('v-ganhar',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
+        <div class="tab active" onclick="navTo('v-ganhar',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
         <div class="tab" onclick="navTo('v-gastar',this)"><i class="fas fa-arrow-down"></i><span>Gastar</span></div>
-        <div class="tab active" onclick="navTo('v-analise',this)"><i class="fas fa-chart-pie"></i><span>Análise</span></div>
+        <div class="tab" onclick="navTo('v-analise',this)"><i class="fas fa-chart-pie"></i><span>Análise</span></div>
         <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
     </nav>
 
@@ -449,7 +431,7 @@
                 </div>
                 <div class="guide-item" onclick="toggleGuide(this)">
                     <div class="guide-header">🌐 Samsung Internet <i class="fas fa-chevron-down"></i></div>
-                    <div class="guide-content">1. Menu (3 linhas).<br>2. <b>"Adicionar página a"</b> -&gt; <b>"Tela de Apps"</b>.</div>
+                    <div class="guide-content">1. Menu (3 linhas).<br>2. <b>"Adicionar página a"</b> -> <b>"Tela de Apps"</b>.</div>
                 </div>
                 <div class="guide-item" onclick="toggleGuide(this)">
                     <div class="guide-header">🟧 Xiaomi (Mi) <i class="fas fa-chevron-down"></i></div>
@@ -507,7 +489,7 @@
         let chartInstanceBar = null;
         
         // VARIÁVEL SENTINELA PARA BACKUP OFFLINE (A Mágica acontece aqui)
-        const BACKUP_EMBUTIDO = {"r":[{"desc":"INSS","val":1900,"data":"2026-02-10","cat":"salario","id":33},{"desc":"Salário Whirlpool","val":3300,"data":"2026-02-10","cat":"salario","id":34},{"desc":"Agiotagem","val":10,"data":"2026-02-15","cat":"investimentos","id":35},{"desc":"Agiotagem","val":20,"data":"2026-02-15","cat":"investimentos","id":36}],"d":[{"desc":"Condominio ","val":450,"data":"2026-02-02","cat":"moradia","id":129},{"desc":"Pizza ","val":50,"data":"2026-02-05","cat":"alimentacao","id":130},{"desc":"Cartão Inter ","val":1608,"data":"2026-02-04","cat":"contas","id":131},{"desc":"Internet ","val":129,"data":"2026-02-06","cat":"contas","id":132},{"desc":"Luz","val":380,"data":"2026-02-07","cat":"moradia","id":133},{"desc":"Cartão Samsung ","val":1200,"data":"2026-02-07","cat":"moradia","id":134},{"desc":"Cartão Itaú ","val":300,"data":"2026-02-07","cat":"contas","id":135},{"desc":"Gás ","val":30,"data":"2026-02-07","cat":"moradia","id":136},{"desc":"Ciano ","val":175,"data":"2026-02-07","cat":"contas","id":137},{"desc":"Taxa de lixo","val":250,"data":"2026-02-07","cat":"contas","id":138},{"desc":"Mercado ","val":28,"data":"2026-02-07","cat":"compras","id":139},{"desc":"Gás ","val":30,"data":"2026-02-07","cat":"alimentacao","id":140},{"desc":"IPTU ","val":250,"data":"2026-02-15","cat":"contas","id":141},{"desc":"IPVA ","val":150,"data":"2026-02-15","cat":"contas","id":142},{"desc":"Taxa do lixo ","val":250,"data":"2026-02-15","cat":"contas","id":143},{"desc":"Caixa apart","val":500,"data":"2026-02-15","cat":"moradia","id":144}],"u":"Gab","t":"2026-02-16T11:49:16.998Z"}; // __MARKER_BACKUP__
+        const BACKUP_EMBUTIDO = null; // __MARKER_BACKUP__
 
         /* ================= SECURITY & MULTI-TAB LOGIC ================= */
         let isBlocked = false;
@@ -546,7 +528,9 @@
                     db = e.target.result; 
                     
                     // --- AUTO RESTORE OFFLINE DATA ---
-                    if (BACKUP_EMBUTIDO && typeof BACKUP_EMBUTIDO === 'object') {
+                    // Verifica se o BACKUP_EMBUTIDO existe E se o usuário não solicitou um RESET (ignore_embed)
+                    const ignore = localStorage.getItem('ignore_embed');
+                    if (BACKUP_EMBUTIDO && typeof BACKUP_EMBUTIDO === 'object' && !ignore) {
                         await autoRestoreOffline(BACKUP_EMBUTIDO);
                     }
                     resolve(); 
@@ -868,8 +852,9 @@
         }
 
         function resetDB() { 
-            if(confirm("ATENÇÃO: Isso apagará TODOS os dados. Continuar?")){ 
+            if(confirm("SEGURANÇA: Faça um backup manual antes de prosseguir!\n\nATENÇÃO: Isso apagará TODOS os dados e ignorará o backup embutido. Continuar?")){ 
                 localStorage.removeItem('contas_user');
+                localStorage.setItem('ignore_embed', 'true'); // Flag de Hard Reset
                 const tx=db.transaction(['receitas','despesas'],'readwrite'); 
                 tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear(); 
                 tx.oncomplete=()=>location.reload(); 
@@ -996,5 +981,5 @@
             navTo('v-ganhar', document.querySelector('.tab.active'));
         };
     </script>
-
-</body></html>
+</body>
+</html>
