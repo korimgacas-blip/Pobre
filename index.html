@@ -3,17 +3,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>O app do Pobre</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Contas</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4f46e5">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#f2f2f7">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Pobre 3.1">
-    <meta name="application-name" content="Pobre 3.1">
-
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Contas">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,311 +20,323 @@
     
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --income: #059669;
-            --expense: #dc2626;
-            --bg: #f3f4f6;
-            --card-bg: #ffffff;
-            --radius: 20px;
-            --chart-1: #4f46e5; --chart-2: #10b981; --chart-3: #f59e0b; --chart-4: #ef4444;
-            --chart-5: #ec4899; --chart-6: #8b5cf6; --chart-7: #14b8a6; --chart-8: #f97316;
+            /* --- PALETA IOS 26 --- */
+            --primary: #5e5ce6;      /* Indigo Apple Deep */
+            --primary-glow: rgba(94, 92, 230, 0.5);
+            --income: #30d158;       /* Green Apple */
+            --expense: #ff453a;      /* Red Apple */
+            
+            --bg-base: #f2f2f7;
+            --text-main: #000000;
+            --text-sec: #8e8e93;
+
+            /* --- GLASS PHYSICS SYSTEM --- */
+            --glass-surface: rgba(255, 255, 255, 0.75); /* Mais opaco para legibilidade */
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-highlight: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.05),
+                0 1px 3px rgba(0,0,0,0.02);
+            
+            /* Blur ultra pesado "Liquid" */
+            --blur-strength: 50px;
+            
+            --radius-dock: 38px;
+            --radius-card: 28px;
+            --radius-input: 18px;
+
+            /* Gradiente de fundo Mesh Fluido */
+            --mesh-gradient: 
+                radial-gradient(at 0% 0%, rgba(94, 92, 230, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(50, 215, 75, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 69, 58, 0.12) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(10, 132, 255, 0.15) 0px, transparent 50%),
+                #f2f2f7;
         }
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* DARK MODE AUTOMÁTICO - "OBSIDIAN GLASS" */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #5e5ce6;
+                --bg-base: #000000;
+                --text-main: #ffffff;
+                --text-sec: #98989d;
+                
+                --glass-surface: rgba(30, 30, 32, 0.70);
+                --glass-border: rgba(255, 255, 255, 0.12);
+                --glass-highlight: rgba(255, 255, 255, 0.10);
+                --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+                
+                --mesh-gradient: 
+                    radial-gradient(at 0% 0%, rgba(94, 92, 230, 0.3) 0px, transparent 60%),
+                    radial-gradient(at 90% 90%, rgba(255, 59, 48, 0.1) 0px, transparent 60%),
+                    #000000;
+            }
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background: var(--bg);
+            background: var(--mesh-gradient);
+            background-attachment: fixed;
             margin: 0;
-            padding-bottom: 110px;
-            color: #111;
+            padding-bottom: 130px; /* Espaço extra pro dock */
+            color: var(--text-main);
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            /* Sensação de App Nativo */
-            user-select: none; 
-            -webkit-user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Permite selecionar texto apenas em inputs */
-        input, textarea { user-select: text; -webkit-user-select: text; }
-
-        .gpu-accelerated {
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            perspective: 1000px;
+        /* --- GPU LAYERS --- */
+        .glass-card, .card, input, button {
+            transform: translate3d(0,0,0);
+            will-change: transform, opacity;
         }
 
+        /* --- HEADER "ISLAND" FLUTUANTE --- */
         header {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            color: white;
-            padding: 20px 24px 70px;
-            border-radius: 0 0 36px 36px;
+            position: sticky;
+            top: 12px;
+            margin: 12px 16px 24px;
+            padding: 16px 24px;
+            background: var(--glass-surface);
+            backdrop-filter: blur(var(--blur-strength)) saturate(180%);
+            -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(180%);
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-            position: relative;
-            z-index: 10;
+            z-index: 100;
+            /* Specular Highlight Topo */
+            box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
         }
 
         .header-content { display: flex; flex-direction: column; justify-content: center; }
-        .user-greeting { font-size: 0.8rem; font-weight: 500; opacity: 0.9; margin-top: 4px; display: none; }
+        /* Ocultamos o greeting antigo pois o nome vai pro titulo */
+        .user-greeting { display: none !important; }
 
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            padding: 0 24px;
-            margin-top: -50px;
+            gap: 14px;
+            padding: 0 16px;
             position: relative;
             z-index: 20;
         }
 
-        .dash-card {
-            background: var(--card-bg);
-            padding: 20px 16px;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-            text-align: center;
-            contain: content;
-            transform: translateZ(0);
+        /* --- GLASS CARDS --- */
+        .card, .dash-card, .glass-card {
+            background: var(--glass-surface);
+            backdrop-filter: blur(var(--blur-strength)) saturate(160%);
+            -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(160%);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), var(--glass-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+        
+        .dash-card { padding: 22px 18px; text-align: center; }
+        .card { padding: 24px; margin-bottom: 20px; }
 
-        .dash-card small { color: #6b7280; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
-        .dash-card b { font-size: 1.2rem; display: block; margin-top: 5px; }
+        .dash-card:active { transform: scale(0.97); }
 
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-
-        .view { display: none; will-change: transform, opacity; }
-        .view.active { display: block; animation: fadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        .dash-card small { 
+            color: var(--text-sec); 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 6px;
         }
+        .dash-card b { font-size: 1.4rem; letter-spacing: -0.5px; color: var(--text-main); }
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
-            transform: translateZ(0);
-            transition: transform 0.2s;
+        /* --- INPUTS ESTILO IOS --- */
+        label {
+            font-size: 0.8rem; font-weight: 600; color: var(--text-sec);
+            margin: 12px 0 6px 4px; display: block;
         }
-        .card:active { transform: scale(0.99) translateZ(0); }
 
         input, select {
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            background: #f9fafb;
-            margin-bottom: 15px;
-            font-size: 16px;
-            transition: all 0.2s;
+            padding: 16px;
+            border-radius: var(--radius-input);
+            font-size: 17px;
+            background: rgba(120, 120, 128, 0.08); /* Cinza Apple */
+            border: 1px solid transparent;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            appearance: none; -webkit-appearance: none;
         }
+
         input:focus, select:focus {
+            background: rgba(120, 120, 128, 0.12);
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            box-shadow: 0 0 0 4px var(--primary-glow);
             outline: none;
-            background: white;
         }
-        
+
+        /* --- BOTÕES LIQUID --- */
         button {
             width: 100%;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 20px;
             border: none;
             font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: transform 0.1s;
+            position: relative;
         }
-        button:active { transform: scale(0.98); opacity: 0.9; }
+        
+        button:active { transform: scale(0.96); opacity: 0.9; }
 
-        .btn-income { background: var(--income); color: white; }
-        .btn-expense { background: var(--expense); color: white; }
-        .btn-delete { background: #fff1f2; color: #e11d48; margin-top: 10px; border: 1px solid #fecaca; }
-        .btn-sec { background: #f3f4f6; color: #4b5563; margin-top: 10px; }
-        .btn-primary { background: var(--primary); color: white; }
+        .btn-income { background: linear-gradient(135deg, #34c759, #30d158); color: white; box-shadow: 0 8px 20px rgba(48, 209, 88, 0.3); }
+        .btn-expense { background: linear-gradient(135deg, #ff3b30, #ff453a); color: white; box-shadow: 0 8px 20px rgba(255, 69, 58, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #5856d6, #5e5ce6); color: white; box-shadow: 0 8px 20px rgba(94, 92, 230, 0.35); }
+        
+        .btn-delete { background: rgba(255, 69, 58, 0.1); color: var(--expense); border: 1px solid rgba(255, 69, 58, 0.2); margin-top: 12px;}
+        .btn-sec { background: rgba(120, 120, 128, 0.08); color: var(--text-main); margin-top: 12px; }
+        
         .btn-pix { background: #32bcad; color: white; }
         .btn-mp { background: #009ee3; color: white; }
         .btn-wpp { background: #25d366; color: white; }
-        .btn-tutorial { background: #8b5cf6; color: white; }
+        .btn-tutorial { background: #af52de; color: white; }
 
+        /* --- CATEGORIAS --- */
         .category-selector {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px;
         }
         .category-option {
-            padding: 10px 5px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 0.65rem;
+            padding: 12px 4px;
+            background: rgba(120, 120, 128, 0.06);
+            border-radius: 16px;
+            text-align: center; font-size: 0.7rem; font-weight: 600; color: var(--text-sec);
             cursor: pointer;
+            border: 1px solid transparent;
             transition: all 0.2s;
-            background: white;
         }
-        .category-option:hover { background: #f9fafb; }
-        .category-option:active { transform: scale(0.95); }
         .category-option.selected {
-            background: #e0e7ff;
-            border-color: var(--primary);
+            background: var(--glass-surface);
             color: var(--primary);
-            font-weight: 700;
-            box-shadow: 0 2px 4px rgba(79,70,229,0.2);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--glass-shadow);
+            transform: translateY(-2px);
         }
 
+        /* --- NAV DOCK FLUTUANTE --- */
         nav {
-            position: fixed; bottom: 20px; left: 16px; right: 16px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: fixed; bottom: 24px; left: 20px; right: 20px;
+            background: var(--glass-surface);
+            backdrop-filter: blur(var(--blur-strength)) saturate(180%);
+            -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(180%);
+            border-radius: var(--radius-dock);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15), inset 0 1px 0 var(--glass-highlight);
             z-index: 100;
-            transform: translateZ(0);
+            height: 75px;
+            display: flex; justify-content: space-evenly; align-items: center;
         }
         
-        .nav-buttons { display: flex; height: 70px; justify-content: space-around; align-items: center; }
-        .tab { color: #9ca3af; font-size: 0.65rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; transition: color 0.2s; }
-        .tab.active { color: var(--primary); }
-        .tab i { font-size: 1.2rem; margin-bottom: 2px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .tab.active i { transform: translateY(-3px); }
-
-        .item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #f3f4f6;
-            cursor: pointer;
-            transition: background 0.1s;
+        .tab { 
+            color: var(--text-sec); font-size: 0.65rem; font-weight: 600; 
+            display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            cursor: pointer; width: 60px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0.7;
         }
-        .item:hover { background: #fafafa; }
+        .tab.active { 
+            color: var(--primary); 
+            transform: translateY(-8px) scale(1.1); 
+            opacity: 1;
+        }
+        .tab i { font-size: 1.4rem; margin-bottom: 2px; }
+
+        /* --- STICKY BUTTON --- */
+        .sticky-actions {
+            position: fixed; bottom: 110px; left: 20px; right: 20px; z-index: 90;
+            display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp { from { transform: translateY(40px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .sticky-actions.active { display: block; }
+        .sticky-actions button {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- MOTION --- */
+        .container { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
+        .view { display: none; }
+        .view.active { 
+            display: block; 
+            animation: iosFade 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+        }
+        @keyframes iosFade { 
+            from { opacity: 0; transform: scale(0.96) translateY(10px); } 
+            to { opacity: 1; transform: scale(1) translateY(0); } 
+        }
+
+        /* --- EXTRATO --- */
+        .item {
+            display: flex; justify-content: space-between; padding: 18px 0;
+            border-bottom: 1px solid rgba(120, 120, 128, 0.1); cursor: pointer;
+        }
+        .item:last-child { border-bottom: none; }
+        .item:hover { background: rgba(120, 120, 128, 0.03); margin: 0 -24px; padding: 18px 24px; }
+
+        /* --- PRESERVAÇÃO --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.01); backdrop-filter: blur(8px);
+            z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1}}
+
+        .tiers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
+        .tier-card { 
+            background: rgba(255,255,255,0.5); border-radius: 18px; padding: 16px 12px; 
+            text-align: center; border: 1px solid rgba(255,255,255,0.6); position: relative;
+        }
+        @media (prefers-color-scheme: dark) {
+            .tier-card { background: rgba(60, 60, 60, 0.4); border-color: rgba(255,255,255,0.1); }
+            .tier-title { color: #fff !important; }
+            .tier-price { color: #ccc !important; }
+            .tier-description { color: #aaa !important; }
+        }
+        .tier-icon { font-size: 2.2rem; margin-bottom: 8px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
+        .tier-title { font-weight: 800; color: var(--primary); font-size: 0.95rem; }
+        .tier-price { font-weight: 700; font-size: 1rem; color: var(--text-main); margin-bottom: 8px; }
+        .tier-description { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 12px; line-height: 1.4; }
+        .tier-qr { width: 100px; height: 100px; object-fit: contain; margin: 0 auto; border-radius: 10px; background: white; padding: 4px; }
+        .badge-popular { 
+            position: absolute; top: -8px; left: 50%; transform: translateX(-50%); 
+            background: var(--primary); color: white; font-size: 0.6rem; font-weight: 800; 
+            padding: 4px 10px; border-radius: 12px; text-transform: uppercase; 
+        }
 
         #toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateZ(0);
-            background: #333; color: white; padding: 12px 24px; border-radius: 50px;
+            position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); color: white; padding: 10px 24px; border-radius: 50px;
             opacity: 0; transition: opacity 0.3s; z-index: 2000; pointer-events: none;
-            will-change: opacity;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px); font-size: 0.9rem; font-weight: 500;
         }
-
-        .info-section { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
+        canvas { max-height: 250px; width: 100% !important; }
+        .info-section { font-size: 0.85rem; line-height: 1.5; color: var(--text-sec); }
         .info-section h4 { color: var(--primary); margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; }
-        .privacy-box { background: #f0fdf4; border: 1px solid #10b981; padding: 15px; border-radius: 15px; margin-top: 15px; color: #065f46; }
-        
-        canvas {
-            transform: translateZ(0);
-            max-height: 250px;
-            width: 100% !important;
-        }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(6px);
-            z-index: 5000; display: none; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            padding: 30px 20px; border-radius: 30px;
-            text-align: center; width: 100%; max-width: 340px;
-            transform: translateZ(0);
-            animation: floatUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .glass-input {
-            background: rgba(255,255,255,0.8);
-            border: 2px solid transparent;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .glass-input:focus { border-color: var(--primary); background: white; }
-
-        @keyframes floatUp {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        /* --- ESTILOS DO TUTORIAL --- */
-        .tutorial-list { text-align: left; padding-left: 0; list-style: none; margin: 10px 0; }
-        .tutorial-list h4 { margin: 20px 0 8px; color: var(--primary); font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
-        .tutorial-list h4:first-of-type { margin-top: 5px; }
-        .tutorial-list ul { padding-left: 20px; margin: 0 0 5px 0; list-style: none; }
-        .tutorial-list li { margin-bottom: 10px; font-size: 0.8rem; color: #4b5563; display: flex; gap: 10px; align-items: flex-start; line-height: 1.4; }
-        .tutorial-list li i { color: var(--primary); margin-top: 2px; min-width: 18px; text-align: center; }
-        .tutorial-list li div { flex: 1; }
-        
-        .chart-container { position: relative; height: 250px; margin-bottom: 20px; }
-        .legend { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 15px; font-size: 0.75rem; }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .legend-color { width: 12px; height: 12px; border-radius: 4px; }
-
-        /* --- ESTILOS: TIERS DE APOIO --- */
-        .tiers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-            margin-bottom: 15px;
-        }
-        .tier-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px 14px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
-            transition: transform 0.15s;
-            border: 1px solid #f0f0f0;
-            position: relative;
-        }
-        .tier-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.08);
-        }
-        .tier-icon { font-size: 2rem; margin-bottom: 8px; }
-        .tier-title { font-weight: 800; color: var(--primary); font-size: 1rem; margin-bottom: 4px; }
-        .tier-price { font-weight: 700; font-size: 1.1rem; color: #2d3748; margin-bottom: 8px; }
-        .tier-description { font-size: 0.75rem; color: #4b5563; margin-bottom: 15px; line-height: 1.5; }
-        .tier-qr {
-            width: 120px; height: 120px; object-fit: contain; display: block;
-            margin: 0 auto; border-radius: 8px; background: #f9fafb; padding: 5px;
-            cursor: zoom-in;
-        }
-        .zoom-hint {
-            font-size: 0.75rem; color: var(--primary); margin-top: 8px; cursor: pointer;
-            font-weight: 700; display: flex; align-items: center; justify-content: center;
-            gap: 5px; transition: transform 0.2s;
-        }
-        .zoom-hint:active { transform: scale(0.95); }
-
-        .badge-popular {
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            background: var(--primary); color: white; font-size: 0.65rem; font-weight: 800;
-            padding: 4px 12px; border-radius: 20px; text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3); white-space: nowrap;
-        }
+        .privacy-box { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 15px; border-radius: 15px; margin-top: 15px; color: var(--text-main); }
     </style>
 </head>
 <body>
     <header class="gpu-accelerated">
         <div class="header-content">
-            <div class="app-title" style="font-weight: 800; font-size: 1.2rem;">💸 Pobre 3.1</div>
+            <div class="app-title" id="app-title-display" style="font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; color: var(--text-main)">Pobre 3.1</div>
             <div id="user-greeting" class="user-greeting"></div>
         </div>
-        <div id="status-tag"><i class="fas fa-piggy-bank"></i></div>
+        <div id="status-tag" style="color: var(--primary); font-size: 1.2rem;"><i class="fas fa-wallet"></i></div>
     </header>
 
     <div class="dashboard">
@@ -341,250 +351,201 @@
     </div>
 
     <div id="welcome-modal" class="modal-overlay">
-        <div class="glass-card">
+        <div class="glass-card" style="max-width: 340px; text-align: center; padding: 30px 20px;">
             <div style="font-size: 3rem; margin-bottom: 10px;">👋</div>
             <h2 style="color: var(--primary); margin: 0 0 10px;">Bem-vindo(a)!</h2>
-            <p style="color: #4b5563; font-size: 0.9rem; margin-bottom: 20px;">
-                Para personalizar seus backups e relatórios, como você quer ser chamado?
-            </p>
-            <input type="text" id="user-name-input" class="glass-input" placeholder="Ex: Gabriel, Casa, Loja...">
-            <button class="btn-primary" onclick="salvarUsuario()">Começar</button>
+            <p style="color: var(--text-sec); font-size: 0.9rem; margin-bottom: 20px;">Para personalizar seus backups e relatórios, como você quer ser chamado?</p>
+            <input type="text" id="user-name-input" placeholder="Ex: Gabriel, Casa, Loja...">
+            <button class="btn-primary" onclick="salvarUsuario()" style="margin-top: 15px;">Começar</button>
         </div>
     </div>
 
     <div id="tutorial-modal" class="modal-overlay">
         <div class="glass-card" style="max-height: 85vh; overflow-y: auto; padding: 25px 20px; text-align: left;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="color: var(--primary); margin: 0; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-book-open"></i> Guia Completo
-                </h3>
-                <i class="fas fa-times" onclick="closeTutorialModal()" style="font-size: 1.5rem; color: #9ca3af; cursor: pointer;"></i>
+                <h3 style="color: var(--primary); margin: 0; display: flex; align-items: center; gap: 8px;"><i class="fas fa-book-open"></i> Guia Completo</h3>
+                <i class="fas fa-times" onclick="closeTutorialModal()" style="font-size: 1.5rem; color: var(--text-sec); cursor: pointer;"></i>
             </div>
-            
-            <div class="tutorial-list">
-                <h4><i class="fas fa-arrow-up"></i> Registrar Receitas</h4>
-                <ul>
-                    <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Ganhar":</b> preencha descrição, categoria, valor e data.</div></li>
-                    <li><i class="fas fa-tags"></i> <div><b>Categorias disponíveis:</b> Salário, Investimentos, Outros.</div></li>
-                    <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Salvar Receita"</strong>.</div></li>
-                </ul>
-                
-                <h4><i class="fas fa-arrow-down"></i> Registrar Despesas</h4>
-                <ul>
-                    <li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Gastar":</b> descrição, categoria, valor e data.</div></li>
-                    <li><i class="fas fa-tags"></i> <div><b>Categorias (8 opções):</b> Alimentação, Transporte, Lazer, etc.</div></li>
-                    <li><i class="fas fa-check-circle"></i> <div>Clique em <strong>"Confirmar Gasto"</strong>.</div></li>
-                </ul>
-                
-                <h4><i class="fas fa-pen"></i> Editar e Excluir Lançamentos</h4>
-                <ul>
-                    <li><i class="fas fa-mouse-pointer"></i> <div>Na aba <strong>"Análise"</strong>, clique sobre qualquer item do extrato.</div></li>
-                    <li><i class="fas fa-sync-alt"></i> <div>O formulário será preenchido para edição – altere e clique em <strong>"Atualizar"</strong>.</div></li>
-                </ul>
-                
-                <h4><i class="fas fa-chart-pie"></i> Análise e Relatórios</h4>
-                <ul>
-                    <li><i class="fas fa-tachometer-alt"></i> <div><b>Dashboard:</b> saldo geral e gastos do mês no topo da tela.</div></li>
-                    <li><i class="fas fa-file-pdf"></i> <div><b>Exportar PDF:</b> gera um relatório profissional com resumo e tabelas.</div></li>
-                </ul>
-                
-                <h4><i class="fas fa-database"></i> Backup e Segurança</h4>
-                <ul>
-                    <li><i class="fas fa-download"></i> <div><b>Backup:</b> exporta um arquivo .json (guarde onde quiser).</div></li>
-                    <li><i class="fas fa-upload"></i> <div><b>Restaurar:</b> importe um backup prévio para recuperar dados.</div></li>
-                    <li><i class="fas fa-lock"></i> <div><b>Privacidade:</b> seus dados NUNCA saem do seu celular.</div></li>
+            <div class="tutorial-list" style="color: var(--text-sec); font-size: 0.9rem;">
+                <p>Use as abas abaixo para navegar entre Ganhar e Gastar.</p>
+                <ul style="padding-left: 20px; line-height: 1.6;">
+                    <li>As setas indicam se é Receita ou Despesa.</li>
+                    <li>Use a aba Análise para ver gráficos e extrato.</li>
+                    <li>Toque em um item do extrato para editar.</li>
                 </ul>
             </div>
-            
-            <button class="btn-primary" onclick="closeTutorialModal()" style="margin-top: 20px; width: 100%;">
-                <i class="fas fa-check"></i> Entendi, vamos lá!
-            </button>
+            <button class="btn-primary" onclick="closeTutorialModal()" style="margin-top: 20px;">Entendi</button>
         </div>
     </div>
 
     <div id="pix-modal" class="modal-overlay" onclick="closePixModal()">
-        <div class="glass-card" onclick="event.stopPropagation()">
-            <h3 id="modal-qr-title" style="color: var(--primary); margin-top: 0;">Ajude com um café ao dev ☕</h3>
+        <div class="glass-card" onclick="event.stopPropagation()" style="text-align: center; max-width: 340px;">
+            <h3 id="modal-qr-title" style="color: var(--primary); margin-top: 0;">Ajude com um café ☕</h3>
             <div style="background: white; padding: 15px; border-radius: 15px; display: inline-block; margin: 10px 0;">
-                <img id="modal-qr-img" src="qrcode.png" alt="QR Code Ampliado" style="width: 250px; height: 250px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
+                <img id="modal-qr-img" src="qrcode.png" alt="QR Code" style="width: 250px; height: 250px; object-fit: contain; display: block;" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
             </div>
-            <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 20px; line-height: 1.5;">
-                Escaneie o código acima usando o aplicativo do seu banco.<br>Obrigado por fortalecer o projeto!
-            </p>
-            <button class="btn-primary" onclick="closePixModal()" style="background: #374151;">
-                <i class="fas fa-times"></i> Fechar
-            </button>
+            <p style="font-size: 0.85rem; color: var(--text-sec); margin-bottom: 20px;">Escaneie o código acima usando o aplicativo do seu banco.</p>
+            <button class="btn-primary" onclick="closePixModal()" style="background: #374151;">Fechar</button>
         </div>
     </div>
 
     <div class="container">
         <div id="v-receita" class="view active">
             <div class="card">
-                <h3 id="titulo-receita"><i class="fas fa-plus"></i> Nova Receita</h3>
+                <h3 id="titulo-receita" style="color: var(--text-main); margin-top:0"><i class="fas fa-plus-circle" style="color: var(--income)"></i> Nova Receita</h3>
                 <input type="hidden" id="receita-id">
-                <input type="text" id="descricao-receita" placeholder="Ex: Salário Freelance">
-                <div class="category-selector" id="categoria-receita-selector">
+                
+                <label for="descricao-receita">Descrição</label>
+                <input type="text" id="descricao-receita" placeholder="Ex: Salário Freelance" autocomplete="off" maxlength="60">
+
+                <div class="category-selector" id="categoria-receita-selector" style="margin-top: 15px;">
                     <div class="category-option selected" data-category="salario" onclick="selectCategory('receita', 'salario')">💼<br>Salário</div>
                     <div class="category-option" data-category="investimentos" onclick="selectCategory('receita', 'investimentos')">📈<br>Invest.</div>
                     <div class="category-option" data-category="outros" onclick="selectCategory('receita', 'outros')">🎁<br>Outros</div>
                 </div>
                 <input type="hidden" id="categoria-receita" value="salario">
-                <input type="number" id="valor-receita" placeholder="Valor R$" step="0.01">
+
+                <label for="valor-receita">Valor</label>
+                <input type="text" id="valor-receita" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off">
+
+                <label for="data-receita">Data</label>
                 <input type="date" id="data-receita">
-                <button id="btn-salvar-receita" class="btn-income" onclick="salvar('receita')"><i class="fas fa-check"></i> Salvar Receita</button>
-                <button id="del-receita" class="btn-delete" style="display:none;" onclick="deletarRegistro('receita')"><i class="fas fa-trash"></i> Excluir</button>
+
+                <button id="btn-salvar-receita" class="btn-income" onclick="salvar('receita')" style="margin-top: 20px;">Salvar Receita</button>
+                <button id="del-receita" class="btn-delete" style="display:none;" onclick="deletarRegistro('receita')">Excluir</button>
                 <button id="btn-cancel-receita" class="btn-sec" style="display:none;" onclick="cancelarEdicao('receitas')">Voltar</button>
             </div>
         </div>
 
         <div id="v-despesa" class="view">
             <div class="card">
-                <h3 id="titulo-despesa"><i class="fas fa-minus"></i> Novo Gasto</h3>
+                <h3 id="titulo-despesa" style="color: var(--text-main); margin-top:0"><i class="fas fa-minus-circle" style="color: var(--expense)"></i> Novo Gasto</h3>
                 <input type="hidden" id="despesa-id">
-                <input type="text" id="descricao-despesa" placeholder="Onde você gastou?">
-                <div class="category-selector" id="categoria-despesa-selector">
+                
+                <label for="descricao-despesa">Descrição</label>
+                <input type="text" id="descricao-despesa" placeholder="Ex: Mercado" autocomplete="off" maxlength="60">
+
+                <div class="category-selector" id="categoria-despesa-selector" style="margin-top: 15px;">
                     <div class="category-option selected" data-category="alimentacao" onclick="selectCategory('despesa', 'alimentacao')">🍕<br>Comida</div>
-                    <div class="category-option" data-category="transporte" onclick="selectCategory('despesa', 'transporte')">🚗<br>Transporte</div>
+                    <div class="category-option" data-category="transporte" onclick="selectCategory('despesa', 'transporte')">🚗<br>Transp.</div>
                     <div class="category-option" data-category="lazer" onclick="selectCategory('despesa', 'lazer')">🍿<br>Lazer</div>
                     <div class="category-option" data-category="contas" onclick="selectCategory('despesa', 'contas')">🧾<br>Contas</div>
-                    <div class="category-option" data-category="moradia" onclick="selectCategory('despesa', 'moradia')">🏠<br>Moradia</div>
+                    <div class="category-option" data-category="moradia" onclick="selectCategory('despesa', 'moradia')">🏠<br>Casa</div>
                     <div class="category-option" data-category="saude" onclick="selectCategory('despesa', 'saude')">💊<br>Saúde</div>
-                    <div class="category-option" data-category="educacao" onclick="selectCategory('despesa', 'educacao')">📚<br>Educação</div>
-                    <div class="category-option" data-category="compras" onclick="selectCategory('despesa', 'compras')">🛒<br>Compras</div>
+                    <div class="category-option" data-category="educacao" onclick="selectCategory('despesa', 'educacao')">📚<br>Estudo</div>
+                    <div class="category-option" data-category="compras" onclick="selectCategory('despesa', 'compras')">🛒<br>Compra</div>
                 </div>
                 <input type="hidden" id="categoria-despesa" value="alimentacao">
-                <input type="number" id="valor-despesa" placeholder="Valor R$" step="0.01">
+
+                <label for="valor-despesa">Valor</label>
+                <input type="text" id="valor-despesa" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off">
+
+                <label for="data-despesa">Data</label>
                 <input type="date" id="data-despesa">
-                <button id="btn-salvar-despesa" class="btn-expense" onclick="salvar('despesa')"><i class="fas fa-money-bill-wave"></i> Confirmar Gasto</button>
-                <button id="del-despesa" class="btn-delete" style="display:none;" onclick="deletarRegistro('despesa')"><i class="fas fa-trash"></i> Excluir Registro</button>
+
+                <button id="btn-salvar-despesa" class="btn-expense" onclick="salvar('despesa')" style="margin-top: 20px;">Confirmar Gasto</button>
+                <button id="del-despesa" class="btn-delete" style="display:none;" onclick="deletarRegistro('despesa')">Excluir</button>
                 <button id="btn-cancel-despesa" class="btn-sec" style="display:none;" onclick="cancelarEdicao('despesas')">Voltar</button>
             </div>
         </div>
 
         <div id="v-consulta" class="view">
             <div class="card">
-                <h3><i class="fas fa-chart-pie"></i> Gastos por Categoria</h3>
+                <h3><i class="fas fa-chart-pie" style="color: var(--primary)"></i> Gastos por Categoria</h3>
                 <select id="filtroMes" onchange="render()"></select>
-                <div class="chart-container">
+                <div class="chart-container" style="position: relative; height: 250px; margin-bottom: 20px;">
                     <canvas id="graficoPizza"></canvas>
                 </div>
-                <div id="categoria-legend" class="legend"></div>
+                <div id="categoria-legend" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 15px; font-size: 0.75rem; color: var(--text-sec);"></div>
             </div>
 
             <div class="card">
-                <h3><i class="fas fa-chart-line"></i> Evolução Mensal</h3>
-                <div class="chart-container">
+                <h3><i class="fas fa-chart-line" style="color: var(--primary)"></i> Evolução</h3>
+                <div class="chart-container" style="position: relative; height: 250px;">
                     <canvas id="graficoMensal"></canvas>
                 </div>
             </div>
 
             <div class="card">
-                <h3><i class="fas fa-history"></i> Extrato</h3>
+                <h3><i class="fas fa-history" style="color: var(--primary)"></i> Extrato</h3>
                 <div id="lista-detalhada"></div>
             </div>
 
             <div class="card" style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF Completo</button>
+                <button class="btn-sec" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF (Dossiê)</button>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn-sec" onclick="exportarBackup()"><i class="fas fa-download"></i> Backup</button>
                     <button class="btn-sec" onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
                     <input type="file" id="restore-file" style="display:none" accept=".json" onchange="restaurarBackup(this)">
                 </div>
-                <button onclick="confirmarLimpeza()" style="color: var(--expense); background: #fee2e2;"><i class="fas fa-trash-alt"></i> Limpar Dados</button>
+                <button onclick="confirmarLimpeza()" style="color: var(--expense); background: rgba(255, 69, 58, 0.1); border: 1px solid rgba(255, 69, 58, 0.2);"><i class="fas fa-trash-alt"></i> Limpar Dados</button>
             </div>
         </div>
 
         <div id="v-apoie" class="view">
             <div class="card">
-                <h3><i class="fas fa-hand-holding-heart" style="color: #e11d48;"></i> O App do Pobre ajudou seu bolso?</h3>
-                
+                <h3 style="color: var(--text-main)"><i class="fas fa-hand-holding-heart" style="color: #ff2d55;"></i> O App do Pobre ajudou?</h3>
                 <div class="info-section">
                     <p>O <b>Pobre 3.1</b> foi criado para colocar o controle financeiro na palma da sua mão, sem frescura e <b>sem vender seus dados</b>.</p>
-                    
                     <h4><i class="fas fa-calculator"></i> Roda até em calculadora</h4>
-                    <p>Feito leve de propósito. Não trava seu celular tijolão, gasta pouca bateria e funciona sem internet. É tecnologia de ponta para quem conta as moedas.</p>
-
+                    <p>Feito leve de propósito. Não trava seu celular tijolão, gasta pouca bateria e funciona sem internet.</p>
                     <h4><i class="fas fa-user-secret"></i> Contra o Sistema</h4>
-                    <p>Diferente dos apps de banco, <b>nós não espiamos o que você compra</b>. Tudo fica salvo apenas no seu aparelho. O dinheiro é seu, a privacidade também.</p>
-                    
-                    <div class="privacy-box" style="background: #fff1f2; border-color: #e11d48; color: #9f1239;">
-                        <p><i class="fas fa-ban"></i> <b>Zero Taxas. Zero Anúncios.</b><br>
-                        Manter esse app no ar custa tempo e café. Se ele te ajudou a economizar e não pagar juros pro banco, considere apoiar o desenvolvedor!</p>
+                    <p>Diferente dos apps de banco, <b>nós não espiamos o que você compra</b>. Tudo fica salvo apenas no seu aparelho.</p>
+                    <div class="privacy-box">
+                        <p><i class="fas fa-shield-alt"></i> <b>Zero Taxas. Zero Anúncios.</b><br>
+                        Manter esse app no ar custa tempo e café. Se ele te ajudou, considere apoiar o desenvolvedor!</p>
                     </div>
                 </div>
-
-                <div style="margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+                <div style="margin-top: 30px; border-top: 1px solid rgba(120,120,128,0.2); padding-top: 20px;">
                     <h4 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                         <i class="fas fa-gift"></i> Escolha como fortalecer
                     </h4>
-                    
                     <div class="tiers-grid">
-                        
                         <div class="tier-card">
                             <div class="tier-icon">☕</div>
-                            <div class="tier-title">O Café da Firma</div>
-                            <div class="tier-price">R$ 5,00 a R$ 10,00</div>
-                            <div class="tier-description">
-                                Valor simbólico! Pra eu não dormir em cima do teclado enquanto programo novas funções. Ajuda demais!
-                            </div>
-                            <img src="qrcode.png" alt="QR Code PIX - Café" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Café da Firma ☕')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
-                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'O Café da Firma ☕')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                            <div class="tier-title">Café da Firma</div>
+                            <div class="tier-price">R$ 5,00 - R$ 10,00</div>
+                            <div class="tier-description">Ajuda demais a manter o código rodando sem sono!</div>
+                            <img src="qrcode.png" alt="QR Code" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'Café da Firma')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
                         </div>
-
-                        <div class="tier-card" style="background: #f0fdf4; border-color: #bbf7d0;">
-                            <div class="badge-popular">✨ Mais Escolhido</div>
+                        <div class="tier-card" style="border-color: var(--primary);">
+                            <div class="badge-popular">✨ Popular</div>
                             <div class="tier-icon">🥪</div>
-                            <div class="tier-title">O Preço de um Lanche</div>
-                            <div class="tier-price">R$ 15,00 a R$ 25,00</div>
-                            <div class="tier-description">
-                                Mais barato que pagar taxa de manutenção de conta! Retribua pelas horas economizadas e pelos relatórios em PDF.
-                            </div>
-                            <img src="qrcode.png" alt="QR Code PIX - Lanche" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Preço de um Lanche 🥪')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
-                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'O Preço de um Lanche 🥪')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                            <div class="tier-title">O Lanche</div>
+                            <div class="tier-price">R$ 15,00 - R$ 25,00</div>
+                            <div class="tier-description">Retribua pelas horas economizadas e relatórios PDF.</div>
+                            <img src="qrcode.png" alt="QR Code" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'O Lanche')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
                         </div>
-
-                        <div class="tier-card" style="background: #fef9e7; border-color: #fde68a;">
+                        <div class="tier-card">
                             <div class="tier-icon">👑</div>
-                            <div class="tier-title">Patrão do App</div>
-                            <div class="tier-price">R$ 50,00 ou mais</div>
-                            <div class="tier-description">
-                                Virou a ferramenta oficial da casa? Vire sócio moral do projeto. Garante que o app continue existindo pra sempre.
-                            </div>
-                            <img src="qrcode.png" alt="QR Code PIX - Patrão" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'Patrão do App 👑')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
-                            <div class="zoom-hint" onclick="abrirQrCodeZoom(this.previousElementSibling.src, 'Patrão do App 👑')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                            <div class="tier-title">Patrão</div>
+                            <div class="tier-price">R$ 50,00+</div>
+                            <div class="tier-description">Vire sócio moral do projeto. Garante que o app continue existindo.</div>
+                            <img src="qrcode.png" alt="QR Code" class="tier-qr" onclick="abrirQrCodeZoom(this.src, 'Patrão')" onerror="this.src='https://placehold.co/200x200?text=QR+Code+PIX'">
                         </div>
                     </div>
                 </div>
-
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                    <button class="btn-tutorial" onclick="openTutorialModal()">
-                        <i class="fas fa-book-reader"></i> Tutorial: Ver recursos
-                    </button>
-
-                    <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')">
-                        <i class="fas fa-credit-card"></i> Apoiar via Cartão/MP
-                    </button>
-                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149?text=Opa,%20vim%20pelo%20App%20do%20Pobre!', '_blank')">
-                        <i class="fab fa-whatsapp"></i> Falar com o Desenvolvedor
-                    </button>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 0.7rem;">
-                    Versão 3.1 Pro • <i class="fas fa-shield-alt"></i> Dados 100% seguros
+                    <button class="btn-tutorial" onclick="openTutorialModal()"><i class="fas fa-book-reader"></i> Tutorial</button>
+                    <button class="btn-mp" onclick="window.open('https://link.mercadopago.com.br/cuecasa', '_blank')"><i class="fas fa-credit-card"></i> Apoiar via Cartão/MP</button>
+                    <button class="btn-wpp" onclick="window.open('https://wa.me/5547996249149?text=Opa,%20vim%20pelo%20App%20do%20Pobre!', '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dev</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <nav>
-        <div class="nav-buttons">
-            <div class="tab active" onclick="navTo('v-receita',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
-            <div class="tab" onclick="navTo('v-despesa',this)"><i class="fas fa-arrow-down"></i><span>Gastar</span></div>
-            <div class="tab" onclick="navTo('v-consulta',this)"><i class="fas fa-chart-bar"></i><span>Análise</span></div>
-            <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
-        </div>
-    </nav>
+    <div id="sticky-save" class="sticky-actions">
+        <button id="sticky-btn" class="btn-primary">
+            <i class="fas fa-check"></i> Salvar
+        </button>
+    </div>
 
+    <nav>
+        <div class="tab active" onclick="navTo('v-receita',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
+        <div class="tab" onclick="navTo('v-despesa',this)"><i class="fas fa-arrow-down"></i><span>Gastar</span></div>
+        <div class="tab" onclick="navTo('v-consulta',this)"><i class="fas fa-chart-bar"></i><span>Análise</span></div>
+        <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
+    </nav>
     <div id="toast">Mensagem</div>
 
     <script>
@@ -592,30 +553,19 @@
         if ('BroadcastChannel' in window) {
             const channel = new BroadcastChannel('pobre_3_1_auth');
             let isAnotherTabOpen = false;
-
             channel.onmessage = (event) => {
-                if (event.data === 'ping') {
-                    channel.postMessage('pong');
-                } else if (event.data === 'pong') {
+                if (event.data === 'ping') { channel.postMessage('pong'); } 
+                else if (event.data === 'pong') {
                     isAnotherTabOpen = true;
-                    document.body.innerHTML = `
-                        <div style="display:flex;height:100vh;align-items:center;justify-content:center;text-align:center;padding:20px;flex-direction:column;">
-                            <h1>⚠️ App já aberto</h1>
-                            <p>O Pobre 3.1 já está rodando em outra aba ou janela.</p>
-                        </div>`;
+                    document.body.innerHTML = '<div style="display:flex;height:100vh;align-items:center;justify-content:center;text-align:center;padding:20px;flex-direction:column;color:var(--text-main);"><h1>⚠️ App já aberto</h1><p>O Pobre 3.1 já está rodando em outra aba.</p></div>';
                     window.stop();
                 }
             };
-            // Pequeno delay para permitir que a outra aba responda
             setTimeout(() => channel.postMessage('ping'), 100);
         }
 
-        // --- CORREÇÃO DE CACHE/SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                // Força atualização para evitar versões antigas presas
-                regs.forEach(reg => reg.update());
-            });
+            navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(reg => reg.update()));
             window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
         }
 
@@ -623,129 +573,160 @@
         let chartInstancePie;
         let chartInstanceMonthly;
         const FORMAT_BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-
         const CATEGORIES = {
             receita: { salario: "Salário", investimentos: "Investimentos", outros: "Outros" },
-            despesa: { 
-                alimentacao: "Alimentação", 
-                transporte: "Transporte", 
-                lazer: "Lazer", 
-                contas: "Contas",
-                moradia: "Moradia",
-                saude: "Saúde",
-                educacao: "Educação",
-                compras: "Compras"
-            }
+            despesa: { alimentacao: "Alimentação", transporte: "Transporte", lazer: "Lazer", contas: "Contas", moradia: "Moradia", saude: "Saúde", educacao: "Educação", compras: "Compras" }
         };
+        const CHART_COLORS = ['#5e5ce6', '#30d158', '#ff9f0a', '#ff453a', '#bf5af2', '#5ac8fa', '#64d2ff', '#ff375f'];
 
-        const CHART_COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316'];
+        // ==================== FUNÇÕES UX/UI ====================
+        
+        // 1. STICKY SAVE CONTROL
+        function ativarSticky(tipo){
+            const bar = document.getElementById('sticky-save');
+            const btn = document.getElementById('sticky-btn');
+            bar.classList.add('active');
+            btn.onclick = () => salvar(tipo);
+        }
 
-        // ==================== SISTEMA DE USUÁRIO ====================
-        function checkUser() {
-            const user = localStorage.getItem('pobre_user_name');
-            if (!user) {
-                document.getElementById('welcome-modal').style.display = 'flex';
+        function desativarSticky(){
+            document.getElementById('sticky-save').classList.remove('active');
+        }
+
+        document.addEventListener('focusin', (e)=>{
+            if(e.target.matches('#v-receita input')) ativarSticky('receita');
+            if(e.target.matches('#v-despesa input')) ativarSticky('despesa');
+        });
+
+        document.addEventListener('focusout', (e)=>{
+            setTimeout(() => {
+                if(!document.querySelector('#v-receita input:focus') && 
+                   !document.querySelector('#v-despesa input:focus')){
+                    desativarSticky();
+                }
+            }, 100);
+        });
+
+        // 2. MÁSCARA MONETÁRIA
+        function formatarMoedaInput(input){
+            let valor = input.value.replace(/\D/g,'');
+            valor = (parseInt(valor || 0)/100).toFixed(2);
+            valor = valor.replace('.',',');
+            valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+            input.value = valor;
+        }
+
+        function getValorNumerico(inputId){
+            const el = document.getElementById(inputId);
+            if(!el || !el.value) return 0;
+            const val = el.value.replace(/\./g,'').replace(',','.');
+            return parseFloat(val);
+        }
+
+        // 3. VALIDAÇÃO INLINE
+        function validarCampo(input, condicao, mensagem){
+            let erro = input.nextElementSibling;
+            if(!erro || !erro.classList.contains('erro-msg')){
+                erro = document.createElement('div');
+                erro.className = 'erro-msg';
+                erro.style.color = 'var(--expense)';
+                erro.style.fontSize = '0.75rem';
+                erro.style.marginTop = '-5px'; 
+                erro.style.marginBottom = '10px';
+                input.after(erro);
+            }
+            
+            if(!condicao){
+                erro.innerText = mensagem;
+                input.style.borderColor = 'var(--expense)';
+                if(navigator.vibrate) navigator.vibrate(60); 
             } else {
-                updateUserUI(user);
+                erro.innerText = '';
+                input.style.borderColor = 'transparent'; 
             }
         }
 
+        // 4. MICROINTERAÇÕES E RIPPLE
+        function rippleEffect(e){
+            const button = e.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${e.clientX - button.getBoundingClientRect().left - radius}px`;
+            circle.style.top = `${e.clientY - button.getBoundingClientRect().top - radius}px`;
+            circle.style.position = "absolute";
+            circle.style.borderRadius = "50%";
+            circle.style.background = "rgba(255,255,255,0.4)";
+            circle.style.transform = "scale(0)";
+            circle.style.animation = "ripple 0.5s linear";
+            circle.style.pointerEvents = "none";
+            button.appendChild(circle);
+            setTimeout(()=>circle.remove(),500);
+        }
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes ripple{ to{ transform: scale(4); opacity:0; } }`;
+        document.head.appendChild(style);
+
+        // ==================== LOGICA PRINCIPAL ====================
+        function checkUser() {
+            const user = localStorage.getItem('pobre_user_name');
+            if (!user) { document.getElementById('welcome-modal').style.display = 'flex'; } 
+            else { updateUserUI(user); }
+        }
         function salvarUsuario() {
             const name = document.getElementById('user-name-input').value.trim();
             if (!name) return alert("Por favor, digite um nome.");
             localStorage.setItem('pobre_user_name', name);
             document.getElementById('welcome-modal').style.display = 'none';
-            updateUserUI(name);
-            showToast(`Bem-vindo, ${name}!`);
-        }
-
-        function updateUserUI(name) {
-            const el = document.getElementById('user-greeting');
-            el.innerText = `Olá, ${name}`;
-            el.style.display = 'block';
-        }
-
-        function getUserName() {
-            return localStorage.getItem('pobre_user_name') || "Usuário";
+            updateUserUI(name); showToast(`Bem-vindo, ${name}!`);
         }
         
-        function getSafeFileName() {
-            return getUserName().replace(/[^a-z0-9]/gi, '_');
+        // --- ATUALIZAÇÃO DO TÍTULO DINÂMICO ---
+        function updateUserUI(name) {
+            // Alteração solicitada: Muda de "Pobre 3.1" para "Contas [Nome]"
+            const titleEl = document.getElementById('app-title-display');
+            if(titleEl) {
+                // Primeira letra maiúscula apenas por estética
+                const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+                titleEl.innerText = `Contas ${formattedName}`;
+            }
         }
+        
+        function getUserName() { return localStorage.getItem('pobre_user_name') || "Usuário"; }
+        function getSafeFileName() { return getUserName().replace(/[^a-z0-9]/gi, '_'); }
 
-        // ==================== MODAIS ====================
         function abrirQrCodeZoom(imageSrc, titulo) {
             document.getElementById('modal-qr-img').src = imageSrc;
             document.getElementById('modal-qr-title').innerText = titulo;
             document.getElementById('pix-modal').style.display = 'flex';
         }
-        
         function closePixModal() { document.getElementById('pix-modal').style.display = 'none'; }
         function openTutorialModal() { document.getElementById('tutorial-modal').style.display = 'flex'; }
         function closeTutorialModal() { document.getElementById('tutorial-modal').style.display = 'none'; }
+        function removerAcentos(str) { if (!str) return ""; return str.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, ""); }
 
-        // ==================== UTILITÁRIOS ====================
-        function removerAcentos(str) {
-            if (!str) return "";
-            return str.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        }
-
-        // ==================== INDEXED DB (CORRIGIDO E BLINDADO) ====================
         async function initDB() {
             return new Promise((resolve, reject) => {
-
                 function abrirBanco() {
-                    // Tenta abrir o banco
                     const request = indexedDB.open("GastosProDB", 3);
-
                     request.onupgradeneeded = (e) => {
                         const db = e.target.result;
-                        if (!db.objectStoreNames.contains("receitas")) {
-                            db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
-                        }
-                        if (!db.objectStoreNames.contains("despesas")) {
-                            db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
-                        }
+                        if (!db.objectStoreNames.contains("receitas")) db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
+                        if (!db.objectStoreNames.contains("despesas")) db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
                     };
-
                     request.onsuccess = (e) => {
                         db = e.target.result;
-                        // Adiciona listener para fechar conexão se outra aba tentar atualizar
-                        db.onversionchange = () => {
-                            db.close();
-                            alert("Uma nova versão do app está disponível. Por favor, recarregue a página.");
-                        };
+                        db.onversionchange = () => { db.close(); alert("Nova versão. Recarregue."); };
                         resolve();
                     };
-
-                    // SE DER ERRO (Corrupção ou Travamento)
                     request.onerror = async (e) => {
-                        console.warn("Banco corrompido ou versão antiga presa. Tentando recuperar...", e);
-                        
-                        // Fecha qualquer conexão pendente
                         if(db) db.close();
-
-                        // Apaga o banco corrompido
                         const deleteReq = indexedDB.deleteDatabase("GastosProDB");
-
-                        deleteReq.onsuccess = () => {
-                            console.log("Banco corrompido apagado com sucesso. Recriando...");
-                            // Chama a função novamente para criar do zero
-                            abrirBanco();
-                        };
-
-                        deleteReq.onerror = () => {
-                            console.error("Falha crítica: Não foi possível apagar o banco corrompido.");
-                            reject("Erro crítico no banco de dados.");
-                        };
-                    };
-
-                    request.onblocked = () => {
-                        console.warn("Banco bloqueado. Feche outras abas do app.");
+                        deleteReq.onsuccess = () => abrirBanco();
+                        deleteReq.onerror = () => reject("Erro crítico DB");
                     };
                 }
-
-                // Inicia o processo
                 abrirBanco();
             });
         }
@@ -760,15 +741,13 @@
             });
         }
 
-        // ==================== CRUD COM VALIDAÇÃO ====================
         async function salvar(tipo) {
             const id = document.getElementById(`${tipo}-id`).value;
             const desc = document.getElementById(`descricao-${tipo}`).value.trim();
             const cat = document.getElementById(`categoria-${tipo}`).value;
-            const valor = parseFloat(document.getElementById(`valor-${tipo}`).value);
+            const valor = getValorNumerico(`valor-${tipo}`);
             const data = document.getElementById(`data-${tipo}`).value;
 
-            // VALIDAÇÕES RÍGIDAS
             if (!desc) { showToast("Descrição obrigatória!"); return; }
             if (!data) { showToast("Data obrigatória!"); return; }
             if (isNaN(valor) || valor <= 0) { showToast("Valor deve ser maior que zero!"); return; }
@@ -791,15 +770,12 @@
             tx.oncomplete = () => { showToast("Removido."); cancelarEdicao(storeName); render(); navTo('v-consulta', document.querySelectorAll('.tab')[2]); };
         }
 
-        // ==================== EXPORTAÇÃO / IMPORTAÇÃO ATÔMICA ====================
         async function exportarBackup() {
             const data = { receitas: await getAll("receitas"), despesas: await getAll("despesas") };
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
-            a.href = url;
-            a.download = `backup_${getSafeFileName()}_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
+            a.href = url; a.download = `backup_${getSafeFileName()}_${new Date().toISOString().slice(0,10)}.json`; a.click();
         }
 
         async function restaurarBackup(input) {
@@ -810,192 +786,143 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     if(confirm("Importar dados? Isso substituirá TODOS os dados atuais.")) {
-                        // TRANSAÇÃO ÚNICA E SEGURA
                         const tx = db.transaction(["receitas", "despesas"], "readwrite");
-                        
-                        tx.objectStore("receitas").clear();
-                        tx.objectStore("despesas").clear();
-
-                        if (data.receitas) {
-                            data.receitas.forEach(r => { delete r.id; tx.objectStore("receitas").add(r); });
-                        }
-                        if (data.despesas) {
-                            data.despesas.forEach(d => { delete d.id; tx.objectStore("despesas").add(d); });
-                        }
-
-                        tx.oncomplete = () => { showToast("Dados restaurados com sucesso!"); render(); };
-                        tx.onerror = () => { showToast("Erro ao restaurar. Nada foi alterado."); };
+                        tx.objectStore("receitas").clear(); tx.objectStore("despesas").clear();
+                        if (data.receitas) data.receitas.forEach(r => { delete r.id; tx.objectStore("receitas").add(r); });
+                        if (data.despesas) data.despesas.forEach(d => { delete d.id; tx.objectStore("despesas").add(d); });
+                        tx.oncomplete = () => { showToast("Dados restaurados!"); render(); };
                     }
-                } catch(err) { showToast("Erro no arquivo de backup!"); console.error(err); }
+                } catch(err) { showToast("Erro no backup!"); }
             };
             reader.readAsText(file);
         }
 
-        // ==================== PDF COMPLETO ====================
+        // --- PDF DOSSIE PRO (Versão atualizada) ---
         async function gerarRelatorioPDF() {
-            showToast("Gerando relatório completo...");
+            showToast("Preparando o dossiê...");
+            
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const mesSelecionado = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
-
-            const receitasMes = receitas.filter(r => r.data.startsWith(mesSelecionado));
-            const despesasMes = despesas.filter(d => d.data.startsWith(mesSelecionado));
-
+            
+            const receitasMes = receitas.filter(r => r.data.startsWith(mesSelecionado)).map(x => ({...x, tipo: 'receita'}));
+            const despesasMes = despesas.filter(d => d.data.startsWith(mesSelecionado)).map(x => ({...x, tipo: 'despesa'}));
+            
             const totalReceitas = receitasMes.reduce((s, i) => s + i.valor, 0);
             const totalDespesas = despesasMes.reduce((s, i) => s + i.valor, 0);
             const saldoMes = totalReceitas - totalDespesas;
+            
+            const cats = {}; 
+            despesasMes.forEach(d => cats[d.categoria] = (cats[d.categoria] || 0) + d.valor);
+            const topCats = Object.entries(cats).sort(([,a], [,b]) => b - a).slice(0, 5);
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 14;
-            
-            // Safe Text para evitar erros com Emojis
+            const pageHeight = doc.internal.pageSize.getHeight();
             const safeText = (txt) => removerAcentos(txt);
             const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
 
-            // ----- CABEÇALHO -----
-            doc.setFillColor(79, 70, 229);
-            doc.rect(0, 0, pageWidth, 55, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(24);
-            doc.setFont("helvetica", 'bold');
-            doc.text(safeText("RELATÓRIO FINANCEIRO"), pageWidth/2, 22, { align: 'center' });
-            doc.setFontSize(14);
-            doc.setFont("helvetica", 'normal');
-            doc.text(safeText(`${getUserName()} • ${mesSelecionado.replace('-', '/')}`), pageWidth/2, 38, { align: 'center' });
+            doc.setFillColor(94, 92, 230); // Indigo
+            doc.rect(0, 0, pageWidth, 40, 'F');
             
-            let yPos = 70;
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(9);
-            doc.text(`Emissão: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, margin, yPos);
+            doc.setTextColor(255, 255, 255); 
+            doc.setFontSize(22); doc.setFont("helvetica", 'bold');
+            doc.text("DOSSIE MENSAL", 14, 20);
             
-            // ----- RESUMO (CARD) -----
-            yPos += 10;
-            doc.setFillColor(245, 247, 250);
-            doc.roundedRect(margin, yPos, pageWidth - (margin*2), 35, 3, 3, 'F');
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(12);
-            doc.setFont("helvetica", 'bold');
-            doc.text("RESUMO DO MÊS", margin + 5, yPos + 8);
-            
-            doc.setFontSize(10);
-            doc.setFont("helvetica", 'normal');
-            doc.text("Receitas:", margin + 5, yPos + 20);
-            doc.text(fmtBRL(totalReceitas), margin + 50, yPos + 20);
-            doc.text("Despesas:", margin + 90, yPos + 20);
-            doc.text(fmtBRL(totalDespesas), margin + 135, yPos + 20);
-            doc.text("Saldo:", margin + 5, yPos + 30);
-            doc.setTextColor(saldoMes >= 0 ? 5 : 220, saldoMes >= 0 ? 150 : 38, saldoMes >= 0 ? 105 : 38);
-            doc.setFont("helvetica", 'bold');
-            doc.text(fmtBRL(saldoMes), margin + 50, yPos + 30);
-            
-            yPos += 45;
+            doc.setFontSize(10); doc.setFont("helvetica", 'normal');
+            doc.text(`Usuario: ${safeText(getUserName())}`, 14, 28);
+            doc.text(`Periodo: ${mesSelecionado}`, 14, 33);
 
-            // ----- TABELAS -----
-            doc.setTextColor(5, 150, 105);
-            doc.setFontSize(14);
-            doc.setFont("helvetica", 'bold');
-            doc.text("RECEITAS", margin, yPos);
-            yPos += 5;
-            
-            const rowsReceitas = receitasMes.map(r => [
-                r.data.split('-').reverse().join('/'),
-                safeText(r.descricao),
-                safeText(CATEGORIES.receita[r.categoria] || r.categoria),
-                fmtBRL(r.valor)
-            ]);
-
-            doc.autoTable({
-                startY: yPos,
-                head: [['Data', 'Descrição', 'Categoria', 'Valor']],
-                body: rowsReceitas.length ? rowsReceitas : [['-', 'Nenhuma receita', '-', '-']],
-                theme: 'striped',
-                headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: 'bold', halign: 'center' },
-                columnStyles: { 0: { cellWidth: 25 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 30 }, 3: { halign: 'right', cellWidth: 30 } },
-                styles: { fontSize: 9, cellPadding: 3 },
-                margin: { left: margin, right: margin }
-            });
-            
-            yPos = doc.lastAutoTable.finalY + 15;
-
-            doc.setTextColor(220, 38, 38);
-            doc.setFontSize(14);
-            doc.setFont("helvetica", 'bold');
-            doc.text("DESPESAS", margin, yPos);
-            yPos += 5;
-            
-            const rowsDespesas = despesasMes.map(d => [
-                d.data.split('-').reverse().join('/'),
-                safeText(d.descricao),
-                safeText(CATEGORIES.despesa[d.categoria] || d.categoria),
-                fmtBRL(d.valor)
-            ]);
-
-            doc.autoTable({
-                startY: yPos,
-                head: [['Data', 'Descrição', 'Categoria', 'Valor']],
-                body: rowsDespesas.length ? rowsDespesas : [['-', 'Nenhuma despesa', '-', '-']],
-                theme: 'striped',
-                headStyles: { fillColor: [220, 38, 38], textColor: 255, fontStyle: 'bold', halign: 'center' },
-                columnStyles: { 0: { cellWidth: 25 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 30 }, 3: { halign: 'right', cellWidth: 30 } },
-                styles: { fontSize: 9, cellPadding: 3 },
-                margin: { left: margin, right: margin }
-            });
-            
-            yPos = doc.lastAutoTable.finalY + 15;
-
-            // ----- GASTOS POR CATEGORIA -----
-            doc.setTextColor(79, 70, 229);
-            doc.setFontSize(14);
-            doc.setFont("helvetica", 'bold');
-            doc.text("GASTOS POR CATEGORIA", margin, yPos);
-            yPos += 5;
-            
-            const gastosCat = {};
-            despesasMes.forEach(d => {
-                const cat = CATEGORIES.despesa[d.categoria] || d.categoria;
-                gastosCat[cat] = (gastosCat[cat] || 0) + d.valor;
-            });
-            
-            const rowsCategoria = Object.entries(gastosCat)
-                .sort((a,b) => b[1] - a[1])
-                .map(([cat, val]) => [cat, fmtBRL(val)]);
-
-            doc.autoTable({
-                startY: yPos,
-                head: [['Categoria', 'Total Gasto']],
-                body: rowsCategoria.length ? rowsCategoria : [['Nenhum gasto', '-']],
-                theme: 'grid',
-                headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold', halign: 'center' },
-                columnStyles: { 0: { cellWidth: 'auto' }, 1: { halign: 'right', cellWidth: 40 } },
-                styles: { fontSize: 10, cellPadding: 4 },
-                margin: { left: margin, right: margin }
-            });
-
-            // ----- RODAPÉ -----
-            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(16);
+            doc.text("APP DO POBRE", pageWidth - 14, 20, { align: 'right' });
             doc.setFontSize(8);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Pobre 3.1 Pro+ • Relatório gerado automaticamente", pageWidth/2, finalY, { align: 'center' });
+            doc.text("Controle Financeiro Raiz", pageWidth - 14, 25, { align: 'right' });
 
-            doc.save(`Relatorio_${getSafeFileName()}_${mesSelecionado}.pdf`);
-            showToast("PDF completo salvo!");
-        }
+            let yPos = 55;
+            
+            const drawCard = (x, label, val, color) => {
+                doc.setFillColor(243, 244, 246);
+                doc.setDrawColor(229, 231, 235);
+                doc.roundedRect(x, yPos, 55, 25, 3, 3, 'FD');
+                doc.setFontSize(8); doc.setTextColor(107, 114, 128); doc.text(label, x + 5, yPos + 8);
+                doc.setFontSize(12); doc.setFont("helvetica", 'bold'); doc.setTextColor(...color);
+                doc.text(val, x + 5, yPos + 18);
+            };
 
-        // ==================== NAVEGAÇÃO ====================
-        function navTo(id, el) {
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                el.classList.add('active');
-                if (id === 'v-consulta') {
-                    popularFiltro();
-                    render();
+            drawCard(14, "GANHOS", fmtBRL(totalReceitas), [48, 209, 88]);
+            drawCard(75, "GASTOS", fmtBRL(totalDespesas), [255, 69, 58]);
+            drawCard(136, "SALDO FINAL", fmtBRL(saldoMes), saldoMes >= 0 ? [94, 92, 230] : [255, 69, 58]);
+
+            yPos += 40;
+            doc.setFontSize(11); doc.setTextColor(50, 50, 50);
+            doc.text("Para onde o dinheiro foi (Top 5):", 14, yPos);
+            
+            yPos += 8;
+            doc.setFontSize(9); doc.setFont("helvetica", 'normal');
+            let xCat = 14;
+            
+            if(topCats.length === 0) {
+                doc.text("Nenhum gasto registrado.", 14, yPos);
+            } else {
+                topCats.forEach(([cat, val], index) => {
+                    const nomeCat = CATEGORIES.despesa[cat] || cat;
+                    const texto = `${index + 1}. ${safeText(nomeCat)}: ${fmtBRL(val)}`;
+                    doc.text(texto, xCat, yPos);
+                    xCat += 65; 
+                    if (index === 2) { xCat = 14; yPos += 6; }
+                });
+            }
+
+            const allItems = [...receitasMes, ...despesasMes].sort((a,b) => a.data.localeCompare(b.data));
+            const tableData = allItems.map(item => [
+                item.data.split('-').reverse().join('/'),
+                safeText(item.descricao),
+                safeText(item.tipo === 'receita' ? CATEGORIES.receita[item.categoria] : CATEGORIES.despesa[item.categoria]),
+                item.tipo === 'receita' ? `+ ${fmtBRL(item.valor)}` : `- ${fmtBRL(item.valor)}`
+            ]);
+
+            doc.autoTable({
+                startY: yPos + 15,
+                head: [['Data', 'Descricao', 'Categoria', 'Valor']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [94, 92, 230], textColor: 255, fontStyle: 'bold' },
+                styles: { fontSize: 9, cellPadding: 3 },
+                columnStyles: { 0: { cellWidth: 25 }, 3: { cellWidth: 35, halign: 'right', fontStyle: 'bold' } },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 3) {
+                        const isPositive = data.cell.raw.includes('+');
+                        data.cell.styles.textColor = isPositive ? [48, 209, 88] : [255, 69, 58];
+                    }
                 }
             });
+
+            const finalY = doc.lastAutoTable.finalY + 20;
+            let veredicto = "";
+            if (saldoMes > 1000) veredicto = "VEREDICTO: Patrao! Sobrou dinheiro pra investir.";
+            else if (saldoMes > 0) veredicto = "VEREDICTO: Na trave! Sobrou pouco. Cuidado mes que vem.";
+            else if (saldoMes === 0) veredicto = "VEREDICTO: Zero a zero. Voce vive perigosamente.";
+            else veredicto = "VEREDICTO: DEU RUIM. Acione o plano de emergencia.";
+
+            doc.setDrawColor(94, 92, 230); doc.setLineWidth(0.5); doc.line(14, finalY, pageWidth - 14, finalY);
+            doc.setFontSize(10); doc.setTextColor(100); doc.text(safeText(veredicto), pageWidth / 2, finalY + 10, { align: 'center' });
+            doc.setFontSize(8); doc.setTextColor(150); doc.text(`Gerado em ${new Date().toLocaleDateString()}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+            doc.save(`Relatorio_${getSafeFileName()}_${mesSelecionado}.pdf`);
+            showToast("Dossiê gerado!");
         }
 
-        // ==================== CATEGORIAS ====================
+        function navTo(id, el) {
+            document.querySelectorAll('.view').forEach(v => v.style.opacity = 0);
+            setTimeout(() => {
+                document.querySelectorAll('.view, .tab').forEach(e => e.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                if(el) el.classList.add('active');
+                document.getElementById(id).style.opacity = 1;
+                if (id === 'v-consulta') { popularFiltro(); render(); }
+            }, 150);
+        }
+
         function selectCategory(tipo, cat) {
             document.querySelectorAll(`#categoria-${tipo}-selector .category-option`).forEach(e => e.classList.remove('selected'));
             const opt = document.querySelector(`#categoria-${tipo}-selector [data-category="${cat}"]`);
@@ -1003,14 +930,19 @@
             document.getElementById(`categoria-${tipo}`).value = cat;
         }
 
-        // ==================== EDIÇÃO ====================
         function openEdit(item) {
             const tipo = item.t;
-            navTo(tipo === 'receita' ? 'v-receita' : 'v-despesa', document.querySelectorAll('.tab')[tipo === 'receita' ? 0 : 1]);
+            const tabIndex = tipo === 'receita' ? 0 : 1;
+            const tabEl = document.querySelectorAll('.tab')[tabIndex];
+            navTo(tipo === 'receita' ? 'v-receita' : 'v-despesa', tabEl);
             
             document.getElementById(`${tipo}-id`).value = item.id;
             document.getElementById(`descricao-${tipo}`).value = item.descricao;
-            document.getElementById(`valor-${tipo}`).value = item.valor;
+            
+            const inputVal = document.getElementById(`valor-${tipo}`);
+            inputVal.value = (item.valor * 100).toFixed(0);
+            formatarMoedaInput(inputVal);
+            
             document.getElementById(`data-${tipo}`).value = item.data;
             selectCategory(tipo, item.categoria);
             
@@ -1018,10 +950,9 @@
             document.getElementById(`btn-cancel-${tipo}`).style.display = "block";
             
             const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
-            if(btnSalvar) btnSalvar.innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
-            
+            if(btnSalvar) btnSalvar.innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar`;
             const titulo = document.getElementById(`titulo-${tipo}`);
-            if(titulo) titulo.innerHTML = `<i class="fas fa-pen"></i> Editando ${tipo === 'receita' ? 'Receita' : 'Gasto'}`;
+            if(titulo) titulo.innerHTML = `<i class="fas fa-pen"></i> Editando`;
         }
 
         function cancelarEdicao(store) {
@@ -1034,255 +965,129 @@
             document.getElementById(`btn-cancel-${tipo}`).style.display = "none";
             
             const btnSalvar = document.getElementById(`btn-salvar-${tipo}`);
-            if(btnSalvar) {
-                if(tipo === 'receita') btnSalvar.innerHTML = `<i class="fas fa-check"></i> Salvar Receita`;
-                else btnSalvar.innerHTML = `<i class="fas fa-money-bill-wave"></i> Confirmar Gasto`;
-            }
+            if(btnSalvar) btnSalvar.innerHTML = tipo === 'receita' ? `Salvar Receita` : `Confirmar Gasto`;
             const titulo = document.getElementById(`titulo-${tipo}`);
-            if(titulo) {
-                if(tipo === 'receita') titulo.innerHTML = `<i class="fas fa-plus"></i> Nova Receita`;
-                else titulo.innerHTML = `<i class="fas fa-minus"></i> Novo Gasto`;
-            }
+            if(titulo) titulo.innerHTML = tipo === 'receita' ? `<i class="fas fa-plus-circle" style="color: var(--income)"></i> Nova Receita` : `<i class="fas fa-minus-circle" style="color: var(--expense)"></i> Novo Gasto`;
         }
 
-        // ==================== RENDERIZAÇÃO ====================
         async function render() {
             if (!db) return;
             const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
-            
-            // FILTRO DE MÊS CORRIGIDO
             let filtro = document.getElementById('filtroMes') ? document.getElementById('filtroMes').value : '';
             if(!filtro) {
                 filtro = new Date().toISOString().substring(0, 7);
-                const el = document.getElementById('filtroMes');
-                if(el) el.value = filtro;
+                const el = document.getElementById('filtroMes'); if(el) el.value = filtro;
             }
-            
             const totalR = r.reduce((s, i) => s + i.valor, 0);
             const totalD = d.reduce((s, i) => s + i.valor, 0);
             document.getElementById('dash-saldo').innerText = FORMAT_BRL.format(totalR - totalD);
-            
             const gastosMes = d.filter(i => i.data.startsWith(filtro)).reduce((s, i) => s + i.valor, 0);
             document.getElementById('dash-gastos-mes').innerText = FORMAT_BRL.format(gastosMes);
             
-            // Lista detalhada
-            const listCont = document.getElementById('lista-detalhada');
-            listCont.innerHTML = "";
-            
+            const listCont = document.getElementById('lista-detalhada'); listCont.innerHTML = "";
             const receitasMes = r.filter(i => i.data.startsWith(filtro));
             const despesasMes = d.filter(i => i.data.startsWith(filtro));
-            
             const fragment = document.createDocumentFragment();
             [...receitasMes.map(x => ({...x, t:'receita'})), ...despesasMes.map(x => ({...x, t:'despesa'}))]
                 .sort((a,b) => b.data.localeCompare(a.data))
                 .forEach(item => {
-                    const el = document.createElement('div');
-                    el.className = 'item';
-                    el.onclick = () => openEdit(item);
-                    el.innerHTML = `
-                        <div style="flex: 1;">
-                            <b style="font-size: 0.95rem;">${item.descricao}</b>
-                            <br>
-                            <small style="color: #6b7280; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; margin-top: 4px;">
-                                <i class="far fa-calendar"></i> ${item.data.split('-').reverse().join('/')} 
-                                <span style="background: #e0e7ff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.65rem;">
-                                    <i class="fas fa-pen"></i> Editar
-                                </span>
-                            </small>
-                        </div>
-                        <div style="font-weight: 700; font-size: 0.95rem; color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">
-                            ${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}
-                        </div>`;
+                    const el = document.createElement('div'); el.className = 'item'; el.onclick = () => openEdit(item);
+                    el.innerHTML = `<div style="flex: 1;"><b style="font-size: 0.95rem; color: var(--text-main)">${item.descricao}</b><br><small style="color: var(--text-sec); font-size: 0.75rem; display: flex; align-items: center; gap: 5px; margin-top: 4px;"><i class="far fa-calendar"></i> ${item.data.split('-').reverse().join('/')}</small></div><div style="font-weight: 700; font-size: 0.95rem; color:${item.t === 'receita' ? 'var(--income)' : 'var(--expense)'}">${item.t === 'receita' ? '+' : '-'} ${FORMAT_BRL.format(item.valor)}</div>`;
                     fragment.appendChild(el);
                 });
+            if(fragment.childElementCount === 0) listCont.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-sec);">Nenhum lançamento.</div>';
+            else listCont.appendChild(fragment);
             
-            if(fragment.childElementCount === 0) {
-                listCont.innerHTML = '<div style="text-align:center; padding: 20px; color: #9ca3af;">Nenhum lançamento neste mês.</div>';
-            } else {
-                listCont.appendChild(fragment);
-            }
-            
-            updateChart(despesasMes);
-            updateMonthlyChart(r, d);
+            updateChart(despesasMes); updateMonthlyChart(r, d);
         }
 
-        // ==================== GRÁFICO DE PIZZA (CORES CORRIGIDAS) ====================
         function updateChart(dados) {
             const ctx = document.getElementById('graficoPizza').getContext('2d');
             if (chartInstancePie) chartInstancePie.destroy();
-            
-            const cats = {};
-            dados.forEach(d => cats[d.categoria] = (cats[d.categoria] || 0) + d.valor);
-            
+            const cats = {}; dados.forEach(d => cats[d.categoria] = (cats[d.categoria] || 0) + d.valor);
             const labels = Object.keys(cats).map(k => CATEGORIES.despesa[k] || k);
             const values = Object.values(cats);
-            
-            const legendDiv = document.getElementById('categoria-legend');
-            legendDiv.innerHTML = '';
+            const legendDiv = document.getElementById('categoria-legend'); legendDiv.innerHTML = '';
             labels.forEach((label, i) => {
-                const item = document.createElement('div');
-                item.className = 'legend-item';
-                // CORREÇÃO DE COR: Usar módulo para evitar crash se labels > colors
                 const color = CHART_COLORS[i % CHART_COLORS.length];
-                item.innerHTML = `<span class="legend-color" style="background: ${color}"></span> ${label} (${FORMAT_BRL.format(values[i])})`;
-                legendDiv.appendChild(item);
+                legendDiv.innerHTML += `<div class="legend-item" style="display:flex;align-items:center;gap:6px;"><span class="legend-color" style="width:12px;height:12px;border-radius:4px;background: ${color}"></span> ${label}</div>`;
             });
-            
             chartInstancePie = new Chart(ctx, {
                 type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
-                        borderWidth: 0,
-                        hoverOffset: 8
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    cutout: '65%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => `${ctx.label}: ${FORMAT_BRL.format(ctx.raw)}`
-                            }
-                        }
-                    }
-                }
+                data: { labels: labels, datasets: [{ data: values, backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]), borderWidth: 0, hoverOffset: 8 }] },
+                options: { maintainAspectRatio: false, responsive: true, cutout: '70%', plugins: { legend: { display: false } } }
             });
         }
 
-        // ==================== GRÁFICO MENSAL ====================
         function updateMonthlyChart(receitas, despesas) {
             const ctx = document.getElementById('graficoMensal').getContext('2d');
             if (chartInstanceMonthly) chartInstanceMonthly.destroy();
-            
-            const hoje = new Date();
-            const meses = [];
-            for (let i = 5; i >= 0; i--) {
-                const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-                meses.push(d.toISOString().substring(0, 7));
-            }
-            
-            const receitasPorMes = meses.map(m => 
-                receitas.filter(r => r.data.startsWith(m)).reduce((s, i) => s + i.valor, 0)
-            );
-            const despesasPorMes = meses.map(m => 
-                despesas.filter(d => d.data.startsWith(m)).reduce((s, i) => s + i.valor, 0)
-            );
-            
-            const labels = meses.map(m => {
-                const [ano, mes] = m.split('-');
-                return `${mes}/${ano.substring(2)}`;
-            });
-            
+            const hoje = new Date(); const meses = [];
+            for (let i = 5; i >= 0; i--) { const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1); meses.push(d.toISOString().substring(0, 7)); }
+            const receitasPorMes = meses.map(m => receitas.filter(r => r.data.startsWith(m)).reduce((s, i) => s + i.valor, 0));
+            const despesasPorMes = meses.map(m => despesas.filter(d => d.data.startsWith(m)).reduce((s, i) => s + i.valor, 0));
+            const labels = meses.map(m => { const [ano, mes] = m.split('-'); return `${mes}/${ano.substring(2)}`; });
             chartInstanceMonthly = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Receitas',
-                            data: receitasPorMes,
-                            backgroundColor: 'rgba(5, 150, 105, 0.7)',
-                            borderColor: '#059669',
-                            borderWidth: 1,
-                            borderRadius: 6
-                        },
-                        {
-                            label: 'Despesas',
-                            data: despesasPorMes,
-                            backgroundColor: 'rgba(220, 38, 38, 0.7)',
-                            borderColor: '#dc2626',
-                            borderWidth: 1,
-                            borderRadius: 6
-                        }
-                    ]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => `${ctx.dataset.label}: ${FORMAT_BRL.format(ctx.raw)}`
-                            }
-                        },
-                        legend: { position: 'bottom' }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: (value) => 'R$ ' + value.toFixed(0)
-                            }
-                        }
-                    }
-                }
+                data: { labels: labels, datasets: [{ label: 'Receitas', data: receitasPorMes, backgroundColor: '#34c759', borderRadius: 4 }, { label: 'Despesas', data: despesasPorMes, backgroundColor: '#ff3b30', borderRadius: 4 }] },
+                options: { maintainAspectRatio: false, responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8e8e93' } } }, scales: { x: { ticks: { color: '#8e8e93' } }, y: { ticks: { color: '#8e8e93' } } } }
             });
         }
 
-        // ==================== FILTRO DE MÊS AUTOMÁTICO ====================
         function popularFiltro() {
             const sel = document.getElementById('filtroMes');
-            if (!sel) return;
-            
-            // Se já tem opções, não recria
-            if (sel.options.length > 0) return;
-
+            if (!sel || sel.options.length > 0) return;
             const hoje = new Date();
-            // Gera últimos 6 meses
             for(let i=0; i<6; i++) {
                 const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-                const val = d.toISOString().substring(0, 7);
-                sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), val));
+                sel.add(new Option(d.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}), d.toISOString().substring(0, 7)));
             }
-            // Define automaticamente o mês atual
             sel.value = hoje.toISOString().substring(0, 7);
         }
 
-        // ==================== TOAST ====================
         function showToast(m) {
-            const t = document.getElementById("toast");
-            t.innerText = m; t.style.opacity = 1;
+            const t = document.getElementById("toast"); t.innerText = m; t.style.opacity = 1;
             setTimeout(() => t.style.opacity = 0, 3000);
         }
-
         function confirmarLimpeza() {
-            if(confirm("⚠️ Isso apagará TODOS os dados permanentemente. Continuar?")) {
+            if(confirm("⚠️ Isso apagará TODOS os dados. Continuar?")) {
                 db.transaction("receitas", "readwrite").objectStore("receitas").clear();
                 db.transaction("despesas", "readwrite").objectStore("despesas").clear();
-                showToast("Todos os dados foram limpos!");
-                render();
+                showToast("Limpo!"); render();
             }
         }
 
-        function copiarPix() {
-            navigator.clipboard.writeText("Aquinogabriel@outlook.com").then(() => showToast("Chave PIX copiada!"));
-        }
-
-        // ==================== INICIALIZAÇÃO CORRIGIDA ====================
         window.onload = async () => {
-            try {
-                // Tenta iniciar o banco com a nova função blindada
-                await initDB();
-            } catch (err) {
-                console.error("Falha fatal ao iniciar DB:", err);
-                showToast("Erro crítico. Tente limpar o cache do navegador.");
-                return;
-            }
-
+            try { await initDB(); } catch (err) { console.error(err); return; }
             checkUser();
-            
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('data-receita').value = hoje;
             document.getElementById('data-despesa').value = hoje;
-            
-            popularFiltro();
-            render();
+            popularFiltro(); render();
+
+            document.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", rippleEffect);
+            });
+
+            ['receita', 'despesa'].forEach(tipo => {
+                const valInput = document.getElementById(`valor-${tipo}`);
+                const descInput = document.getElementById(`descricao-${tipo}`);
+                
+                valInput.addEventListener('input', e => formatarMoedaInput(e.target));
+                valInput.addEventListener('focus', () => setTimeout(()=> valInput.select(), 100));
+                
+                valInput.addEventListener('blur', e => {
+                    validarCampo(e.target, getValorNumerico(`valor-${tipo}`) > 0, "Digite um valor");
+                });
+                descInput.addEventListener('blur', e => {
+                    validarCampo(e.target, e.target.value.trim().length > 2, "Mínimo 3 letras");
+                });
+                
+                [valInput, descInput].forEach(inp => {
+                    inp.addEventListener("focus", () => inp.closest(".card")?.style.setProperty("transform", "scale(1.02)"));
+                    inp.addEventListener("blur", () => inp.closest(".card")?.style.removeProperty("transform"));
+                });
+            });
         };
     </script>
 </body>
