@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
+
+<html lang="pt-br"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>O app do Pobre</title>
@@ -11,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -130,6 +129,8 @@
         .btn-expense { background: var(--expense); color: #fff; }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-whatsapp { background: var(--whatsapp); color: #fff; margin-top: 10px; }
+        .btn-offline { background: #333; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        body.light-theme .btn-offline { background: #e5e5ea; color: #000; border: 1px solid rgba(0,0,0,0.1); }
         .btn-sec { background: rgba(120, 120, 128, 0.15); color: var(--text-main); }
         
         /* Charts Container */
@@ -229,13 +230,13 @@
     <header>
         <div class="user-area">
             <div class="user-greeting">
-                <span id="status-icon" class="status-badge" style="display: none;">-1</span>
+                <span id="status-icon" class="status-badge status-neg" style="display: inline-block;">-1</span>
                 Olá,
             </div>
-            <div class="user-name" id="username-header">...</div>
+            <div class="user-name" id="username-header">Gab</div>
         </div>
         
-        <div id="header-title"></div> 
+        <div id="header-title" style="display: block;">Análise Financeira</div> 
         <i class="fas fa-circle-half-stroke" onclick="toggleTheme()" style="cursor: pointer; font-size: 1.2rem; color: var(--primary); padding: 10px;"></i>
     </header>
 
@@ -244,15 +245,15 @@
         <div id="dashboard-main" class="dashboard">
             <div class="dash-card">
                 <small>Saldo Total</small>
-                <b id="dash-saldo">R$ 0,00</b>
+                <b id="dash-saldo">-R$&nbsp;550,00</b>
             </div>
             <div class="dash-card">
                 <small>Saída (Mês)</small>
-                <b id="dash-gastos" style="color: var(--expense);">R$ 0,00</b>
+                <b id="dash-gastos" style="color: var(--expense);">R$&nbsp;5.780,00</b>
             </div>
         </div>
 
-        <div id="v-ganhar" class="view active">
+        <div id="v-ganhar" class="view">
             <div class="card">
                 <h3 id="form-title-ganhar" style="margin:0; color: var(--income); font-size: 1.1rem; margin-bottom: 20px;"><i class="fas fa-plus-circle"></i> Nova Receita</h3>
                 <input type="hidden" id="edit-id-ganhar">
@@ -304,20 +305,20 @@
             </div>
         </div>
 
-        <div id="v-analise" class="view">
+        <div id="v-analise" class="view active">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
                     <h3 style="margin:0; font-size: 1rem;">Visão Geral</h3>
-                    <select id="filtroMes" onchange="render()" style="width: auto; padding: 5px; background: transparent; border: none; font-weight: 700; color: var(--primary);"></select>
+                    <select id="filtroMes" onchange="render()" style="width: auto; padding: 5px; background: transparent; border: none; font-weight: 700; color: var(--primary);"><option value="2026-02">fevereiro de 2026</option><option value="2026-01">janeiro de 2026</option><option value="2025-12">dezembro de 2025</option><option value="2025-11">novembro de 2025</option><option value="2025-10">outubro de 2025</option><option value="2025-09">setembro de 2025</option><option value="2025-08">agosto de 2025</option><option value="2025-07">julho de 2025</option><option value="2025-06">junho de 2025</option><option value="2025-05">maio de 2025</option><option value="2025-04">abril de 2025</option><option value="2025-03">março de 2025</option></select>
                 </div>
                 
                 <div id="charts-wrapper">
                     <div class="chart-grid">
                         <div class="chart-container">
-                            <canvas id="chart-doughnut"></canvas>
+                            <canvas id="chart-doughnut" width="300" height="200" style="display: block; box-sizing: border-box; height: 200px; width: 300px;"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="chart-bar"></canvas>
+                            <canvas id="chart-bar" width="300" height="200" style="display: block; box-sizing: border-box; height: 200px; width: 300px;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -327,14 +328,35 @@
                     <p>Nada por aqui ainda...<br>Cadastre uma receita ou despesa!</p>
                 </div>
 
-                <div id="lista-detalhada" style="margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px;"></div>
+                <div id="lista-detalhada" style="margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px;"><div class="item"><div><b>Agiotagem</b><br><small>15/02/2026</small></div>
+                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;10,00</div></div><div class="item"><div><b>Agiotagem</b><br><small>15/02/2026</small></div>
+                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;20,00</div></div><div class="item"><div><b>IPTU </b><br><small>15/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;250,00</div></div><div class="item"><div><b>IPVA </b><br><small>15/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;150,00</div></div><div class="item"><div><b>Taxa do lixo </b><br><small>15/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;250,00</div></div><div class="item"><div><b>Caixa apart</b><br><small>15/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;500,00</div></div><div class="item"><div><b>INSS</b><br><small>10/02/2026</small></div>
+                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;1.900,00</div></div><div class="item"><div><b>Salário Whirlpool</b><br><small>10/02/2026</small></div>
+                                 <div style="color:var(--income); font-weight:800">+ R$&nbsp;3.300,00</div></div><div class="item"><div><b>Luz</b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;380,00</div></div><div class="item"><div><b>Cartão Samsung </b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;1.200,00</div></div><div class="item"><div><b>Cartão Itaú </b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;300,00</div></div><div class="item"><div><b>Gás </b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;30,00</div></div><div class="item"><div><b>Ciano </b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;175,00</div></div><div class="item"><div><b>Taxa de lixo</b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;250,00</div></div><div class="item"><div><b>Mercado </b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;28,00</div></div><div class="item"><div><b>Gás </b><br><small>07/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;30,00</div></div><div class="item"><div><b>Internet </b><br><small>06/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;129,00</div></div><div class="item"><div><b>Pizza </b><br><small>05/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;50,00</div></div><div class="item"><div><b>Cartão Inter </b><br><small>04/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;1.608,00</div></div><div class="item"><div><b>Condominio </b><br><small>02/02/2026</small></div>
+                                 <div style="color:var(--expense); font-weight:800">- R$&nbsp;450,00</div></div></div>
             </div>
 
             <div class="card">
-                <h3 style="margin-top:0">Dados & Exportação</h3>
+                <h3 style="margin-top:0">Dados &amp; Exportação</h3>
                 
                 <button class="btn-primary" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
                 <button class="btn-whatsapp" onclick="compartilharZap()"><i class="fab fa-whatsapp"></i> Enviar Resumo no Zap</button>
+                <button class="btn-offline" onclick="baixarAppHTML()" style="margin-top:10px"><i class="fas fa-download"></i> Baixar App Completo (HTML)</button>
                 
                 <div style="border-top: 1px solid var(--glass-border); margin: 20px 0; padding-top: 15px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -353,7 +375,7 @@
             <div class="card">
                 <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-rocket"></i> Guia Pro</h3>
                 <p style="font-size: 0.85rem; color: var(--text-sec); margin: 10px 0;">Aprenda a instalar o app e dominar suas finanças.</p>
-                <button class="btn-primary" onclick="openModal('modal-tutorial')"><i class="fas fa-book"></i> Abrir Guia & Manual</button>
+                <button class="btn-primary" onclick="openModal('modal-tutorial')"><i class="fas fa-book"></i> Abrir Guia &amp; Manual</button>
             </div>
 
             <div class="card">
@@ -407,9 +429,9 @@
     </div>
 
     <nav id="main-nav">
-        <div class="tab active" onclick="navTo('v-ganhar',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
+        <div class="tab" onclick="navTo('v-ganhar',this)"><i class="fas fa-arrow-up"></i><span>Ganhar</span></div>
         <div class="tab" onclick="navTo('v-gastar',this)"><i class="fas fa-arrow-down"></i><span>Gastar</span></div>
-        <div class="tab" onclick="navTo('v-analise',this)"><i class="fas fa-chart-pie"></i><span>Análise</span></div>
+        <div class="tab active" onclick="navTo('v-analise',this)"><i class="fas fa-chart-pie"></i><span>Análise</span></div>
         <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
     </nav>
 
@@ -427,7 +449,7 @@
                 </div>
                 <div class="guide-item" onclick="toggleGuide(this)">
                     <div class="guide-header">🌐 Samsung Internet <i class="fas fa-chevron-down"></i></div>
-                    <div class="guide-content">1. Menu (3 linhas).<br>2. <b>"Adicionar página a"</b> -> <b>"Tela de Apps"</b>.</div>
+                    <div class="guide-content">1. Menu (3 linhas).<br>2. <b>"Adicionar página a"</b> -&gt; <b>"Tela de Apps"</b>.</div>
                 </div>
                 <div class="guide-item" onclick="toggleGuide(this)">
                     <div class="guide-header">🟧 Xiaomi (Mi) <i class="fas fa-chevron-down"></i></div>
@@ -483,41 +505,35 @@
         const FORMAT = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
         let chartInstanceDoughnut = null;
         let chartInstanceBar = null;
+        
+        // VARIÁVEL SENTINELA PARA BACKUP OFFLINE (A Mágica acontece aqui)
+        const BACKUP_EMBUTIDO = {"r":[{"desc":"INSS","val":1900,"data":"2026-02-10","cat":"salario","id":33},{"desc":"Salário Whirlpool","val":3300,"data":"2026-02-10","cat":"salario","id":34},{"desc":"Agiotagem","val":10,"data":"2026-02-15","cat":"investimentos","id":35},{"desc":"Agiotagem","val":20,"data":"2026-02-15","cat":"investimentos","id":36}],"d":[{"desc":"Condominio ","val":450,"data":"2026-02-02","cat":"moradia","id":129},{"desc":"Pizza ","val":50,"data":"2026-02-05","cat":"alimentacao","id":130},{"desc":"Cartão Inter ","val":1608,"data":"2026-02-04","cat":"contas","id":131},{"desc":"Internet ","val":129,"data":"2026-02-06","cat":"contas","id":132},{"desc":"Luz","val":380,"data":"2026-02-07","cat":"moradia","id":133},{"desc":"Cartão Samsung ","val":1200,"data":"2026-02-07","cat":"moradia","id":134},{"desc":"Cartão Itaú ","val":300,"data":"2026-02-07","cat":"contas","id":135},{"desc":"Gás ","val":30,"data":"2026-02-07","cat":"moradia","id":136},{"desc":"Ciano ","val":175,"data":"2026-02-07","cat":"contas","id":137},{"desc":"Taxa de lixo","val":250,"data":"2026-02-07","cat":"contas","id":138},{"desc":"Mercado ","val":28,"data":"2026-02-07","cat":"compras","id":139},{"desc":"Gás ","val":30,"data":"2026-02-07","cat":"alimentacao","id":140},{"desc":"IPTU ","val":250,"data":"2026-02-15","cat":"contas","id":141},{"desc":"IPVA ","val":150,"data":"2026-02-15","cat":"contas","id":142},{"desc":"Taxa do lixo ","val":250,"data":"2026-02-15","cat":"contas","id":143},{"desc":"Caixa apart","val":500,"data":"2026-02-15","cat":"moradia","id":144}],"u":"Gab","t":"2026-02-16T11:49:16.998Z"}; // __MARKER_BACKUP__
 
         /* ================= SECURITY & MULTI-TAB LOGIC ================= */
         let isBlocked = false;
         let isUnloading = false;
 
         document.getElementById('blocker').style.display = 'none';
-
-        // Detectar fechamento ou refresh para não responder pings fantasmas
         window.addEventListener('beforeunload', () => { isUnloading = true; });
 
         channel.onmessage = (e) => {
             if (e.data === 'ping') {
-                // Só responde se for a aba alfa (ativa) e não estiver morrendo
-                if (!isBlocked && !isUnloading) {
-                    channel.postMessage('pong');
-                }
+                if (!isBlocked && !isUnloading) channel.postMessage('pong');
             }
             if (e.data === 'pong') {
-                // Alguém respondeu, então esta aba deve ser bloqueada
                 isBlocked = true;
                 document.getElementById('blocker').style.display = 'flex';
             }
         };
 
         function tentarDesbloquear() {
-            // Assume temporariamente que é a aba principal e pergunta se tem alguém
             isBlocked = false;
             document.getElementById('blocker').style.display = 'none';
             channel.postMessage('ping');
         }
-
-        // Primeiro ping ao iniciar
         channel.postMessage('ping');
 
-        /* ================= DB INIT ================= */
+        /* ================= DB INIT & OFFLINE RESTORE ================= */
         async function initDB() {
             return new Promise((resolve) => {
                 const req = indexedDB.open("ContasProDB", 7);
@@ -526,8 +542,35 @@
                     if (!db.objectStoreNames.contains("receitas")) db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
                     if (!db.objectStoreNames.contains("despesas")) db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
                 };
-                req.onsuccess = e => { db = e.target.result; resolve(); };
+                req.onsuccess = async e => { 
+                    db = e.target.result; 
+                    
+                    // --- AUTO RESTORE OFFLINE DATA ---
+                    if (BACKUP_EMBUTIDO && typeof BACKUP_EMBUTIDO === 'object') {
+                        await autoRestoreOffline(BACKUP_EMBUTIDO);
+                    }
+                    resolve(); 
+                };
                 req.onerror = () => alert("Erro crítico no banco de dados.");
+            });
+        }
+
+        async function autoRestoreOffline(data) {
+            return new Promise(resolve => {
+                const tx = db.transaction(['receitas', 'despesas'], 'readwrite');
+                tx.objectStore('receitas').clear();
+                tx.objectStore('despesas').clear();
+                
+                // Restaura Usuário
+                if(data.u) localStorage.setItem('contas_user', data.u);
+                
+                (data.r || []).forEach(i => tx.objectStore('receitas').add(i));
+                (data.d || []).forEach(i => tx.objectStore('despesas').add(i));
+                
+                tx.oncomplete = () => {
+                    showToast("Dados restaurados do Backup Offline!");
+                    resolve();
+                };
             });
         }
 
@@ -543,13 +586,12 @@
             const isLight = document.body.classList.contains('light-theme');
             localStorage.setItem('contas_theme', isLight ? 'light' : 'dark');
             showToast(isLight ? "Modo Leitura" : "Modo Escuro");
-            render(); // Re-render charts for color update
+            render();
         }
 
         function navTo(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
             
@@ -670,10 +712,8 @@
             badge.innerText = saldo >= 0 ? '+1' : '-1';
             badge.className = 'status-badge ' + (saldo >= 0 ? 'status-pos' : 'status-neg');
 
-            // Charts Logic
             updateCharts(recFiltro, despFiltro);
 
-            // Lista
             const list = document.getElementById('lista-detalhada');
             list.innerHTML = "";
             const items = [...recFiltro.map(i=>({...i,t:'r'})), ...despFiltro.map(i=>({...i,t:'d'}))].sort((a,b)=>b.data.localeCompare(a.data));
@@ -764,7 +804,38 @@
             });
         }
 
-        /* ================= EXPORT & BACKUP ================= */
+        /* ================= OFFLINE HTML EXPORT ================= */
+        async function baixarAppHTML() {
+            const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
+            const user = localStorage.getItem('contas_user');
+            
+            // Dados para embutir
+            const payload = { r: receitas, d: despesas, u: user, t: new Date().toISOString() };
+            const jsonString = JSON.stringify(payload).replace(/<\/script>/g, '<\\/script>'); // Sanitize
+            
+            // Pega o código atual da página
+            let htmlContent = document.documentElement.outerHTML;
+            
+            // Substitui a variável sentinela pelos dados reais
+            // Procura por: const BACKUP_EMBUTIDO = null;
+            const injectPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*null\s*;/;
+            
+            if (!injectPattern.test(htmlContent)) {
+                alert("Erro ao gerar versão offline: Marcador não encontrado.");
+                return;
+            }
+            
+            const newScript = `const BACKUP_EMBUTIDO = ${jsonString};`;
+            const finalHtml = htmlContent.replace(injectPattern, newScript);
+            
+            // Download
+            const blob = new Blob([finalHtml], {type: 'text/html'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `AppFinanceiro_${user}_OFFLINE.html`;
+            a.click();
+        }
+
         function backupDados() {
             const user = localStorage.getItem('contas_user') || 'Usuario';
             Promise.all([getAll('receitas'), getAll('despesas')]).then(data => {
@@ -782,18 +853,15 @@
             reader.onload = async (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(!confirm(`Restaurar backup de "${data.u || 'Usuário'}"? Dados atuais serão substituídos.`)) return;
-                    if(data.u) localStorage.setItem('contas_user', data.u);
-
+                    if(!confirm(`Restaurar backup de "${data.u || 'Usuário'}"?`)) return;
+                    
                     const tx = db.transaction(['receitas', 'despesas'], 'readwrite');
                     tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear();
                     
-                    const rList = data.receitas || data.r || [];
-                    const dList = data.despesas || data.d || [];
-                    rList.forEach(i => { tx.objectStore('receitas').add({ desc: i.desc || i.descricao, val: parseFloat(i.val || i.valor), data: i.data, cat: i.cat || i.categoria }); });
-                    dList.forEach(i => { tx.objectStore('despesas').add({ desc: i.desc || i.descricao, val: parseFloat(i.val || i.valor), data: i.data, cat: i.cat || i.categoria }); });
+                    (data.receitas || data.r || []).forEach(i => tx.objectStore('receitas').add(i));
+                    (data.despesas || data.d || []).forEach(i => tx.objectStore('despesas').add(i));
                     
-                    tx.oncomplete = () => { alert("Restaurado com sucesso!"); location.reload(); };
+                    tx.oncomplete = () => { alert("Restaurado!"); location.reload(); };
                 } catch(err) { alert("Arquivo inválido."); }
             };
             reader.readAsText(file);
@@ -885,13 +953,10 @@
             const nomeMes = meses[parseInt(mes)-1];
 
             let msg = `*Relatório Financeiro - ${nomeMes} de ${ano}*\n\n`;
-            
             msg += `*🟢 Entradas: R$ ${totalR.toFixed(2)}*\n`;
             recFiltro.forEach(r => msg += `🔹 ${r.desc}: R$ ${r.val.toFixed(2)}\n`);
-            
             msg += `\n*🔴 Saídas: R$ ${totalD.toFixed(2)}*\n`;
             despFiltro.forEach(d => msg += `🔸 ${d.desc}: R$ ${d.val.toFixed(2)}\n`);
-
             msg += `\n*💰 Saldo Final: R$ ${saldo.toFixed(2)}*`;
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -931,5 +996,5 @@
             navTo('v-ganhar', document.querySelector('.tab.active'));
         };
     </script>
-</body>
-</html>
+
+</body></html>
