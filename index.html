@@ -484,21 +484,40 @@
         let chartInstanceDoughnut = null;
         let chartInstanceBar = null;
 
-        /* ================= SECURITY & DB ================= */
-        // Evitar bug do BFCache escondendo no início
+        /* ================= SECURITY & MULTI-TAB LOGIC ================= */
+        let isBlocked = false;
+        let isUnloading = false;
+
         document.getElementById('blocker').style.display = 'none';
 
+        // Detectar fechamento ou refresh para não responder pings fantasmas
+        window.addEventListener('beforeunload', () => { isUnloading = true; });
+
         channel.onmessage = (e) => {
-            if (e.data === 'ping') channel.postMessage('pong');
-            if (e.data === 'pong') { document.getElementById('blocker').style.display = 'flex'; }
+            if (e.data === 'ping') {
+                // Só responde se for a aba alfa (ativa) e não estiver morrendo
+                if (!isBlocked && !isUnloading) {
+                    channel.postMessage('pong');
+                }
+            }
+            if (e.data === 'pong') {
+                // Alguém respondeu, então esta aba deve ser bloqueada
+                isBlocked = true;
+                document.getElementById('blocker').style.display = 'flex';
+            }
         };
-        channel.postMessage('ping');
 
         function tentarDesbloquear() {
+            // Assume temporariamente que é a aba principal e pergunta se tem alguém
+            isBlocked = false;
             document.getElementById('blocker').style.display = 'none';
             channel.postMessage('ping');
         }
 
+        // Primeiro ping ao iniciar
+        channel.postMessage('ping');
+
+        /* ================= DB INIT ================= */
         async function initDB() {
             return new Promise((resolve) => {
                 const req = indexedDB.open("ContasProDB", 7);
