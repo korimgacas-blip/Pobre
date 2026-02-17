@@ -61,7 +61,7 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER & TERMÔMETRO --- */
         header {
             position: fixed; top: 0; left: 0; right: 0; height: 60px;
             background: var(--glass-surface);
@@ -69,6 +69,16 @@
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             z-index: 1000; display: flex; justify-content: space-between; align-items: center;
             padding: 0 20px; border-bottom: 1px solid var(--glass-border);
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
+        
+        header.header-pos {
+            background: linear-gradient(90deg, rgba(59,130,246,0.15), rgba(48,209,88,0.15));
+            border-bottom: 1px solid rgba(48, 209, 88, 0.3);
+        }
+        header.header-neg {
+            background: linear-gradient(90deg, rgba(239,68,68,0.15), rgba(255,69,58,0.15));
+            border-bottom: 1px solid rgba(255, 69, 58, 0.3);
         }
 
         .user-area { display: flex; flex-direction: column; justify-content: center; }
@@ -229,7 +239,7 @@
         </div>
     </div>
 
-    <header>
+    <header id="main-header">
         <div class="user-area">
             <div class="user-greeting">
                 <span id="status-icon" class="status-badge" style="display: none;">-1</span>
@@ -492,6 +502,7 @@
                 <ul>
                     <li><i class="fas fa-file-pdf"></i> <div><b>PDF:</b> Relatório completo para impressão.</div></li>
                     <li><i class="fab fa-whatsapp"></i> <div><b>Zap:</b> Envia um resumo detalhado em texto.</div></li>
+                    <li><i class="fas fa-calendar-check"></i> <div><b>Ritual da Riqueza:</b> Toda sexta-feira ou dia 05, gere o PDF e mande no grupo da família. O gráfico bonito motiva!</div></li>
                     <li><i class="fas fa-lock"></i> <div><b>Privacidade:</b> Dados 100% offline no seu aparelho.</div></li>
                 </ul>
             </div>
@@ -596,12 +607,12 @@
                 tx.objectStore('receitas').clear();
                 tx.objectStore('despesas').clear();
                 
-                // Normaliza e sanitiza dados (val/valor, desc/descricao)
                 if(data.u) localStorage.setItem('contas_user', data.u);
                 
+                // Sanitização Robusta (Evita NaN)
                 const normalize = (item) => ({
                     desc: item.desc || item.descricao,
-                    val: parseFloat(item.val || item.valor),
+                    val: parseFloat(item.val || item.valor) || 0,
                     data: item.data,
                     cat: item.cat || item.categoria
                 });
@@ -761,10 +772,22 @@
             document.getElementById('dash-saldo').innerText = FORMAT.format(saldo);
             document.getElementById('dash-gastos').innerText = FORMAT.format(despFiltro.reduce((s,i)=>s+i.val,0));
 
+            // TERMÔMETRO DE HUMILDADE (HEADER DINÂMICO)
+            const header = document.getElementById('main-header');
             const badge = document.getElementById('status-icon');
+            
+            if(saldo >= 0) {
+                header.classList.remove('header-neg');
+                header.classList.add('header-pos');
+                badge.innerText = '+1';
+                badge.className = 'status-badge status-pos';
+            } else {
+                header.classList.remove('header-pos');
+                header.classList.add('header-neg');
+                badge.innerText = '-1';
+                badge.className = 'status-badge status-neg';
+            }
             badge.style.display = 'inline-block';
-            badge.innerText = saldo >= 0 ? '+1' : '-1';
-            badge.className = 'status-badge ' + (saldo >= 0 ? 'status-pos' : 'status-neg');
 
             updateCharts(recFiltro, despFiltro);
 
@@ -827,6 +850,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '75%', // Mais moderno
                     plugins: { 
                         legend: { position: 'right', labels: { color: textColor, font: { size: 10 }, boxWidth: 10 } },
                         title: { display: true, text: 'Despesas por Categoria', color: textColor } 
@@ -843,7 +867,8 @@
                         label: 'Valor',
                         data: [totR, totD],
                         backgroundColor: ['#30d158', '#ff453a'],
-                        borderRadius: 8
+                        borderRadius: 10, // Arredondado
+                        barThickness: 40
                     }]
                 },
                 options: {
@@ -916,7 +941,7 @@
                     
                     const normalize = (item) => ({
                         desc: item.desc || item.descricao,
-                        val: parseFloat(item.val || item.valor),
+                        val: parseFloat(item.val || item.valor) || 0, // Sanitização NaN
                         data: item.data,
                         cat: item.cat || item.categoria
                     });
@@ -942,7 +967,7 @@
         function removerAcentos(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); }
 
         async function gerarRelatorioPDF() {
-            showToast("Gerando PDF...");
+            showToast("Gerando PDF com Gráficos...");
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const mesSel = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
             const user = localStorage.getItem('contas_user') || "Usuario";
@@ -954,25 +979,83 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
             const safeText = (txt) => removerAcentos(txt || "");
             const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
-            doc.setFillColor(94, 92, 230); doc.rect(0, 0, pageWidth, 40, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.setFont("helvetica", 'bold');
-            doc.text(safeText(`RELATORIO FINANCEIRO`), 14, 20);
-            doc.setFontSize(10); doc.setFont("helvetica", 'normal');
-            doc.text(`Usuario: ${safeText(user)} | Periodo: ${mesSel}`, 14, 28);
-            let yPos = 55;
+            
+            // --- HACK PARA GRÁFICOS ESCUROS NO PDF ---
+            // Salva cores originais para restaurar depois
+            const originalDoughnutColor = chartInstanceDoughnut.options.plugins.legend.labels.color;
+            const originalBarColor = chartInstanceBar.options.scales.y.ticks.color;
+            const originalGridColor = chartInstanceBar.options.scales.y.grid.color;
+            
+            // Força cor escura para impressão (Black)
+            const printColor = '#333333';
+            
+            // Aplica cores no Doughnut
+            chartInstanceDoughnut.options.plugins.legend.labels.color = printColor;
+            chartInstanceDoughnut.options.plugins.title.color = printColor;
+            chartInstanceDoughnut.update(); // Renderiza com cor escura
+            
+            // Aplica cores no Bar Chart
+            chartInstanceBar.options.scales.y.ticks.color = printColor;
+            chartInstanceBar.options.scales.x.ticks.color = printColor;
+            chartInstanceBar.options.plugins.title.color = printColor;
+            chartInstanceBar.options.scales.y.grid.color = 'rgba(0,0,0,0.1)'; // Grid visível no branco
+            chartInstanceBar.update(); // Renderiza com cor escura
+
+            // --- GERA O PDF ---
+            
+            // Header Premium
+            doc.setFillColor(94, 92, 230); doc.rect(0, 0, pageWidth, 50, 'F');
+            doc.setTextColor(255, 255, 255); 
+            doc.setFontSize(24); doc.setFont("helvetica", 'bold'); doc.text(safeText(`RELATORIO FINANCEIRO`), 14, 25);
+            doc.setFontSize(12); doc.setFont("helvetica", 'normal'); doc.text(safeText(`${user}`), 14, 35);
+            doc.text(`Periodo: ${mesSel}`, pageWidth - 50, 35);
+            
+            // Summary Cards (Refined UI)
+            let yPos = 65;
             const drawCard = (x, label, val, colorRGB) => {
-                doc.setFillColor(245, 245, 247); doc.setDrawColor(200, 200, 200);
-                doc.roundedRect(x, yPos, 55, 25, 3, 3, 'FD');
-                doc.setFontSize(8); doc.setTextColor(100); doc.text(label, x + 5, yPos + 8);
-                doc.setFontSize(12); doc.setFont("helvetica", 'bold'); 
-                doc.setTextColor(colorRGB[0], colorRGB[1], colorRGB[2]); doc.text(val, x + 5, yPos + 18);
+                doc.setDrawColor(220, 220, 220); doc.setFillColor(252, 252, 253);
+                doc.roundedRect(x, yPos, 58, 28, 4, 4, 'FD'); 
+                doc.setFontSize(9); doc.setTextColor(100, 100, 100); doc.text(label, x + 6, yPos + 10);
+                doc.setFontSize(14); doc.setFont("helvetica", 'bold'); 
+                doc.setTextColor(colorRGB[0], colorRGB[1], colorRGB[2]); doc.text(val, x + 6, yPos + 22);
             };
-            drawCard(14, "GANHOS", fmtBRL(totalR), [48, 209, 88]);
-            drawCard(75, "GASTOS", fmtBRL(totalD), [255, 69, 58]);
-            drawCard(136, "SALDO LIQUIDO", fmtBRL(saldo), saldo >= 0 ? [94, 92, 230] : [255, 69, 58]);
-            yPos += 35;
+            
+            drawCard(14, "GANHOS", fmtBRL(totalR), [48, 209, 88]); 
+            drawCard(76, "GASTOS", fmtBRL(totalD), [255, 69, 58]); 
+            drawCard(138, "SALDO LIQUIDO", fmtBRL(saldo), saldo >= 0 ? [94, 92, 230] : [255, 69, 58]); 
+
+            yPos += 45;
+
+            // --- CAPTURA DE GRÁFICOS COM TÍTULOS ---
+            const chartDoughnut = document.getElementById('chart-doughnut');
+            const chartBar = document.getElementById('chart-bar');
+            
+            if (chartDoughnut && chartBar && (receitasMes.length > 0 || despesasMes.length > 0)) {
+                try {
+                    // Títulos dos Gráficos (Texto Nativo do PDF)
+                    doc.setFontSize(11); doc.setTextColor(60, 60, 60); doc.setFont("helvetica", 'bold');
+                    doc.text("Despesas por Categoria", 30, yPos);
+                    doc.text("Balanco Mensal", 130, yPos);
+                    
+                    yPos += 5; 
+                    
+                    // Aguarda renderização
+                    await new Promise(r => setTimeout(r, 100));
+
+                    const imgDoughnut = chartDoughnut.toDataURL("image/png");
+                    const imgBar = chartBar.toDataURL("image/png");
+                    
+                    doc.addImage(imgDoughnut, 'PNG', 15, yPos, 70, 70);
+                    doc.addImage(imgBar, 'PNG', 115, yPos, 70, 70);
+                    
+                    yPos += 80;
+                } catch(e) { console.error("Erro ao capturar gráfico", e); }
+            }
+
+            // Tabela Refinada
             const allItems = [...receitasMes, ...despesasMes].sort((a,b) => a.data.localeCompare(b.data));
             const tableData = allItems.map(item => [
                 item.data.split('-').reverse().join('/'),
@@ -980,18 +1063,47 @@
                 safeText(item.tipo === 'receita' ? 'ENTRADA' : 'SAIDA'),
                 item.tipo === 'receita' ? `+ ${fmtBRL(item.val)}` : `- ${fmtBRL(item.val)}`
             ]);
+
             doc.autoTable({
-                startY: yPos, head: [['Data', 'Descricao', 'Tipo', 'Valor']], body: tableData, theme: 'striped',
-                headStyles: { fillColor: [94, 92, 230], textColor: 255, fontStyle: 'bold' },
-                styles: { fontSize: 10, cellPadding: 3 }, columnStyles: { 3: { halign: 'right', fontStyle: 'bold' } },
+                startY: yPos, 
+                head: [['Data', 'Descricao', 'Tipo', 'Valor']], 
+                body: tableData, 
+                theme: 'striped',
+                headStyles: { fillColor: [94, 92, 230], textColor: 255, fontStyle: 'bold', halign: 'center' },
+                styles: { fontSize: 10, cellPadding: 4, textColor: [60, 60, 60] }, 
+                columnStyles: { 
+                    0: { halign: 'center' },
+                    3: { halign: 'right', fontStyle: 'bold' } 
+                },
                 didParseCell: function(data) {
                     if (data.section === 'body' && data.column.index === 3) {
                         data.cell.styles.textColor = data.cell.raw.includes('+') ? [48, 209, 88] : [255, 69, 58];
                     }
                 }
             });
+
+            // Rodapé com Branding
+            const totalPages = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= totalPages; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8); doc.setTextColor(150);
+                doc.text(`Pagina ${i} de ${totalPages} | Gerado via O App do Pobre - https://oappdopobre.oseuapp.workers.dev`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            }
+
             doc.save(`Relatorio_${safeText(user)}_${mesSel}.pdf`);
             showToast("PDF Gerado!");
+
+            // --- RESTAURA CORES ORIGINAIS DO TEMA ---
+            chartInstanceDoughnut.options.plugins.legend.labels.color = originalDoughnutColor;
+            chartInstanceDoughnut.options.plugins.title.color = originalDoughnutColor;
+            
+            chartInstanceBar.options.scales.y.ticks.color = originalBarColor;
+            chartInstanceBar.options.scales.x.ticks.color = originalBarColor;
+            chartInstanceBar.options.plugins.title.color = originalBarColor;
+            chartInstanceBar.options.scales.y.grid.color = originalGridColor;
+
+            chartInstanceDoughnut.update();
+            chartInstanceBar.update();
         }
 
         async function compartilharZap() {
@@ -1043,6 +1155,7 @@
             document.querySelectorAll('input[type="date"]').forEach(i => i.value = hoje.toISOString().slice(0,10));
             setupSmartBar();
             navTo('v-ganhar', document.querySelector('.tab.active'));
+            render();
         };
     </script>
 </body>
