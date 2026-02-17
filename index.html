@@ -133,6 +133,7 @@
         .btn-offline { background: #333; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
         body.light-theme .btn-offline { background: #e5e5ea; color: #000; border: 1px solid rgba(0,0,0,0.1); }
         .btn-sec { background: rgba(120, 120, 128, 0.15); color: var(--text-main); }
+        .btn-danger { background: rgba(255, 69, 58, 0.15); color: #ff453a; border: 1px solid rgba(255,69,58,0.3); }
         
         /* Charts Container */
         .chart-container { position: relative; height: 200px; width: 100%; margin-bottom: 20px; }
@@ -337,7 +338,7 @@
                 
                 <button class="btn-primary" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
                 <button class="btn-whatsapp" onclick="compartilharZap()"><i class="fab fa-whatsapp"></i> Enviar Resumo no Zap</button>
-                <button class="btn-offline" onclick="baixarAppHTML()" style="margin-top:10px"><i class="fas fa-download"></i> Baixar App Completo (HTML)</button>
+                <button class="btn-offline" onclick="abrirOpcoesDownload()" style="margin-top:10px"><i class="fas fa-download"></i> Baixar App Completo (HTML)</button>
                 
                 <div style="border-top: 1px solid var(--glass-border); margin: 20px 0; padding-top: 15px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -347,7 +348,7 @@
                     
                     <input type="file" id="file-restore" class="hidden" accept=".json" onchange="restoreDados(this)">
                     
-                    <button class="btn-sec" onclick="resetDB()" style="margin-top:10px; color: var(--expense); border: 1px solid rgba(255,69,58,0.2);"><i class="fas fa-trash"></i> Resetar Tudo</button>
+                    <button class="btn-danger" onclick="abrirOpcoesReset()" style="margin-top:10px; width:100%"><i class="fas fa-trash"></i> Resetar Tudo</button>
                 </div>
             </div>
         </div>
@@ -421,6 +422,42 @@
         <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
     </nav>
 
+    <div id="modal-download-options" class="modal-overlay" onclick="closeModal('modal-download-options')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">📦</div>
+            <h3 style="margin-top:0">Leve o App com Você</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;">
+                Escolha como deseja salvar seu app e seus dados:
+            </p>
+            <button class="btn-sec" onclick="backupDados(); closeModal('modal-download-options')" style="margin-bottom: 10px;">
+                <i class="fas fa-download"></i> Backup dos Dados (.json)
+                <div style="font-size: 0.65rem; font-weight: 400; margin-top: 2px; opacity: 0.7;">Salve apenas seus lançamentos</div>
+            </button>
+            <button class="btn-offline" onclick="baixarAppHTMLClean(); closeModal('modal-download-options')">
+                <i class="fas fa-code"></i> App Instalável (.html)
+                <div style="font-size: 0.65rem; font-weight: 400; margin-top: 2px; opacity: 0.7;">Versão limpa do app, sem dados</div>
+            </button>
+            <button class="btn-sec" onclick="closeModal('modal-download-options')" style="margin-top:20px; border:none; background:transparent;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modal-reset-options" class="modal-overlay" onclick="closeModal('modal-reset-options')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">⚠️</div>
+            <h3 style="margin-top:0">Zona de Perigo</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;">
+                Você está prestes a apagar tudo. Recomendamos fortemente fazer um backup dos dados antes.
+            </p>
+            <button class="btn-sec" onclick="backupDados()" style="margin-bottom: 10px; border-color: var(--primary); color: var(--primary);">
+                <i class="fas fa-save"></i> Fazer Backup de Segurança (.json)
+            </button>
+            <button class="btn-danger" onclick="realReset()" style="margin-top:10px; background: var(--expense); color: white;">
+                <i class="fas fa-bomb"></i> Apagar Tudo e Reiniciar
+            </button>
+            <button class="btn-sec" onclick="closeModal('modal-reset-options')" style="margin-top:15px; border:none; background:transparent;">Cancelar</button>
+        </div>
+    </div>
+
     <div id="modal-tutorial" class="modal-overlay" onclick="closeModal('modal-tutorial')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <h3 style="margin-top:0">Guia de Instalação</h3>
@@ -472,6 +509,19 @@
         </div>
     </div>
 
+    <div id="modal-cafe" class="modal-overlay" onclick="closeModal('modal-cafe')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">🎉</div>
+            <h3 style="margin-top:0">Momento do Café!</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                O app já te ajudou a registrar <b id="cafe-count" style="color: var(--text-main);">30</b> contas! Que tal pagar um cafezinho (R$ 5) pro desenvolvedor continuar mantendo o app sem anúncios?
+            </p>
+            <img src="qrcode.png" class="tier-qr" onclick="zoomPix(this.src, 'O Café da Firma ☕ (PIX via Banco)')" onerror="this.src='https://placehold.co/200x200?text=QR+Code'">
+            <div class="zoom-hint" onclick="zoomPix(this.previousElementSibling.src, 'O Café da Firma ☕ (PIX via Banco)')"><i class="fas fa-search-plus"></i> Ampliar</div>
+            <button class="btn-primary" onclick="closeModal('modal-cafe')" style="margin-top:20px">Fechar</button>
+        </div>
+    </div>
+
     <div id="modal-pix" class="modal-overlay" onclick="closeModal('modal-pix')">
         <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
             <h3 id="pix-tit" style="margin-bottom: 5px;">Apoio</h3>
@@ -492,7 +542,6 @@
         let chartInstanceDoughnut = null;
         let chartInstanceBar = null;
         
-        // VARIÁVEL SENTINELA PARA BACKUP OFFLINE (A Mágica acontece aqui)
         const BACKUP_EMBUTIDO = null; // __MARKER_BACKUP__
 
         /* ================= SECURITY & MULTI-TAB LOGIC ================= */
@@ -517,7 +566,8 @@
             document.getElementById('blocker').style.display = 'none';
             channel.postMessage('ping');
         }
-        channel.postMessage('ping');
+        
+        setTimeout(() => channel.postMessage('ping'), 500);
 
         /* ================= DB INIT & OFFLINE RESTORE ================= */
         async function initDB() {
@@ -530,9 +580,6 @@
                 };
                 req.onsuccess = async e => { 
                     db = e.target.result; 
-                    
-                    // --- AUTO RESTORE OFFLINE DATA ---
-                    // Verifica se o BACKUP_EMBUTIDO existe E se o usuário não solicitou um RESET (ignore_embed)
                     const ignore = localStorage.getItem('ignore_embed');
                     if (BACKUP_EMBUTIDO && typeof BACKUP_EMBUTIDO === 'object' && !ignore) {
                         await autoRestoreOffline(BACKUP_EMBUTIDO);
@@ -549,7 +596,6 @@
                 tx.objectStore('receitas').clear();
                 tx.objectStore('despesas').clear();
                 
-                // Restaura Usuário
                 if(data.u) localStorage.setItem('contas_user', data.u);
                 
                 (data.r || []).forEach(i => tx.objectStore('receitas').add(i));
@@ -624,7 +670,7 @@
             const name = document.getElementById('user-in').value.trim();
             if(!name) return;
             localStorage.setItem('contas_user', name);
-            localStorage.removeItem('ignore_embed'); // Libera o embed em caso de nova criação
+            localStorage.removeItem('ignore_embed');
             closeModal('modal-welcome');
             location.reload();
         }
@@ -644,10 +690,21 @@
             if(editId) obj.id = parseInt(editId);
             
             store.put(obj);
+            
             tx.oncomplete = () => {
                 showToast(editId ? "Atualizado!" : "Salvo!");
                 cancelarEdicao(tipo);
                 render();
+                
+                if (!editId) {
+                    Promise.all([getAll("receitas"), getAll("despesas")]).then(([r, d]) => {
+                        const totalContas = r.length + d.length;
+                        if (totalContas > 0 && totalContas % 30 === 0) {
+                            document.getElementById('cafe-count').innerText = totalContas;
+                            openModal('modal-cafe');
+                        }
+                    });
+                }
             };
         }
 
@@ -793,21 +850,39 @@
             });
         }
 
-        /* ================= OFFLINE HTML EXPORT ================= */
-        async function baixarAppHTML() {
-            const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
-            const user = localStorage.getItem('contas_user');
-            const payload = { r: receitas, d: despesas, u: user, t: new Date().toISOString() };
-            const jsonString = JSON.stringify(payload).replace(/<\/script>/g, '<\\/script>');
+        /* ================= OFFLINE HTML EXPORT (CLEAN) ================= */
+        function abrirOpcoesDownload() {
+            openModal('modal-download-options');
+        }
+
+        function abrirOpcoesReset() {
+            openModal('modal-reset-options');
+        }
+
+        async function baixarAppHTMLClean() {
+            // FORÇAR FECHAMENTO DE MODAIS ANTES DE CAPTURAR O HTML
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+            
+            const user = localStorage.getItem('contas_user') || 'Usuario';
+            
+            // Pega o código atual da página (agora limpo de modais abertos)
             let htmlContent = document.documentElement.outerHTML;
-            const injectPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*null\s*;/;
-            if (!injectPattern.test(htmlContent)) { alert("Erro ao gerar versão offline."); return; }
-            const newScript = `const BACKUP_EMBUTIDO = ${jsonString};`;
-            const finalHtml = htmlContent.replace(injectPattern, newScript);
-            const blob = new Blob([finalHtml], {type: 'text/html'});
+            
+            // Garante que a variável BACKUP_EMBUTIDO esteja como null
+            const injectPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*[\s\S]*?; \/\/ __MARKER_BACKUP__/;
+            const resetScript = `const BACKUP_EMBUTIDO = null; // __MARKER_BACKUP__`;
+            
+            if (injectPattern.test(htmlContent)) {
+                htmlContent = htmlContent.replace(injectPattern, resetScript);
+            } else {
+                const fallbackPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*null;/;
+                htmlContent = htmlContent.replace(fallbackPattern, resetScript);
+            }
+            
+            const blob = new Blob([htmlContent], {type: 'text/html'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `AppFinanceiro_${user}_OFFLINE.html`;
+            a.download = `AppFinanceiro_Instalavel.html`;
             a.click();
         }
 
@@ -838,14 +913,13 @@
             reader.readAsText(file);
         }
 
-        function resetDB() { 
-            if(confirm("SEGURANÇA: Faça um backup manual antes de prosseguir!\n\nATENÇÃO: Isso apagará TODOS os dados. Continuar?")){ 
-                localStorage.removeItem('contas_user');
-                localStorage.setItem('ignore_embed', 'true');
-                const tx=db.transaction(['receitas','despesas'],'readwrite'); 
-                tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear(); 
-                tx.oncomplete=()=>location.reload(); 
-            }
+        function realReset() { 
+            // Hard Reset Action
+            localStorage.removeItem('contas_user');
+            localStorage.setItem('ignore_embed', 'true');
+            const tx=db.transaction(['receitas','despesas'],'readwrite'); 
+            tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear(); 
+            tx.oncomplete=()=>location.reload(); 
         }
 
         function removerAcentos(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); }
@@ -914,16 +988,13 @@
             const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
             const [ano, mes] = mesSel.split('-');
             const nomeMes = meses[parseInt(mes)-1];
-            
             let msg = `*Relatório Financeiro - ${nomeMes} de ${ano}*\n\n`;
             msg += `*🟢 Entradas: R$ ${totalR.toFixed(2)}*\n`;
             recFiltro.forEach(r => msg += `🔹 ${r.desc}: R$ ${r.val.toFixed(2)}\n`);
             msg += `\n*🔴 Saídas: R$ ${totalD.toFixed(2)}*\n`;
             despFiltro.forEach(d => msg += `🔸 ${d.desc}: R$ ${d.val.toFixed(2)}\n`);
             msg += `\n*💰 Saldo Final: R$ ${saldo.toFixed(2)}*`;
-            
             msg += `\n\n📊 Controle suas finanças de graça: https://oappdopobre.oseuapp.workers.dev`;
-            
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
