@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -388,11 +386,16 @@
 
                     <div class="tier-card" style="background: rgba(255, 214, 10, 0.08); border-color: #ffd60a;">
                         <div class="tier-icon">👑</div>
-                        <div class="tier-title">Patrão do App</div>
+                        <div class="tier-title">Quer novos recursos e funcionalidades.</div>
                         <div class="tier-price">R$ 50,00+</div>
-                        <div class="tier-description">Para quem virou fã de carteirinha e quer garantir o app para sempre.</div>
+                        <div class="tier-description">Para quem virou fã e quer garantir os melhores recursos</div>
                         <img src="qrcode.png" class="tier-qr" onclick="zoomPix(this.src, 'Patrão do App 👑 (PIX via Banco)')" onerror="this.src='https://placehold.co/200x200?text=QR+Code'">
                         <div class="zoom-hint" onclick="zoomPix(this.previousElementSibling.src, 'Patrão do App 👑 (PIX via Banco)')"><i class="fas fa-search-plus"></i> Ampliar</div>
+                        
+                        <button onclick="window.open('https://wa.me/5547996057007', '_blank')" style="background: var(--whatsapp); color: white; padding: 10px; margin-top: 10px; font-size: 0.75rem;">
+                            <i class="fab fa-whatsapp"></i> contato com o dev
+                        </button>
+                        <div style="font-size: 0.6rem; color: var(--text-sec); margin-top: 5px;">novos recursos</div>
                     </div>
                 </div>
 
@@ -621,6 +624,7 @@
             const name = document.getElementById('user-in').value.trim();
             if(!name) return;
             localStorage.setItem('contas_user', name);
+            localStorage.removeItem('ignore_embed'); // Libera o embed em caso de nova criação
             closeModal('modal-welcome');
             location.reload();
         }
@@ -793,27 +797,13 @@
         async function baixarAppHTML() {
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const user = localStorage.getItem('contas_user');
-            
-            // Dados para embutir
             const payload = { r: receitas, d: despesas, u: user, t: new Date().toISOString() };
-            const jsonString = JSON.stringify(payload).replace(/<\/script>/g, '<\\/script>'); // Sanitize
-            
-            // Pega o código atual da página
+            const jsonString = JSON.stringify(payload).replace(/<\/script>/g, '<\\/script>');
             let htmlContent = document.documentElement.outerHTML;
-            
-            // Substitui a variável sentinela pelos dados reais
-            // Procura por: const BACKUP_EMBUTIDO = null;
             const injectPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*null\s*;/;
-            
-            if (!injectPattern.test(htmlContent)) {
-                alert("Erro ao gerar versão offline: Marcador não encontrado.");
-                return;
-            }
-            
+            if (!injectPattern.test(htmlContent)) { alert("Erro ao gerar versão offline."); return; }
             const newScript = `const BACKUP_EMBUTIDO = ${jsonString};`;
             const finalHtml = htmlContent.replace(injectPattern, newScript);
-            
-            // Download
             const blob = new Blob([finalHtml], {type: 'text/html'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -834,18 +824,14 @@
             const file = input.files[0];
             if(!file) return;
             const reader = new FileReader();
-            
             reader.onload = async (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
                     if(!confirm(`Restaurar backup de "${data.u || 'Usuário'}"?`)) return;
-                    
                     const tx = db.transaction(['receitas', 'despesas'], 'readwrite');
                     tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear();
-                    
                     (data.receitas || data.r || []).forEach(i => tx.objectStore('receitas').add(i));
                     (data.despesas || data.d || []).forEach(i => tx.objectStore('despesas').add(i));
-                    
                     tx.oncomplete = () => { alert("Restaurado!"); location.reload(); };
                 } catch(err) { alert("Arquivo inválido."); }
             };
@@ -853,9 +839,9 @@
         }
 
         function resetDB() { 
-            if(confirm("SEGURANÇA: Faça um backup manual antes de prosseguir!\n\nATENÇÃO: Isso apagará TODOS os dados e ignorará o backup embutido. Continuar?")){ 
+            if(confirm("SEGURANÇA: Faça um backup manual antes de prosseguir!\n\nATENÇÃO: Isso apagará TODOS os dados. Continuar?")){ 
                 localStorage.removeItem('contas_user');
-                localStorage.setItem('ignore_embed', 'true'); // Flag de Hard Reset
+                localStorage.setItem('ignore_embed', 'true');
                 const tx=db.transaction(['receitas','despesas'],'readwrite'); 
                 tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear(); 
                 tx.oncomplete=()=>location.reload(); 
@@ -869,26 +855,21 @@
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const mesSel = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
             const user = localStorage.getItem('contas_user') || "Usuario";
-            
             const receitasMes = receitas.filter(r => r.data.startsWith(mesSel)).map(x => ({...x, tipo: 'receita'}));
             const despesasMes = despesas.filter(d => d.data.startsWith(mesSel)).map(x => ({...x, tipo: 'despesa'}));
-            
             const totalR = receitasMes.reduce((s, i) => s + i.val, 0);
             const totalD = despesasMes.reduce((s, i) => s + i.val, 0);
             const saldo = totalR - totalD;
-
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
             const safeText = (txt) => removerAcentos(txt || "");
             const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
-
             doc.setFillColor(94, 92, 230); doc.rect(0, 0, pageWidth, 40, 'F');
             doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.setFont("helvetica", 'bold');
             doc.text(safeText(`RELATORIO FINANCEIRO`), 14, 20);
             doc.setFontSize(10); doc.setFont("helvetica", 'normal');
             doc.text(`Usuario: ${safeText(user)} | Periodo: ${mesSel}`, 14, 28);
-
             let yPos = 55;
             const drawCard = (x, label, val, colorRGB) => {
                 doc.setFillColor(245, 245, 247); doc.setDrawColor(200, 200, 200);
@@ -900,7 +881,6 @@
             drawCard(14, "GANHOS", fmtBRL(totalR), [48, 209, 88]);
             drawCard(75, "GASTOS", fmtBRL(totalD), [255, 69, 58]);
             drawCard(136, "SALDO LIQUIDO", fmtBRL(saldo), saldo >= 0 ? [94, 92, 230] : [255, 69, 58]);
-
             yPos += 35;
             const allItems = [...receitasMes, ...despesasMes].sort((a,b) => a.data.localeCompare(b.data));
             const tableData = allItems.map(item => [
@@ -909,7 +889,6 @@
                 safeText(item.tipo === 'receita' ? 'ENTRADA' : 'SAIDA'),
                 item.tipo === 'receita' ? `+ ${fmtBRL(item.val)}` : `- ${fmtBRL(item.val)}`
             ]);
-
             doc.autoTable({
                 startY: yPos, head: [['Data', 'Descricao', 'Tipo', 'Valor']], body: tableData, theme: 'striped',
                 headStyles: { fillColor: [94, 92, 230], textColor: 255, fontStyle: 'bold' },
@@ -929,22 +908,22 @@
             const mesSel = document.getElementById('filtroMes').value;
             const recFiltro = receitas.filter(i=>i.data.startsWith(mesSel));
             const despFiltro = despesas.filter(i=>i.data.startsWith(mesSel));
-            
             const totalR = recFiltro.reduce((s,i)=>s+i.val,0);
             const totalD = despFiltro.reduce((s,i)=>s+i.val,0);
             const saldo = totalR - totalD;
-
             const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
             const [ano, mes] = mesSel.split('-');
             const nomeMes = meses[parseInt(mes)-1];
-
+            
             let msg = `*Relatório Financeiro - ${nomeMes} de ${ano}*\n\n`;
             msg += `*🟢 Entradas: R$ ${totalR.toFixed(2)}*\n`;
             recFiltro.forEach(r => msg += `🔹 ${r.desc}: R$ ${r.val.toFixed(2)}\n`);
             msg += `\n*🔴 Saídas: R$ ${totalD.toFixed(2)}*\n`;
             despFiltro.forEach(d => msg += `🔸 ${d.desc}: R$ ${d.val.toFixed(2)}\n`);
             msg += `\n*💰 Saldo Final: R$ ${saldo.toFixed(2)}*`;
-
+            
+            msg += `\n\n📊 Controle suas finanças de graça: https://oappdopobre.oseuapp.workers.dev`;
+            
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -957,10 +936,8 @@
             await initDB();
             const user = localStorage.getItem('contas_user');
             if(!user) openModal('modal-welcome'); else document.getElementById('username-header').innerText = user;
-
             const savedTheme = localStorage.getItem('contas_theme');
             if(savedTheme === 'light') document.body.classList.add('light-theme');
-            
             const sel = document.getElementById('filtroMes');
             const hoje = new Date();
             for(let i=0; i<12; i++) {
@@ -968,7 +945,6 @@
                 const s = d.toISOString().slice(0,7);
                 sel.add(new Option(d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}), s));
             }
-
             document.querySelectorAll('input[type="tel"]').forEach(i => {
                 i.addEventListener('input', e => {
                     let v = e.target.value.replace(/\D/g,'');
@@ -977,7 +953,6 @@
                 });
             });
             document.querySelectorAll('input[type="date"]').forEach(i => i.value = hoje.toISOString().slice(0,10));
-            
             setupSmartBar();
             navTo('v-ganhar', document.querySelector('.tab.active'));
         };
