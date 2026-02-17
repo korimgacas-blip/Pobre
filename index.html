@@ -596,10 +596,18 @@
                 tx.objectStore('receitas').clear();
                 tx.objectStore('despesas').clear();
                 
+                // Normaliza e sanitiza dados (val/valor, desc/descricao)
                 if(data.u) localStorage.setItem('contas_user', data.u);
                 
-                (data.r || []).forEach(i => tx.objectStore('receitas').add(i));
-                (data.d || []).forEach(i => tx.objectStore('despesas').add(i));
+                const normalize = (item) => ({
+                    desc: item.desc || item.descricao,
+                    val: parseFloat(item.val || item.valor),
+                    data: item.data,
+                    cat: item.cat || item.categoria
+                });
+
+                (data.r || data.receitas || []).forEach(i => tx.objectStore('receitas').add(normalize(i)));
+                (data.d || data.despesas || []).forEach(i => tx.objectStore('despesas').add(normalize(i)));
                 
                 tx.oncomplete = () => {
                     showToast("Dados restaurados do Backup Offline!");
@@ -905,8 +913,17 @@
                     if(!confirm(`Restaurar backup de "${data.u || 'Usuário'}"?`)) return;
                     const tx = db.transaction(['receitas', 'despesas'], 'readwrite');
                     tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear();
-                    (data.receitas || data.r || []).forEach(i => tx.objectStore('receitas').add(i));
-                    (data.despesas || data.d || []).forEach(i => tx.objectStore('despesas').add(i));
+                    
+                    const normalize = (item) => ({
+                        desc: item.desc || item.descricao,
+                        val: parseFloat(item.val || item.valor),
+                        data: item.data,
+                        cat: item.cat || item.categoria
+                    });
+
+                    (data.r || data.receitas || []).forEach(i => tx.objectStore('receitas').add(normalize(i)));
+                    (data.d || data.despesas || []).forEach(i => tx.objectStore('despesas').add(normalize(i)));
+                    
                     tx.oncomplete = () => { alert("Restaurado!"); location.reload(); };
                 } catch(err) { alert("Arquivo inválido."); }
             };
