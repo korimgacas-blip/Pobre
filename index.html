@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>O app do Pobre</title>
     
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f2f2f7">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,9 +37,16 @@
             --glass-border: rgba(255, 255, 255, 0.1);
             --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             
-            --mesh-gradient: radial-gradient(at 0% 0%, rgba(94, 92, 230, 0.25) 0px, transparent 60%), #000000;
             --radius-card: 24px;
         }
+
+        /* --- PALETAS DE CORES --- */
+        body.palette-default { --primary: #5e5ce6; --primary-glow: rgba(94, 92, 230, 0.5); }
+        body.palette-nature { --primary: #10b981; --primary-glow: rgba(16, 185, 129, 0.5); }
+        body.palette-ocean { --primary: #0ea5e9; --primary-glow: rgba(14, 165, 233, 0.5); }
+        body.palette-solar { --primary: #f59e0b; --primary-glow: rgba(245, 158, 11, 0.5); }
+        body.palette-berry { --primary: #ec4899; --primary-glow: rgba(236, 72, 153, 0.5); }
+        body.palette-minimal { --primary: #64748b; --primary-glow: rgba(100, 116, 139, 0.5); }
 
         /* TEMA CLARO */
         body.light-theme {
@@ -47,14 +57,13 @@
             --glass-surface: rgba(255, 255, 255, 0.85);
             --glass-border: rgba(0, 0, 0, 0.08);
             --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            
-            --mesh-gradient: radial-gradient(at 0% 0%, rgba(94, 92, 230, 0.12) 0px, transparent 50%), #f2f2f7;
         }
 
         * { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background: var(--mesh-gradient);
+            /* Gradiente dinâmico via JS */
+            background-color: var(--bg-base);
             background-attachment: fixed;
             margin: 0; padding-top: 65px; padding-bottom: 120px;
             color: var(--text-main);
@@ -110,14 +119,14 @@
             box-shadow: var(--card-shadow); backdrop-filter: blur(30px);
         }
 
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
         .dash-card { 
-            background: var(--glass-surface); border-radius: 20px; padding: 18px 12px; 
+            background: var(--glass-surface); border-radius: 20px; padding: 18px 10px; 
             text-align: center; border: 1px solid var(--glass-border); 
             box-shadow: var(--card-shadow);
         }
-        .dash-card small { color: var(--text-sec); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: block; }
-        .dash-card b { font-size: 1.25rem; letter-spacing: -0.5px; }
+        .dash-card small { color: var(--text-sec); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: block; }
+        .dash-card b { font-size: 1.1rem; letter-spacing: -0.5px; }
 
         label { font-size: 0.75rem; font-weight: 700; color: var(--text-sec); margin: 0 0 6px 4px; display: block; }
         
@@ -145,6 +154,10 @@
         body.light-theme .btn-offline { background: #e5e5ea; color: #000; border: 1px solid rgba(0,0,0,0.1); }
         .btn-sec { background: rgba(120, 120, 128, 0.15); color: var(--text-main); }
         .btn-danger { background: rgba(255, 69, 58, 0.15); color: #ff453a; border: 1px solid rgba(255,69,58,0.3); }
+        
+        .btn-icon { background: rgba(120,120,128,0.1); color: var(--text-sec); width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 0.9rem; margin:0; padding: 0;}
+        .btn-icon.edit { color: var(--primary); }
+        .btn-icon.del { color: var(--expense); background: rgba(255, 69, 58, 0.1); }
         
         /* Charts Container */
         .chart-container { position: relative; height: 200px; width: 100%; margin-bottom: 20px; }
@@ -204,7 +217,9 @@
         .view { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
         .view.active { display: block; opacity: 1; transform: translateY(0); }
 
-        .item { display: flex; justify-content: space-between; padding: 16px 8px; border-bottom: 1px solid rgba(120,120,128,0.1); cursor: pointer; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 16px 8px; border-bottom: 1px solid rgba(120,120,128,0.1); cursor: pointer; }
+        .item-info { flex-grow: 1; }
+        .item-actions { display: flex; gap: 10px; margin-left: 10px; }
 
         /* Modals */
         .modal-overlay {
@@ -227,6 +242,28 @@
 
         #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 24px; border-radius: 50px; opacity: 0; z-index: 5000; transition: 0.3s; font-size: 0.85rem; font-weight: 600; pointer-events: none; white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .hidden { display: none !important; }
+        
+        /* Historico Mensal Table */
+        .history-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(120,120,128,0.1); font-size: 0.9rem; }
+        .hist-val { font-weight: 700; }
+        .hist-pos { color: var(--income); }
+        .hist-neg { color: var(--expense); }
+
+        /* --- ESTILOS DO MODAL DE TEMA --- */
+        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 15px; }
+        .theme-option { 
+            height: 50px; border-radius: 12px; cursor: pointer; 
+            border: 2px solid transparent; background: rgba(120, 120, 128, 0.1);
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+        }
+        .theme-option:hover { transform: scale(1.05); }
+        .theme-option.selected { border-color: var(--text-main); }
+        .theme-circle { width: 24px; height: 24px; border-radius: 50%; }
+
+        .mode-switch { display: flex; background: rgba(120, 120, 128, 0.1); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+        .mode-opt { flex: 1; padding: 10px; text-align: center; cursor: pointer; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-sec); transition: 0.2s; }
+        .mode-opt.active { background: var(--glass-surface); color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -242,15 +279,11 @@
 
     <header id="main-header">
         <div class="user-area">
-            <div class="user-greeting">
-                <span id="status-icon" class="status-badge" style="display: none;">-1</span>
-                Olá,
-            </div>
+            <div class="user-greeting">Olá,</div>
             <div class="user-name" id="username-header">...</div>
         </div>
-        
         <div id="header-title"></div> 
-        <i class="fas fa-circle-half-stroke" onclick="toggleTheme()" style="cursor: pointer; font-size: 1.2rem; color: var(--primary); padding: 10px;"></i>
+        <i class="fas fa-palette" onclick="openModal('modal-theme')" style="cursor: pointer; font-size: 1.2rem; color: var(--primary); padding: 10px;"></i>
     </header>
 
     <div class="container">
@@ -263,6 +296,10 @@
             <div class="dash-card">
                 <small>Saída (Mês)</small>
                 <b id="dash-gastos" style="color: var(--expense);">R$ 0,00</b>
+            </div>
+            <div class="dash-card">
+                <small>Resultado Médio</small>
+                <b id="dash-media" style="color: var(--primary);">R$ 0,00</b>
             </div>
         </div>
 
@@ -312,6 +349,18 @@
                 <label>Data</label>
                 <input type="date" id="data-gastar">
                 
+                <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px; margin-top: 15px; cursor: pointer;">
+                  <input type="checkbox" id="recorrente-gastar" style="width: 20px; margin: 0;">
+                  <span style="font-weight: 600; font-size: 0.9rem;">Conta mensal fixa</span>
+                </label>
+
+                <div id="opcoes-recorrente" class="hidden" style="background: rgba(120,120,128,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                  <label>Dia fixo do mês</label>
+                  <input type="number" id="dia-fixo" min="1" max="28" placeholder="Ex: 5">
+                  <label>Data de término (opcional)</label>
+                  <input type="month" id="recorrente-fim">
+                </div>
+
                 <div style="height: 10px;"></div>
                 <button id="btn-save-gastar" class="btn-expense" onclick="salvar('gastar')">Confirmar Gasto</button>
                 <button id="btn-cancel-gastar" class="btn-sec hidden" onclick="cancelarEdicao('gastar')" style="margin-top:10px;">Cancelar</button>
@@ -345,6 +394,39 @@
             </div>
 
             <div class="card">
+                <h3 style="margin-top:0"><i class="fas fa-bullseye"></i> Meta Financeira</h3>
+                
+                <label>Valor da Meta (R$)</label>
+                <input type="tel" id="meta-valor" placeholder="Ex: 10000">
+
+                <label>Prazo (meses)</label>
+                <input type="number" id="meta-prazo" placeholder="Ex: 6">
+
+                <button class="btn-primary" onclick="salvarMeta()">Definir Meta</button>
+
+                <div style="margin-top:20px;">
+                    <div style="height:14px; background:rgba(120,120,128,0.2); border-radius:20px; overflow:hidden;">
+                        <div id="meta-barra" style="height:100%; width:0%; background:var(--income); transition:0.5s;"></div>
+                    </div>
+                    <div id="meta-status" style="margin-top:8px; font-size:0.8rem; font-weight: 600;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0"><i class="fas fa-chart-line"></i> Evolução & Projeção</h3>
+                <div class="chart-container">
+                    <canvas id="chart-projecao"></canvas>
+                </div>
+                <div id="projecao-info" style="margin-top:15px; font-size:0.85rem; color:var(--text-sec);"></div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0"><i class="fas fa-history"></i> Histórico Mensal</h3>
+                <div id="historico-mensal-list">
+                    </div>
+            </div>
+
+            <div class="card">
                 <h3 style="margin-top:0">Dados & Exportação</h3>
                 
                 <button class="btn-primary" onclick="gerarRelatorioPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
@@ -368,7 +450,7 @@
             <div class="card">
                 <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-rocket"></i> Guia Pro</h3>
                 <p style="font-size: 0.85rem; color: var(--text-sec); margin: 10px 0;">Aprenda a instalar o app e dominar suas finanças.</p>
-                <button class="btn-primary" onclick="openModal('modal-tutorial')"><i class="fas fa-book"></i> Abrir Guia & Manual</button>
+                <button class="btn-primary" onclick="openModal('modal-tutorial-completo')"><i class="fas fa-book"></i> Ajuda & Manual</button>
             </div>
 
             <div class="card">
@@ -433,6 +515,114 @@
         <div class="tab" onclick="navTo('v-apoie',this)"><i class="fas fa-heart"></i><span>Apoie</span></div>
     </nav>
 
+    <div id="modal-theme" class="modal-overlay" onclick="closeModal('modal-theme')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <h3 style="margin-top:0">Personalização</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem;">Escolha o visual do seu app.</p>
+
+            <label style="text-align:left; display:block; margin-bottom:5px;">Modo</label>
+            <div class="mode-switch">
+                <div class="mode-opt" id="mode-dark" onclick="setThemeMode('dark')"><i class="fas fa-moon"></i> Escuro</div>
+                <div class="mode-opt" id="mode-light" onclick="setThemeMode('light')"><i class="fas fa-sun"></i> Claro</div>
+            </div>
+
+            <label style="text-align:left; display:block; margin-bottom:5px;">Cores</label>
+            <div class="theme-grid">
+                <div class="theme-option" onclick="setPalette('default')"><div class="theme-circle" style="background:#5e5ce6"></div></div>
+                <div class="theme-option" onclick="setPalette('nature')"><div class="theme-circle" style="background:#10b981"></div></div>
+                <div class="theme-option" onclick="setPalette('ocean')"><div class="theme-circle" style="background:#0ea5e9"></div></div>
+                <div class="theme-option" onclick="setPalette('solar')"><div class="theme-circle" style="background:#f59e0b"></div></div>
+                <div class="theme-option" onclick="setPalette('berry')"><div class="theme-circle" style="background:#ec4899"></div></div>
+                <div class="theme-option" onclick="setPalette('minimal')"><div class="theme-circle" style="background:#64748b"></div></div>
+            </div>
+            <button class="btn-primary" onclick="closeModal('modal-theme')" style="margin-top:20px">Concluir</button>
+        </div>
+    </div>
+
+    <div id="modal-funil-identity" class="modal-overlay" onclick="closeModal('modal-funil-identity')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">💡</div>
+            <h3 style="margin-top:0">Consciência Financeira</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                A maioria das pessoas não sabe para onde o dinheiro vai.<br><b>Você agora sabe.</b>
+            </p>
+            <button class="btn-primary" onclick="closeModal('modal-funil-identity')">Continuar no Controle</button>
+        </div>
+    </div>
+
+    <div id="modal-funil-identity-10" class="modal-overlay" onclick="closeModal('modal-funil-identity-10')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">🧠</div>
+            <h3 style="margin-top:0">Memória Financeira</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                Seu dinheiro agora tem memória.<br>E você tem controle.
+            </p>
+            <button class="btn-primary" onclick="closeModal('modal-funil-identity-10')">Seguir Firme</button>
+        </div>
+    </div>
+
+    <div id="modal-funil-engagement" class="modal-overlay" onclick="closeModal('modal-funil-engagement')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">📈</div>
+            <h3 style="margin-top:0">Você está no topo!</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                Você já registrou <b>15 movimentações</b>.<br>Isso já é mais controle do que 90% das pessoas têm.
+            </p>
+            <button class="btn-primary" onclick="closeModal('modal-funil-engagement')">Orgulho!</button>
+        </div>
+    </div>
+
+    <div id="modal-cafe" class="modal-overlay" onclick="closeModal('modal-cafe')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">🎉</div>
+            <h3 style="margin-top:0">30 Decisões Inteligentes</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                Se cada registro evitou um erro de R$ 10, você já protegueu <b>R$ 300</b>.<br><br>
+                Este app não tem anúncios, não coleta dados e não te vende.<br>
+                Um café mantém tudo assim.
+            </p>
+            <img src="qrcode.png" class="tier-qr" onclick="zoomPix(this.src, 'O Café da Firma ☕ (PIX via Banco)')" onerror="this.src='https://placehold.co/200x200?text=QR+Code'">
+            <div class="zoom-hint" onclick="zoomPix(this.previousElementSibling.src, 'O Café da Firma ☕ (PIX via Banco)')"><i class="fas fa-search-plus"></i> Ampliar</div>
+            <button class="btn-primary" onclick="closeModal('modal-cafe')" style="margin-top:20px">Fechar</button>
+        </div>
+    </div>
+
+    <div id="modal-funil-pride" class="modal-overlay" onclick="closeModal('modal-funil-pride')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">💙</div>
+            <h3 style="margin-top:0">Azul Consistente</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                Você está no azul há 2 meses.<br>Isso não é sorte. É consciência.
+            </p>
+            <button class="btn-primary" onclick="closeModal('modal-funil-pride')">Comemorar</button>
+        </div>
+    </div>
+
+    <div id="modal-funil-security" class="modal-overlay" onclick="closeModal('modal-funil-security')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">🔐</div>
+            <h3 style="margin-top:0">Guardião dos Dados</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                Você já registrou muita informação importante.<br>Que tal proteger o app com PIN?
+            </p>
+            <button onclick="window.open('https://wa.me/5547996057007?text=Ola%20Gabriel,%20quero%20proteger%20meu%20app%20com%20PIN', '_blank')" style="background: var(--whatsapp); color: white; padding: 12px; border-radius: 12px; border: none; font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fab fa-whatsapp"></i> Quero mais segurança
+            </button>
+            <button class="btn-sec" onclick="closeModal('modal-funil-security')" style="margin-top:10px">Agora não</button>
+        </div>
+    </div>
+
+    <div id="modal-funil-social" class="modal-overlay" onclick="closeModal('modal-funil-social')">
+        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
+            <div style="font-size:3rem; margin-bottom: 10px;">📊</div>
+            <h3 style="margin-top:0">Fato Curioso</h3>
+            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
+                Usuários que acompanham metas economizam em média mais no 3º mês de uso.
+            </p>
+            <button class="btn-primary" onclick="closeModal('modal-funil-social')">Continuar focado</button>
+        </div>
+    </div>
+
     <div id="modal-download-options" class="modal-overlay" onclick="closeModal('modal-download-options')">
         <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
             <div style="font-size:3rem; margin-bottom: 10px;">📦</div>
@@ -469,45 +659,40 @@
         </div>
     </div>
 
-    <div id="modal-tutorial" class="modal-overlay" onclick="closeModal('modal-tutorial')">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h3 style="margin-top:0">Guia de Instalação</h3>
-            <div style="margin-bottom: 25px;">
-                <div class="guide-item active" onclick="toggleGuide(this)">
-                    <div class="guide-header">📱 iPhone (iOS) <i class="fas fa-chevron-down"></i></div>
-                    <div class="guide-content">1. Toque no botão <b>Compartilhar</b>.<br>2. Selecione <b>"Adicionar à Tela de Início"</b>.<br>3. Confirme.</div>
-                </div>
-                <div class="guide-item" onclick="toggleGuide(this)">
-                    <div class="guide-header">🤖 Android (Chrome) <i class="fas fa-chevron-down"></i></div>
-                    <div class="guide-content">1. Toque nos <b>3 pontinhos</b>.<br>2. Selecione <b>"Instalar aplicativo"</b>.</div>
-                </div>
-                <div class="guide-item" onclick="toggleGuide(this)">
-                    <div class="guide-header">🌐 Samsung Internet <i class="fas fa-chevron-down"></i></div>
-                    <div class="guide-content">1. Menu (3 linhas).<br>2. <b>"Adicionar página a"</b> -> <b>"Tela de Apps"</b>.</div>
-                </div>
-                <div class="guide-item" onclick="toggleGuide(this)">
-                    <div class="guide-header">🟧 Xiaomi (Mi) <i class="fas fa-chevron-down"></i></div>
-                    <div class="guide-content">1. Ferramentas (barra inferior).<br>2. <b>"Adicionar atalho"</b>.</div>
+    <div id="modal-tutorial-completo" class="modal-overlay" onclick="closeModal('modal-tutorial-completo')">
+        <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
+            <h3 style="color: var(--primary); margin-top:0;">Central de Ajuda</h3>
+            
+            <div class="guide-item active" onclick="toggleGuide(this)">
+                <div class="guide-header">📱 Instalar App (PWA) <i class="fas fa-chevron-down" style="float:right"></i></div>
+                <div class="guide-content" style="display:block">
+                    <b>iOS (iPhone):</b> Toque em Compartilhar > Adicionar à Tela de Início.<br><br>
+                    <b>Android:</b> Toque nos 3 pontos > Instalar Aplicativo.<br><br>
+                    <i>O app funciona 100% offline após instalado.</i>
                 </div>
             </div>
 
-            <div class="tutorial-list">
-                <h3>Manual</h3>
-                <h4><i class="fas fa-arrow-up"></i> Registrar Receitas</h4>
-                <ul><li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Ganhar":</b> preencha e clique em Salvar.</div></li></ul>
-                <h4><i class="fas fa-arrow-down"></i> Registrar Despesas</h4>
-                <ul><li><i class="fas fa-pencil-alt"></i> <div><b>Aba "Gastar":</b> descrição, categoria e valor.</div></li></ul>
-                <h4><i class="fas fa-pen"></i> Editar e Excluir</h4>
-                <ul><li><i class="fas fa-mouse-pointer"></i> <div>Na aba <b>"Análise"</b>, clique no item para editar.</div></li></ul>
-                <h4><i class="fas fa-database"></i> Dados</h4>
-                <ul>
-                    <li><i class="fas fa-file-pdf"></i> <div><b>PDF:</b> Relatório completo para impressão.</div></li>
-                    <li><i class="fab fa-whatsapp"></i> <div><b>Zap:</b> Envia um resumo detalhado em texto.</div></li>
-                    <li><i class="fas fa-calendar-check"></i> <div><b>Ritual da Riqueza:</b> Toda sexta-feira ou dia 05, gere o PDF e mande no grupo da família. O gráfico bonito motiva!</div></li>
-                    <li><i class="fas fa-lock"></i> <div><b>Privacidade:</b> Dados 100% offline no seu aparelho.</div></li>
-                </ul>
+            <div class="guide-item" onclick="toggleGuide(this)">
+                <div class="guide-header">💸 Lançamentos e Recorrência <i class="fas fa-chevron-down" style="float:right"></i></div>
+                <div class="guide-content">
+                    Use as abas <b>Ganhar</b> e <b>Gastar</b>. Marque "Conta mensal fixa" para gastos que se repetem todo mês automaticamente (ex: Aluguel, Netflix).
+                </div>
             </div>
-            <button class="btn-primary" onclick="closeModal('modal-tutorial')" style="margin-top:20px">Fechar</button>
+            
+            <div class="guide-item" onclick="toggleGuide(this)">
+                <div class="guide-header">📊 Análise e Metas <i class="fas fa-chevron-down" style="float:right"></i></div>
+                <div class="guide-content">
+                    Defina uma meta financeira e acompanhe o progresso. O app também projeta seu futuro financeiro com base na sua média de gastos.
+                </div>
+            </div>
+
+            <div class="guide-item" onclick="toggleGuide(this)">
+                <div class="guide-header">🛡️ Backup e Segurança <i class="fas fa-chevron-down" style="float:right"></i></div>
+                <div class="guide-content">
+                    Seus dados ficam <b>apenas no seu celular</b>. Faça backups regulares (botão "Baixar App Completo" ou "Backup JSON") para não perder nada se trocar de aparelho.
+                </div>
+            </div>
+            <button class="btn-primary" onclick="closeModal('modal-tutorial-completo')" style="margin-top:15px">Entendi</button>
         </div>
     </div>
 
@@ -518,19 +703,6 @@
             <p>Como você quer ser chamado?</p>
             <input type="text" id="user-in" placeholder="Seu nome" style="text-align:center">
             <button class="btn-primary" onclick="initUser()" style="margin-top:20px">Acessar App</button>
-        </div>
-    </div>
-
-    <div id="modal-cafe" class="modal-overlay" onclick="closeModal('modal-cafe')">
-        <div class="modal-content" style="text-align:center" onclick="event.stopPropagation()">
-            <div style="font-size:3rem; margin-bottom: 10px;">🎉</div>
-            <h3 style="margin-top:0">Momento do Café!</h3>
-            <p style="color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
-                O app já te ajudou a registrar <b id="cafe-count" style="color: var(--text-main);">30</b> contas! Que tal pagar um cafezinho (R$ 5) pro desenvolvedor continuar mantendo o app sem anúncios?
-            </p>
-            <img src="qrcode.png" class="tier-qr" onclick="zoomPix(this.src, 'O Café da Firma ☕ (PIX via Banco)')" onerror="this.src='https://placehold.co/200x200?text=QR+Code'">
-            <div class="zoom-hint" onclick="zoomPix(this.previousElementSibling.src, 'O Café da Firma ☕ (PIX via Banco)')"><i class="fas fa-search-plus"></i> Ampliar</div>
-            <button class="btn-primary" onclick="closeModal('modal-cafe')" style="margin-top:20px">Fechar</button>
         </div>
     </div>
 
@@ -553,8 +725,18 @@
         const FORMAT = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
         let chartInstanceDoughnut = null;
         let chartInstanceBar = null;
+        let chartInstanceProjecao = null;
         
         const BACKUP_EMBUTIDO = null; // __MARKER_BACKUP__
+
+        // --- SAFE HELPERS ---
+        const safeFloat = (num) => parseFloat(Number(num).toFixed(2));
+        const getLocalDate = () => {
+            const now = new Date();
+            const offset = now.getTimezoneOffset() * 60000;
+            return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+        };
+        const getLocalMonth = () => getLocalDate().slice(0, 7);
 
         /* ================= SECURITY & MULTI-TAB LOGIC ================= */
         let isBlocked = false;
@@ -584,11 +766,12 @@
         /* ================= DB INIT & OFFLINE RESTORE ================= */
         async function initDB() {
             return new Promise((resolve) => {
-                const req = indexedDB.open("ContasProDB", 7);
+                const req = indexedDB.open("ContasProDB", 9); 
                 req.onupgradeneeded = e => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains("receitas")) db.createObjectStore("receitas", { keyPath: "id", autoIncrement: true });
                     if (!db.objectStoreNames.contains("despesas")) db.createObjectStore("despesas", { keyPath: "id", autoIncrement: true });
+                    if (!db.objectStoreNames.contains("fechamentos")) db.createObjectStore("fechamentos", { keyPath: "mes" });
                 };
                 req.onsuccess = async e => { 
                     db = e.target.result; 
@@ -604,22 +787,38 @@
 
         async function autoRestoreOffline(data) {
             return new Promise(resolve => {
-                const tx = db.transaction(['receitas', 'despesas'], 'readwrite');
+                const tx = db.transaction(['receitas', 'despesas', 'fechamentos'], 'readwrite');
                 tx.objectStore('receitas').clear();
                 tx.objectStore('despesas').clear();
+                if(tx.objectStoreNames.contains('fechamentos')) tx.objectStore('fechamentos').clear();
                 
                 if(data.u) localStorage.setItem('contas_user', data.u);
                 
-                // Sanitização Robusta (Evita NaN)
+                if(data.m) {
+                      if(data.m.start) localStorage.setItem('app_start_date', data.m.start);
+                      if(data.m.flags) {
+                          Object.keys(data.m.flags).forEach(k => localStorage.setItem(k, data.m.flags[k]));
+                      }
+                      if(data.m.palette) setPalette(data.m.palette);
+                      if(data.m.theme) setThemeMode(data.m.theme);
+                }
+                
                 const normalize = (item) => ({
                     desc: item.desc || item.descricao,
-                    val: parseFloat(item.val || item.valor) || 0,
+                    val: safeFloat(item.val || item.valor) || 0,
                     data: item.data,
-                    cat: item.cat || item.categoria
+                    cat: item.cat || item.categoria,
+                    recorrente: item.recorrente || false,
+                    diaFixo: item.diaFixo || null,
+                    recorrenteAtiva: item.recorrenteAtiva !== undefined ? item.recorrenteAtiva : true
                 });
 
                 (data.r || data.receitas || []).forEach(i => tx.objectStore('receitas').add(normalize(i)));
                 (data.d || data.despesas || []).forEach(i => tx.objectStore('despesas').add(normalize(i)));
+                
+                if(data.f){
+                    data.f.forEach(f => tx.objectStore('fechamentos').put(f));
+                }
                 
                 tx.oncomplete = () => {
                     showToast("Dados restaurados do Backup Offline!");
@@ -630,30 +829,58 @@
 
         async function getAll(store) {
             if(!db) return [];
+            if(!db.objectStoreNames.contains(store)) return [];
             const tx = db.transaction(store, "readonly");
             return new Promise(r => { const req = tx.objectStore(store).getAll(); req.onsuccess = () => r(req.result || []); });
         }
 
         /* ================= CORE UI ================= */
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('contas_theme', isLight ? 'light' : 'dark');
-            showToast(isLight ? "Modo Leitura" : "Modo Escuro");
-            render();
+        function setPalette(paletteName) {
+            document.body.classList.remove('palette-default', 'palette-nature', 'palette-ocean', 'palette-solar', 'palette-berry', 'palette-minimal');
+            if (paletteName !== 'default') {
+                document.body.classList.add(`palette-${paletteName}`);
+            }
+            localStorage.setItem('contas_palette', paletteName);
+            updateDynamicGradient();
+            document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('selected'));
         }
+
+        function updateDynamicGradient() {
+            const primaryColor = getComputedStyle(document.body).getPropertyValue('--primary').trim();
+            document.body.style.backgroundImage = `radial-gradient(at 0% 0%, ${primaryColor}33 0px, transparent 60%)`;
+        }
+
+        function setThemeMode(mode) {
+            if (mode === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('mode-light').classList.add('active');
+                document.getElementById('mode-dark').classList.remove('active');
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('mode-dark').classList.add('active');
+                document.getElementById('mode-light').classList.remove('active');
+            }
+            localStorage.setItem('contas_theme', mode);
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('contas_theme') || 'dark';
+            setThemeMode(savedTheme);
+            const savedPalette = localStorage.getItem('contas_palette') || 'default';
+            setPalette(savedPalette);
+        }
+
+        function toggleTheme() { openModal('modal-theme'); }
 
         function navTo(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
-            
             const titles = { "v-ganhar": "Nova Receita", "v-gastar": "Novo Gasto", "v-analise": "Análise Financeira", "v-apoie": "Central de Apoio" };
             const titleEl = document.getElementById("header-title");
             titleEl.style.display = 'none';
             setTimeout(() => { titleEl.innerText = titles[id]; titleEl.style.display = 'block'; }, 50);
-
             if(id === 'v-analise') render();
             window.scrollTo(0,0);
         }
@@ -675,6 +902,10 @@
                     setTimeout(() => { if(!document.activeElement.tagName.match(/INPUT|SELECT/)){ bar.classList.remove('visible'); nav.classList.remove('hidden'); }}, 100);
                 });
             });
+            
+            document.getElementById('recorrente-gastar').addEventListener('change', function(){
+                document.getElementById('opcoes-recorrente').style.display = this.checked ? 'block' : 'none';
+            });
         }
 
         function triggerSmartSave() {
@@ -691,41 +922,69 @@
             if(!name) return;
             localStorage.setItem('contas_user', name);
             localStorage.removeItem('ignore_embed');
+            if(!localStorage.getItem('app_start_date')) {
+                localStorage.setItem('app_start_date', new Date().toISOString());
+            }
             closeModal('modal-welcome');
             location.reload();
         }
 
         async function salvar(tipo) {
+            // 1. SEGURAR DADOS EM VARIÁVEIS ANTES DE INSERIR
             const editId = document.getElementById(`edit-id-${tipo}`).value;
             const desc = document.getElementById(`desc-${tipo}`).value;
-            const val = parseFloat(document.getElementById(`val-${tipo}`).value.replace(/\./g,'').replace(',','.')) || 0;
+            // Parsing seguro do valor
+            let rawVal = document.getElementById(`val-${tipo}`).value;
+            if(!rawVal) rawVal = "0";
+            const val = safeFloat(parseFloat(rawVal.replace(/\./g,'').replace(',','.')));
             const data = document.getElementById(`data-${tipo}`).value;
             const cat = tipo === 'ganhar' ? 'salario' : document.getElementById('cat-gastar').value;
 
+            // Validação
             if(!desc || val <= 0 || !data) { showToast("Preencha todos os campos!"); return; }
 
-            const tx = db.transaction(tipo === 'ganhar' ? "receitas" : "despesas", "readwrite");
-            const store = tx.objectStore(tipo === 'ganhar' ? "receitas" : "despesas");
+            // Payload do objeto
             const obj = { desc, val, data, cat };
-            if(editId) obj.id = parseInt(editId);
             
-            store.put(obj);
-            
-            tx.oncomplete = () => {
-                showToast(editId ? "Atualizado!" : "Salvo!");
-                cancelarEdicao(tipo);
-                render();
-                
-                if (!editId) {
-                    Promise.all([getAll("receitas"), getAll("despesas")]).then(([r, d]) => {
-                        const totalContas = r.length + d.length;
-                        if (totalContas > 0 && totalContas % 30 === 0) {
-                            document.getElementById('cafe-count').innerText = totalContas;
-                            openModal('modal-cafe');
-                        }
-                    });
+            // Recorrência (apenas gastos)
+            if(tipo === 'gastar'){
+                const recorrente = document.getElementById('recorrente-gastar')?.checked || false;
+                if(recorrente){
+                    obj.recorrente = true;
+                    obj.recorrenteAtiva = true;
+                    obj.diaFixo = parseInt(document.getElementById('dia-fixo').value) || new Date(data).getDate();
+                    obj.recorrenteInicio = data.slice(0,7);
+                    const fim = document.getElementById('recorrente-fim').value;
+                    if(fim) obj.recorrenteFim = fim;
                 }
-            };
+            }
+
+            // Duplicidade (Relaxada em edição para permitir update)
+            if(!editId) {
+                const duplicado = await verificarDuplicidade(tipo, obj);
+                if(duplicado){ showToast("Lançamento duplicado!"); return; }
+            }
+
+            if(editId) obj.id = parseInt(editId);
+
+            try {
+                const tx = db.transaction(tipo === 'ganhar' ? "receitas" : "despesas", "readwrite");
+                const store = tx.objectStore(tipo === 'ganhar' ? "receitas" : "despesas");
+                store.put(obj);
+                
+                tx.oncomplete = async () => {
+                    // 2. FORÇA RECÁLCULO DE FECHAMENTOS (CORREÇÃO PROJEÇÃO)
+                    await recalcularFechamentos(); 
+                    
+                    showToast(editId ? "Atualizado!" : "Salvo!");
+                    cancelarEdicao(tipo);
+                    render(); 
+                    if (!editId) verificarGatilhosFunil();
+                };
+            } catch (error) {
+                console.error("Erro ao salvar no banco:", error);
+                alert("Erro ao salvar. Tente recarregar a página.");
+            }
         }
 
         function cancelarEdicao(tipo) {
@@ -735,11 +994,16 @@
             document.getElementById(`btn-cancel-${tipo}`).classList.add('hidden');
             document.getElementById(`btn-save-${tipo}`).innerText = tipo === 'ganhar' ? "Salvar Receita" : "Confirmar Gasto";
             document.getElementById(`form-title-${tipo}`).innerHTML = tipo === 'ganhar' ? '<i class="fas fa-plus-circle"></i> Nova Receita' : '<i class="fas fa-minus-circle"></i> Novo Gasto';
+            if(tipo==='gastar') {
+                document.getElementById('recorrente-gastar').checked = false;
+                document.getElementById('opcoes-recorrente').style.display = 'none';
+            }
         }
 
         function openEdit(item) {
             const tipo = item.t === 'r' ? 'ganhar' : 'gastar';
-            navTo(`v-${tipo}`, document.querySelectorAll('.tab')[tipo === 'ganhar' ? 0 : 1]);
+            const tabIndex = tipo === 'ganhar' ? 0 : 1;
+            navTo(`v-${tipo}`, document.querySelectorAll('.tab')[tabIndex]);
             
             document.getElementById(`edit-id-${tipo}`).value = item.id;
             document.getElementById(`desc-${tipo}`).value = item.desc;
@@ -751,46 +1015,193 @@
             document.getElementById(`btn-save-${tipo}`).innerText = "Atualizar Item";
             document.getElementById(`form-title-${tipo}`).innerText = "Editando Item";
         }
+        
+        function excluirItem(type, id) {
+            if(confirm("Tem certeza que deseja excluir este item?")) {
+                const tx = db.transaction(type === 'r' ? "receitas" : "despesas", "readwrite");
+                const store = tx.objectStore(type === 'r' ? "receitas" : "despesas");
+                store.delete(id);
+                tx.oncomplete = async () => { 
+                    await recalcularFechamentos(); // Atualiza histórico após exclusão
+                    showToast("Item excluído!"); 
+                    render(); 
+                };
+            }
+        }
 
         function safeHtml(str) {
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
         }
+        
+        const safeVal = (v) => safeFloat(v) || 0;
 
+        async function verificarDuplicidade(tipo, obj, editId = null) {
+            const storeName = tipo === 'ganhar' ? "receitas" : "despesas";
+            const lista = await getAll(storeName);
+
+            return lista.some(item => 
+                item.desc.trim().toLowerCase() === obj.desc.trim().toLowerCase() &&
+                safeVal(item.val) === safeVal(obj.val) &&
+                item.data === obj.data &&
+                (editId ? item.id !== parseInt(editId) : true)
+            );
+        }
+
+        // --- SISTEMA DE INTEGRIDADE (RECÁLCULO) ---
+        // 3. FUNÇÃO DE CORREÇÃO GERAL DE DADOS
+        async function recalcularFechamentos() {
+            if(!db) return;
+            const [receitas, despesas] = await Promise.all([
+                getAll("receitas"),
+                getAll("despesas")
+            ]);
+
+            const mapa = {};
+
+            // Agrupa todas receitas por Mês (YYYY-MM)
+            receitas.forEach(r=>{
+                const m = r.data.slice(0,7);
+                if(!mapa[m]) mapa[m] = { receitas:0, despesas:0 };
+                mapa[m].receitas += safeVal(r.val);
+            });
+
+            // Agrupa todas despesas por Mês
+            despesas.forEach(d=>{
+                const m = d.data.slice(0,7);
+                if(!mapa[m]) mapa[m] = { receitas:0, despesas:0 };
+                mapa[m].despesas += safeVal(d.val);
+            });
+
+            // Transação de Escrita para reconstruir a tabela de Fechamentos
+            const tx = db.transaction("fechamentos","readwrite");
+            const store = tx.objectStore("fechamentos");
+            
+            // Limpa dados antigos potencialmente errados
+            store.clear();
+
+            Object.keys(mapa).forEach(m=>{
+                store.put({
+                    mes: m,
+                    receitas: safeFloat(mapa[m].receitas),
+                    despesas: safeFloat(mapa[m].despesas),
+                    saldo: safeFloat(mapa[m].receitas - mapa[m].despesas),
+                    recalculadoEm: Date.now()
+                });
+            });
+
+            return new Promise(res=>{
+                tx.oncomplete = ()=>res();
+                tx.onerror = ()=>res(); // Continua mesmo se der erro (fallback)
+            });
+        }
+
+        async function fecharMesAutomatico() {
+            // Função mantida para compatibilidade, mas o trabalho pesado agora é do recalcularFechamentos
+            await recalcularFechamentos();
+            localStorage.setItem('ultimo_mes_fechado', getLocalMonth());
+        }
+
+        async function processarRecorrencias(){
+            const despesas = await getAll("despesas");
+            const mesAtual = getLocalMonth();
+
+            for(let d of despesas){
+                if(!d.recorrente) continue;
+                if(d.recorrenteAtiva === false) continue;
+                if(d.recorrenteFim && mesAtual > d.recorrenteFim) continue;
+                if(d.recorrenteInicio && mesAtual < d.recorrenteInicio) continue;
+
+                const chaveControle = `rec_${d.id}_${mesAtual}`;
+                if(localStorage.getItem(chaveControle)) continue;
+
+                const existeNoMes = despesas.some(x => 
+                    x.desc === d.desc && 
+                    x.val === d.val && 
+                    x.data.startsWith(mesAtual)
+                );
+
+                if(existeNoMes) {
+                    localStorage.setItem(chaveControle, "true");
+                    continue;
+                }
+
+                const novaData = `${mesAtual}-${String(d.diaFixo || 1).padStart(2,'0')}`;
+                const novoLancamento = { desc: d.desc, val: d.val, data: novaData, cat: d.cat };
+
+                const tx = db.transaction("despesas","readwrite");
+                tx.objectStore("despesas").add(novoLancamento);
+                localStorage.setItem(chaveControle,"true");
+            }
+        }
+
+        // --- MOTOR DO FUNIL ---
+        function verificarGatilhosFunil(saldoAtual = null) {
+            Promise.all([getAll("receitas"), getAll("despesas")]).then(([r, d]) => {
+                const totalContas = r.length + d.length;
+                const triggers = [
+                    { count: 5, id: 'funnel_seen_5', modal: 'modal-funil-identity' },
+                    { count: 10, id: 'funnel_seen_10', modal: 'modal-funil-identity-10' },
+                    { count: 15, id: 'funnel_seen_15', modal: 'modal-funil-engagement' },
+                    { count: 30, id: 'funnel_seen_30', modal: 'modal-cafe' },
+                    { count: 50, id: 'funnel_seen_50', modal: 'modal-funil-security' }
+                ];
+                for (let t of triggers) {
+                    if (totalContas >= t.count && !localStorage.getItem(t.id)) {
+                        localStorage.setItem(t.id, 'true'); openModal(t.modal); return;
+                    }
+                }
+                const startStr = localStorage.getItem('app_start_date');
+                if (startStr && !localStorage.getItem('funnel_seen_90days')) {
+                    const diffTime = Math.abs(new Date() - new Date(startStr));
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    if (diffDays >= 90) {
+                        localStorage.setItem('funnel_seen_90days', 'true'); openModal('modal-funil-social'); return;
+                    }
+                }
+                if (saldoAtual !== null && saldoAtual > 0 && totalContas > 20 && !localStorage.getItem('funnel_seen_blue_streak')) { 
+                      localStorage.setItem('funnel_seen_blue_streak', 'true'); openModal('modal-funil-pride');
+                }
+            });
+        }
+
+        // --- RENDERIZAÇÃO PRINCIPAL ---
         async function render() {
             if(!db) return;
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
-            const filtro = document.getElementById('filtroMes').value || new Date().toISOString().slice(0,7);
+            const filtro = document.getElementById('filtroMes').value || getLocalMonth();
             
             const recFiltro = receitas.filter(r => r.data.startsWith(filtro));
             const despFiltro = despesas.filter(d => d.data.startsWith(filtro));
 
-            const totalR = receitas.reduce((s, i) => s + i.val, 0);
-            const totalD = despesas.reduce((s, i) => s + i.val, 0);
-            const saldo = totalR - totalD;
+            const totalR = safeFloat(receitas.reduce((s, i) => s + safeVal(i.val), 0));
+            const totalD = safeFloat(despesas.reduce((s, i) => s + safeVal(i.val), 0));
+            const saldo = safeFloat(totalR - totalD);
+            
+            // 4. CORREÇÃO NA LEITURA DE MÉDIA (MÉDIA REAL)
+            const fechamentos = await getAll("fechamentos");
+            let media = 0;
+            if(fechamentos.length > 0) {
+                media = safeFloat(fechamentos.reduce((s,f)=>s+f.saldo,0) / fechamentos.length);
+            }
+            if(document.getElementById('dash-media')) document.getElementById('dash-media').innerText = FORMAT.format(media);
 
             document.getElementById('dash-saldo').innerText = FORMAT.format(saldo);
-            document.getElementById('dash-gastos').innerText = FORMAT.format(despFiltro.reduce((s,i)=>s+i.val,0));
+            const gastosMes = safeFloat(despFiltro.reduce((s,i)=>s+safeVal(i.val),0));
+            document.getElementById('dash-gastos').innerText = FORMAT.format(gastosMes);
 
-            // TERMÔMETRO DE HUMILDADE (HEADER DINÂMICO)
             const header = document.getElementById('main-header');
-            const badge = document.getElementById('status-icon');
-            
             if(saldo >= 0) {
-                header.classList.remove('header-neg');
-                header.classList.add('header-pos');
-                badge.innerText = '+1';
-                badge.className = 'status-badge status-pos';
+                header.classList.remove('header-neg'); header.classList.add('header-pos');
             } else {
-                header.classList.remove('header-pos');
-                header.classList.add('header-neg');
-                badge.innerText = '-1';
-                badge.className = 'status-badge status-neg';
+                header.classList.remove('header-pos'); header.classList.add('header-neg');
             }
-            badge.style.display = 'inline-block';
-
+            
             updateCharts(recFiltro, despFiltro);
+            renderHistoricoMensal(receitas, despesas);
+            renderProjecao();
+            atualizarMeta();
 
             const list = document.getElementById('lista-detalhada');
             list.innerHTML = "";
@@ -801,38 +1212,149 @@
             items.forEach(i => {
                 const div = document.createElement('div');
                 div.className = 'item';
-                div.innerHTML = `<div><b>${safeHtml(i.desc)}</b><br><small>${i.data.split('-').reverse().join('/')}</small></div>
-                                 <div style="color:${i.t==='r'?'var(--income)':'var(--expense)'}; font-weight:800">${i.t==='r'?'+':'-'} ${FORMAT.format(i.val)}</div>`;
-                div.onclick = () => { if(confirm("Editar este item?")) openEdit(i); };
+                const recIcon = (i.t === 'd' && i.recorrente) ? ' <i class="fas fa-sync-alt" style="font-size:0.7rem; opacity:0.6"></i>' : '';
+                div.innerHTML = `
+                    <div class="item-info" onclick="openEdit({id:${i.id}, desc:'${i.desc.replace(/'/g, "\\'")}', val:${i.val}, data:'${i.data}', cat:'${i.cat}', t:'${i.t}'})" style="flex-grow:1; cursor:pointer;">
+                        <div><b>${safeHtml(i.desc)}${recIcon}</b><br><small>${i.data.split('-').reverse().join('/')}</small></div>
+                        <div style="color:${i.t==='r'?'var(--income)':'var(--expense)'}; font-weight:800">${i.t==='r'?'+':'-'} ${FORMAT.format(safeVal(i.val))}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-icon edit" onclick="openEdit({id:${i.id}, desc:'${i.desc.replace(/'/g, "\\'")}', val:${i.val}, data:'${i.data}', cat:'${i.cat}', t:'${i.t}'})"><i class="fas fa-pen"></i></button>
+                        <button class="btn-icon del" onclick="excluirItem('${i.t}', ${i.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
                 list.appendChild(div);
             });
+        }
+        
+        async function renderProjecao() {
+            // Agora usa a store "fechamentos" que foi forçada a recalcular
+            let fechamentos = await getAll("fechamentos");
+
+            if(fechamentos.length < 2){
+                if(chartInstanceProjecao) chartInstanceProjecao.destroy();
+                document.getElementById("projecao-info").innerHTML = 
+                    `<div style="text-align:center; opacity:0.6; padding:20px;">
+                    Precisa de pelo menos 2 meses com dados para projetar.
+                    </div>`;
+                return;
+            }
+
+            fechamentos.sort((a,b)=>a.mes.localeCompare(b.mes));
+
+            // Média dos últimos 6 meses para ser mais realista
+            const ultimosMeses = fechamentos.slice(-6); 
+            const media = safeFloat(ultimosMeses.reduce((s,f)=>s+f.saldo,0) / ultimosMeses.length);
+
+            // 5. CORREÇÃO DE SALDO ACUMULADO REAL
+            // O gráfico deve partir do Saldo Atual Real, não de zero.
+            const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
+            const saldoAtualReal = safeFloat(r.reduce((s,i)=>s+safeVal(i.val),0) - d.reduce((s,i)=>s+safeVal(i.val),0));
+
+            const projecoes = [];
+            let acumulador = saldoAtualReal;
+            for(let k=0; k<6; k++) {
+                acumulador += media;
+                projecoes.push(acumulador);
+            }
+
+            const labels = [
+                ...fechamentos.map(f=>f.mes), 
+                ...Array.from({length:6},(_,i)=>`+${i+1}m`)
+            ];
+
+            // Dados históricos (apenas os saldos mensais para visualização de tendência)
+            // Ou acumulado histórico? Geralmente projeção financeira mostra acumulo de capital.
+            // Vou manter a lógica visual de "Saldo do Mês" para histórico e "Saldo Acumulado" para projeção pode confundir.
+            // Melhor: Mostrar a tendência do Saldo Líquido Mensal.
+            
+            const dadosHistoricos = fechamentos.map(f=>f.saldo);
+            const dadosFuturos = [
+                ...Array(fechamentos.length-1).fill(null), 
+                fechamentos[fechamentos.length-1].saldo, // Ponto de ligação
+                ...Array(6).fill(media) // Projeção linear da média mensal
+            ];
+
+            const corProjecao = media < 0 ? '#ff453a' : '#5e5ce6';
+
+            const ctx = document.getElementById("chart-projecao").getContext('2d');
+            
+            if(chartInstanceProjecao) chartInstanceProjecao.destroy();
+
+            chartInstanceProjecao = new Chart(ctx, {
+                type:'line',
+                data:{
+                    labels,
+                    datasets:[
+                        { label:'Saldo Mensal', data:dadosHistoricos, borderColor:'#30d158', tension:0.3 },
+                        { label:'Tendência Média', data:dadosFuturos, borderDash:[5,5], borderColor: corProjecao, tension:0.3 }
+                    ]
+                },
+                options:{ responsive:true, plugins:{legend:{display:true}} }
+            });
+
+            document.getElementById("projecao-info").innerHTML = 
+                `Média Mensal: <b style="color:${corProjecao}">${FORMAT.format(media)}</b><br>
+                 Saldo Acumulado em 6 meses: <b>${FORMAT.format(saldoAtualReal + (media*6))}</b>`;
+        }
+
+        // --- METAS ---
+        function salvarMeta(){
+            const valor = parseFloat(document.getElementById("meta-valor").value);
+            const prazo = parseFloat(document.getElementById("meta-prazo").value);
+            if(!valor) return;
+            localStorage.setItem('meta_financeira', JSON.stringify({valorMeta: valor, prazoMeses: prazo || 6}));
+            atualizarMeta();
+        }
+        
+        async function atualizarMeta(){
+            const meta = JSON.parse(localStorage.getItem('meta_financeira'));
+            if(!meta) return;
+            const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
+            const saldoTotal = safeFloat(receitas.reduce((s,i)=>s+safeVal(i.val),0) - despesas.reduce((s,i)=>s+safeVal(i.val),0));
+            const progresso = Math.min((saldoTotal/meta.valorMeta)*100, 100);
+            document.getElementById("meta-barra").style.width = progresso+"%";
+            document.getElementById("meta-status").innerHTML = `${FORMAT.format(saldoTotal)} de ${FORMAT.format(meta.valorMeta)} (${progresso.toFixed(1)}%)`;
+            if(progresso >= 100) showToast("Meta atingida! 🏆");
+        }
+
+        function renderHistoricoMensal(receitas, despesas) {
+            const container = document.getElementById('historico-mensal-list');
+            if(!container) return;
+            
+            // Recálculo local para exibição imediata na lista
+            const mapR = {}; const mapD = {};
+            receitas.forEach(r => { const m = r.data.slice(0,7); mapR[m] = (mapR[m]||0) + safeVal(r.val); });
+            despesas.forEach(d => { const m = d.data.slice(0,7); mapD[m] = (mapD[m]||0) + safeVal(d.val); });
+            
+            const meses = [...new Set([...Object.keys(mapR), ...Object.keys(mapD)])].sort().reverse();
+            let html = '';
+            meses.forEach(m => {
+                const r = mapR[m] || 0; const d = mapD[m] || 0; const s = r - d;
+                const [ano, mesNum] = m.split('-');
+                const nomeMes = new Date(ano, mesNum-1).toLocaleString('pt-BR', {month:'long'});
+                html += `<div class="history-row"><div style="text-transform:capitalize;">${nomeMes}/${ano}</div><div class="hist-val ${s >= 0 ? 'hist-pos' : 'hist-neg'}">${s >= 0 ? '+' : ''} ${FORMAT.format(s)}</div></div>`;
+            });
+            if(!html) html = '<div style="text-align:center; padding:10px; color:var(--text-sec); font-size:0.8rem;">Histórico aparecerá aqui.</div>';
+            container.innerHTML = html;
         }
 
         function updateCharts(receitas, despesas) {
             const hasData = receitas.length > 0 || despesas.length > 0;
             const wrapper = document.getElementById('charts-wrapper');
             const empty = document.getElementById('empty-state');
-            
-            if(!hasData) {
-                wrapper.classList.add('hidden');
-                empty.classList.remove('hidden');
-                return;
-            } else {
-                wrapper.classList.remove('hidden');
-                empty.classList.add('hidden');
-            }
+            if(!hasData) { wrapper.classList.add('hidden'); empty.classList.remove('hidden'); return; } 
+            else { wrapper.classList.remove('hidden'); empty.classList.add('hidden'); }
 
-            const isDark = !document.body.classList.contains('light-theme');
-            const textColor = isDark ? '#e5e5e5' : '#333333';
-            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            const textColor = document.body.classList.contains('light-theme') ? '#333333' : '#e5e5e5';
+            const gridColor = document.body.classList.contains('light-theme') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
 
             const cats = {};
-            despesas.forEach(d => cats[d.cat] = (cats[d.cat] || 0) + d.val);
+            despesas.forEach(d => cats[d.cat] = (cats[d.cat] || 0) + safeVal(d.val));
             const catLabels = Object.keys(cats).map(c => c.charAt(0).toUpperCase() + c.slice(1));
-            const catData = Object.values(cats);
-
-            const totR = receitas.reduce((s,i) => s + i.val, 0);
-            const totD = despesas.reduce((s,i) => s + i.val, 0);
+            const catData = Object.values(cats).map(v => safeFloat(v));
+            const totR = safeFloat(receitas.reduce((s,i) => s + safeVal(i.val), 0));
+            const totD = safeFloat(despesas.reduce((s,i) => s + safeVal(i.val), 0));
 
             if(chartInstanceDoughnut) chartInstanceDoughnut.destroy();
             if(chartInstanceBar) chartInstanceBar.destroy();
@@ -840,92 +1362,49 @@
             const ctxD = document.getElementById('chart-doughnut').getContext('2d');
             chartInstanceDoughnut = new Chart(ctxD, {
                 type: 'doughnut',
-                data: {
-                    labels: catLabels,
-                    datasets: [{
-                        data: catData,
-                        backgroundColor: ['#ff453a', '#ff9f0a', '#ffd60a', '#32d74b', '#64d2ff', '#0a84ff', '#5e5ce6', '#bf5af2'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '75%', // Mais moderno
-                    plugins: { 
-                        legend: { position: 'right', labels: { color: textColor, font: { size: 10 }, boxWidth: 10 } },
-                        title: { display: true, text: 'Despesas por Categoria', color: textColor } 
-                    }
-                }
+                data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: ['#ff453a', '#ff9f0a', '#ffd60a', '#32d74b', '#64d2ff', '#0a84ff', '#5e5ce6', '#bf5af2'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: textColor, font: { size: 10 }, boxWidth: 10 } }, title: { display: true, text: 'Despesas por Categoria', color: textColor } } }
             });
 
             const ctxB = document.getElementById('chart-bar').getContext('2d');
             chartInstanceBar = new Chart(ctxB, {
                 type: 'bar',
-                data: {
-                    labels: ['Entradas', 'Saídas'],
-                    datasets: [{
-                        label: 'Valor',
-                        data: [totR, totD],
-                        backgroundColor: ['#30d158', '#ff453a'],
-                        borderRadius: 10, // Arredondado
-                        barThickness: 40
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, title: { display: true, text: 'Balanço Mensal', color: textColor } },
-                    scales: {
-                        y: { ticks: { color: textColor }, grid: { color: gridColor } },
-                        x: { ticks: { color: textColor }, grid: { display: false } }
-                    }
-                }
+                data: { labels: ['Entradas', 'Saídas'], datasets: [{ label: 'Valor', data: [totR, totD], backgroundColor: ['#30d158', '#ff453a'], borderRadius: 8 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'Balanço Mensal', color: textColor } }, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
             });
         }
 
         /* ================= OFFLINE HTML EXPORT (CLEAN) ================= */
-        function abrirOpcoesDownload() {
-            openModal('modal-download-options');
-        }
-
-        function abrirOpcoesReset() {
-            openModal('modal-reset-options');
-        }
+        function abrirOpcoesDownload() { openModal('modal-download-options'); }
+        function abrirOpcoesReset() { openModal('modal-reset-options'); }
 
         async function baixarAppHTMLClean() {
-            // FORÇAR FECHAMENTO DE MODAIS ANTES DE CAPTURAR O HTML
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-            
             const user = localStorage.getItem('contas_user') || 'Usuario';
-            
-            // Pega o código atual da página (agora limpo de modais abertos)
             let htmlContent = document.documentElement.outerHTML;
-            
-            // Garante que a variável BACKUP_EMBUTIDO esteja como null
             const injectPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*[\s\S]*?; \/\/ __MARKER_BACKUP__/;
             const resetScript = `const BACKUP_EMBUTIDO = null; // __MARKER_BACKUP__`;
-            
-            if (injectPattern.test(htmlContent)) {
-                htmlContent = htmlContent.replace(injectPattern, resetScript);
-            } else {
-                const fallbackPattern = /const\s+BACKUP_EMBUTIDO\s*=\s*null;/;
-                htmlContent = htmlContent.replace(fallbackPattern, resetScript);
-            }
-            
+            if (injectPattern.test(htmlContent)) { htmlContent = htmlContent.replace(injectPattern, resetScript); } 
+            else { htmlContent = htmlContent.replace(/const\s+BACKUP_EMBUTIDO\s*=\s*null;/, resetScript); }
             const blob = new Blob([htmlContent], {type: 'text/html'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `AppFinanceiro_Instalavel.html`;
-            a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `AppFinanceiro_Instalavel.html`; a.click();
         }
 
         function backupDados() {
             const user = localStorage.getItem('contas_user') || 'Usuario';
-            Promise.all([getAll('receitas'), getAll('despesas')]).then(data => {
-                const blob = new Blob([JSON.stringify({r: data[0], d: data[1], u: user})], {type: 'application/json'});
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-                a.download = `backup_${user}_${new Date().toISOString().slice(0,10)}.json`; a.click();
+            const flags = {};
+            ['funnel_seen_5', 'funnel_seen_10', 'funnel_seen_15', 'funnel_seen_30', 'funnel_seen_50', 'funnel_seen_90days', 'funnel_seen_blue_streak'].forEach(k => { const v = localStorage.getItem(k); if(v) flags[k] = v; });
+            const start = localStorage.getItem('app_start_date');
+            const currentPalette = localStorage.getItem('contas_palette') || 'default';
+            const currentTheme = localStorage.getItem('contas_theme') || 'dark';
+
+            Promise.all([getAll('receitas'), getAll('despesas'), getAll('fechamentos')]).then(data => {
+                const backupPayload = {
+                    r: data[0], d: data[1], f: data[2], u: user,
+                    m: { start: start, flags: flags, palette: currentPalette, theme: currentTheme }
+                };
+                const blob = new Blob([JSON.stringify(backupPayload)], {type: 'application/json'});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_${user}_${new Date().toISOString().slice(0,10)}.json`; a.click();
             });
         }
 
@@ -937,174 +1416,209 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     if(!confirm(`Restaurar backup de "${data.u || 'Usuário'}"?`)) return;
-                    const tx = db.transaction(['receitas', 'despesas'], 'readwrite');
-                    tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear();
-                    
-                    const normalize = (item) => ({
-                        desc: item.desc || item.descricao,
-                        val: parseFloat(item.val || item.valor) || 0, // Sanitização NaN
-                        data: item.data,
-                        cat: item.cat || item.categoria
-                    });
-
-                    (data.r || data.receitas || []).forEach(i => tx.objectStore('receitas').add(normalize(i)));
-                    (data.d || data.despesas || []).forEach(i => tx.objectStore('despesas').add(normalize(i)));
-                    
-                    tx.oncomplete = () => { alert("Restaurado!"); location.reload(); };
+                    await autoRestoreOffline(data);
+                    alert("Restaurado com sucesso!");
+                    location.reload();
                 } catch(err) { alert("Arquivo inválido."); }
             };
             reader.readAsText(file);
         }
 
         function realReset() { 
-            // Hard Reset Action
-            localStorage.removeItem('contas_user');
-            localStorage.setItem('ignore_embed', 'true');
-            const tx=db.transaction(['receitas','despesas'],'readwrite'); 
+            localStorage.clear(); localStorage.setItem('ignore_embed', 'true');
+            const tx=db.transaction(['receitas','despesas','fechamentos'],'readwrite'); 
             tx.objectStore('receitas').clear(); tx.objectStore('despesas').clear(); 
+            if(tx.objectStoreNames.contains('fechamentos')) tx.objectStore('fechamentos').clear();
             tx.oncomplete=()=>location.reload(); 
         }
 
         function removerAcentos(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); }
 
         async function gerarRelatorioPDF() {
-            showToast("Gerando PDF com Gráficos...");
+            showToast("Gerando PDF Avançado...");
             const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
-            const mesSel = document.getElementById('filtroMes')?.value || new Date().toISOString().substring(0, 7);
+            const mesSel = document.getElementById('filtroMes')?.value || getLocalMonth();
             const user = localStorage.getItem('contas_user') || "Usuario";
+            
             const receitasMes = receitas.filter(r => r.data.startsWith(mesSel)).map(x => ({...x, tipo: 'receita'}));
             const despesasMes = despesas.filter(d => d.data.startsWith(mesSel)).map(x => ({...x, tipo: 'despesa'}));
-            const totalR = receitasMes.reduce((s, i) => s + i.val, 0);
-            const totalD = despesasMes.reduce((s, i) => s + i.val, 0);
-            const saldo = totalR - totalD;
+            
+            const totalR = safeFloat(receitasMes.reduce((s, i) => s + safeVal(i.val), 0));
+            const totalD = safeFloat(despesasMes.reduce((s, i) => s + safeVal(i.val), 0));
+            const saldo = safeFloat(totalR - totalD);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
             const safeText = (txt) => removerAcentos(txt || "");
             const fmtBRL = (val) => "R$ " + val.toFixed(2).replace('.', ',');
             
-            // --- HACK PARA GRÁFICOS ESCUROS NO PDF ---
-            // Salva cores originais para restaurar depois
-            const originalDoughnutColor = chartInstanceDoughnut.options.plugins.legend.labels.color;
-            const originalBarColor = chartInstanceBar.options.scales.y.ticks.color;
-            const originalGridColor = chartInstanceBar.options.scales.y.grid.color;
+            // --- DIAGNÓSTICO FINANCEIRO ---
+            let statusFinanceiro = "Equilibrado";
+            let corStatus = [100, 100, 100];
+            let taxaPoupanca = 0;
             
-            // Força cor escura para impressão (Black)
-            const printColor = '#333333';
-            
-            // Aplica cores no Doughnut
-            chartInstanceDoughnut.options.plugins.legend.labels.color = printColor;
-            chartInstanceDoughnut.options.plugins.title.color = printColor;
-            chartInstanceDoughnut.update(); // Renderiza com cor escura
-            
-            // Aplica cores no Bar Chart
-            chartInstanceBar.options.scales.y.ticks.color = printColor;
-            chartInstanceBar.options.scales.x.ticks.color = printColor;
-            chartInstanceBar.options.plugins.title.color = printColor;
-            chartInstanceBar.options.scales.y.grid.color = 'rgba(0,0,0,0.1)'; // Grid visível no branco
-            chartInstanceBar.update(); // Renderiza com cor escura
-
-            // --- GERA O PDF ---
-            
-            // Header Premium
-            doc.setFillColor(94, 92, 230); doc.rect(0, 0, pageWidth, 50, 'F');
-            doc.setTextColor(255, 255, 255); 
-            doc.setFontSize(24); doc.setFont("helvetica", 'bold'); doc.text(safeText(`RELATORIO FINANCEIRO`), 14, 25);
-            doc.setFontSize(12); doc.setFont("helvetica", 'normal'); doc.text(safeText(`${user}`), 14, 35);
-            doc.text(`Periodo: ${mesSel}`, pageWidth - 50, 35);
-            
-            // Summary Cards (Refined UI)
-            let yPos = 65;
-            const drawCard = (x, label, val, colorRGB) => {
-                doc.setDrawColor(220, 220, 220); doc.setFillColor(252, 252, 253);
-                doc.roundedRect(x, yPos, 58, 28, 4, 4, 'FD'); 
-                doc.setFontSize(9); doc.setTextColor(100, 100, 100); doc.text(label, x + 6, yPos + 10);
-                doc.setFontSize(14); doc.setFont("helvetica", 'bold'); 
-                doc.setTextColor(colorRGB[0], colorRGB[1], colorRGB[2]); doc.text(val, x + 6, yPos + 22);
-            };
-            
-            drawCard(14, "GANHOS", fmtBRL(totalR), [48, 209, 88]); 
-            drawCard(76, "GASTOS", fmtBRL(totalD), [255, 69, 58]); 
-            drawCard(138, "SALDO LIQUIDO", fmtBRL(saldo), saldo >= 0 ? [94, 92, 230] : [255, 69, 58]); 
-
-            yPos += 45;
-
-            // --- CAPTURA DE GRÁFICOS COM TÍTULOS ---
-            const chartDoughnut = document.getElementById('chart-doughnut');
-            const chartBar = document.getElementById('chart-bar');
-            
-            if (chartDoughnut && chartBar && (receitasMes.length > 0 || despesasMes.length > 0)) {
-                try {
-                    // Títulos dos Gráficos (Texto Nativo do PDF)
-                    doc.setFontSize(11); doc.setTextColor(60, 60, 60); doc.setFont("helvetica", 'bold');
-                    doc.text("Despesas por Categoria", 30, yPos);
-                    doc.text("Balanco Mensal", 130, yPos);
-                    
-                    yPos += 5; 
-                    
-                    // Aguarda renderização
-                    await new Promise(r => setTimeout(r, 100));
-
-                    const imgDoughnut = chartDoughnut.toDataURL("image/png");
-                    const imgBar = chartBar.toDataURL("image/png");
-                    
-                    doc.addImage(imgDoughnut, 'PNG', 15, yPos, 70, 70);
-                    doc.addImage(imgBar, 'PNG', 115, yPos, 70, 70);
-                    
-                    yPos += 80;
-                } catch(e) { console.error("Erro ao capturar gráfico", e); }
+            if (totalR > 0) {
+                taxaPoupanca = ((saldo / totalR) * 100);
             }
 
-            // Tabela Refinada
+            if (saldo < 0) {
+                statusFinanceiro = "Crítico - Gastos Excedentes";
+                corStatus = [255, 69, 58]; // Vermelho
+            } else if (taxaPoupanca > 20) {
+                statusFinanceiro = "Excelente - Investidor";
+                corStatus = [48, 209, 88]; // Verde
+            } else {
+                statusFinanceiro = "Atenção - Margem Baixa";
+                corStatus = [255, 159, 10]; // Laranja
+            }
+
+            // --- CATEGORIAS ---
+            const cats = {};
+            despesasMes.forEach(d => cats[d.cat] = (cats[d.cat] || 0) + safeVal(d.val));
+            const sortedCats = Object.entries(cats).sort((a,b) => b[1] - a[1]); // Ordena maior gasto
+
+            // --- PDF HEADER ---
+            // Fundo Branco, Texto Escuro (Padrão Relatório)
+            doc.setFillColor(255, 255, 255); 
+            doc.rect(0, 0, pageWidth, 297, 'F');
+            
+            // Cabeçalho Roxo
+            doc.setFillColor(94, 92, 230); 
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255); 
+            doc.setFontSize(22); doc.setFont("helvetica", 'bold'); 
+            doc.text("RELATÓRIO FINANCEIRO", 14, 20);
+            
+            doc.setFontSize(10); doc.setFont("helvetica", 'normal'); 
+            doc.text(`Gerado para: ${safeText(user)}`, 14, 28);
+            doc.text(`Período de Referência: ${mesSel}`, 14, 34);
+            doc.text(`Data da Emissão: ${new Date().toLocaleDateString()}`, pageWidth - 60, 34);
+
+            let yPos = 55;
+
+            // --- SEÇÃO 1: RESUMO EXECUTIVO ---
+            doc.setTextColor(50, 50, 50);
+            doc.setFontSize(14); doc.setFont("helvetica", 'bold');
+            doc.text("Resumo Executivo", 14, yPos);
+            yPos += 5;
+
+            const drawCard = (x, label, val, colorRGB) => {
+                doc.setDrawColor(200, 200, 200); 
+                doc.setFillColor(245, 245, 247); // Cinza bem claro
+                doc.roundedRect(x, yPos, 58, 28, 3, 3, 'FD'); 
+                
+                doc.setFontSize(9); doc.setTextColor(100, 100, 100); 
+                doc.text(label, x + 6, yPos + 10);
+                
+                doc.setFontSize(13); doc.setFont("helvetica", 'bold'); 
+                doc.setTextColor(colorRGB[0], colorRGB[1], colorRGB[2]); 
+                doc.text(val, x + 6, yPos + 22);
+            };
+
+            drawCard(14, "TOTAL ENTRADAS", fmtBRL(totalR), [48, 209, 88]); 
+            drawCard(76, "TOTAL SAÍDAS", fmtBRL(totalD), [255, 69, 58]); 
+            drawCard(138, "SALDO FINAL", fmtBRL(saldo), saldo >= 0 ? [94, 92, 230] : [255, 69, 58]); 
+            
+            yPos += 35;
+
+            // --- SEÇÃO 2: SAÚDE FINANCEIRA ---
+            doc.setDrawColor(corStatus[0], corStatus[1], corStatus[2]);
+            doc.setFillColor(corStatus[0], corStatus[1], corStatus[2]);
+            doc.rect(14, yPos, 4, 18, 'F'); // Barra lateral colorida status
+
+            doc.setFontSize(11); doc.setTextColor(80, 80, 80); doc.setFont("helvetica", 'normal');
+            doc.text("Diagnóstico do Mês:", 22, yPos + 6);
+            
+            doc.setFontSize(12); doc.setTextColor(corStatus[0], corStatus[1], corStatus[2]); doc.setFont("helvetica", 'bold');
+            doc.text(safeText(statusFinanceiro), 22, yPos + 14);
+
+            doc.setFontSize(10); doc.setTextColor(100, 100, 100); doc.setFont("helvetica", 'normal');
+            doc.text(`Taxa de Economia: ${taxaPoupanca.toFixed(1)}%`, 140, yPos + 14);
+
+            yPos += 28;
+
+            // --- SEÇÃO 3: TOP GASTOS POR CATEGORIA (TABELA) ---
+            if (sortedCats.length > 0) {
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(14); doc.setFont("helvetica", 'bold');
+                doc.text("Top Gastos por Categoria", 14, yPos);
+                yPos += 8;
+
+                const catTableData = sortedCats.map(c => [
+                    c[0].charAt(0).toUpperCase() + c[0].slice(1), // Nome Capitalizado
+                    fmtBRL(c[1]),
+                    ((c[1]/totalD)*100).toFixed(1) + "%" // % do total
+                ]);
+
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Categoria', 'Valor Gasto', '% do Total']],
+                    body: catTableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [80, 80, 80], textColor: [255, 255, 255] },
+                    styles: { fontSize: 10, cellPadding: 3 },
+                    columnStyles: { 
+                        1: { halign: 'right', fontStyle: 'bold', textColor: [255, 69, 58] },
+                        2: { halign: 'center' }
+                    }
+                });
+                yPos = doc.lastAutoTable.finalY + 15;
+            }
+
+            // --- SEÇÃO 4: EXTRATO DETALHADO ---
+            doc.setTextColor(50, 50, 50);
+            doc.setFontSize(14); doc.setFont("helvetica", 'bold');
+            doc.text("Extrato de Lançamentos", 14, yPos);
+            yPos += 5;
+
             const allItems = [...receitasMes, ...despesasMes].sort((a,b) => a.data.localeCompare(b.data));
             const tableData = allItems.map(item => [
-                item.data.split('-').reverse().join('/'),
-                safeText(item.desc),
-                safeText(item.tipo === 'receita' ? 'ENTRADA' : 'SAIDA'),
+                item.data.split('-').reverse().join('/'), 
+                safeText(item.desc), 
+                safeText(item.cat || "-"),
                 item.tipo === 'receita' ? `+ ${fmtBRL(item.val)}` : `- ${fmtBRL(item.val)}`
             ]);
 
             doc.autoTable({
                 startY: yPos, 
-                head: [['Data', 'Descricao', 'Tipo', 'Valor']], 
+                head: [['Data', 'Descrição', 'Categoria', 'Valor']], 
                 body: tableData, 
                 theme: 'striped',
-                headStyles: { fillColor: [94, 92, 230], textColor: 255, fontStyle: 'bold', halign: 'center' },
-                styles: { fontSize: 10, cellPadding: 4, textColor: [60, 60, 60] }, 
+                headStyles: { fillColor: [94, 92, 230] }, 
+                styles: { fontSize: 9 }, 
                 columnStyles: { 
-                    0: { halign: 'center' },
                     3: { halign: 'right', fontStyle: 'bold' } 
                 },
                 didParseCell: function(data) {
+                    // Pinta de vermelho ou verde o valor
                     if (data.section === 'body' && data.column.index === 3) {
-                        data.cell.styles.textColor = data.cell.raw.includes('+') ? [48, 209, 88] : [255, 69, 58];
+                        const text = data.cell.raw;
+                        if (text.includes('+')) data.cell.styles.textColor = [48, 209, 88];
+                        else data.cell.styles.textColor = [255, 69, 58];
                     }
                 }
             });
 
-            // Rodapé com Branding
-            const totalPages = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= totalPages; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8); doc.setTextColor(150);
-                doc.text(`Pagina ${i} de ${totalPages} | Gerado via O App do Pobre - https://oappdopobre.oseuapp.workers.dev`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-            }
+            // Tenta adicionar gráficos na última página se possível
+            try {
+                // Aguarda renderização
+                await new Promise(r => setTimeout(r, 200)); 
+                const imgDoughnut = document.getElementById('chart-doughnut').toDataURL("image/png");
+                
+                if(sortedCats.length > 0) {
+                    doc.addPage();
+                    doc.setFontSize(14); doc.setTextColor(50,50,50);
+                    doc.text("Anexo Visual", 14, 20);
+                    doc.addImage(imgDoughnut, 'PNG', 40, 30, 130, 130);
+                    doc.setFontSize(10); doc.setTextColor(150,150,150);
+                    doc.text("Gráfico de distribuição de gastos por categoria", 105, 170, {align: 'center'});
+                }
+            } catch(e) { console.log("Gráficos ignorados no PDF"); }
 
-            doc.save(`Relatorio_${safeText(user)}_${mesSel}.pdf`);
-            showToast("PDF Gerado!");
-
-            // --- RESTAURA CORES ORIGINAIS DO TEMA ---
-            chartInstanceDoughnut.options.plugins.legend.labels.color = originalDoughnutColor;
-            chartInstanceDoughnut.options.plugins.title.color = originalDoughnutColor;
-            
-            chartInstanceBar.options.scales.y.ticks.color = originalBarColor;
-            chartInstanceBar.options.scales.x.ticks.color = originalBarColor;
-            chartInstanceBar.options.plugins.title.color = originalBarColor;
-            chartInstanceBar.options.scales.y.grid.color = originalGridColor;
-
-            chartInstanceDoughnut.update();
-            chartInstanceBar.update();
+            doc.save(`Relatorio_Pro_${safeText(user)}_${mesSel}.pdf`);
+            showToast("PDF Gerado com Sucesso!");
+            // location.reload(); // Removido reload forçado para melhorar UX
         }
 
         async function compartilharZap() {
@@ -1112,17 +1626,12 @@
             const mesSel = document.getElementById('filtroMes').value;
             const recFiltro = receitas.filter(i=>i.data.startsWith(mesSel));
             const despFiltro = despesas.filter(i=>i.data.startsWith(mesSel));
-            const totalR = recFiltro.reduce((s,i)=>s+i.val,0);
-            const totalD = despFiltro.reduce((s,i)=>s+i.val,0);
+            const totalR = recFiltro.reduce((s,i)=>s+safeVal(i.val),0);
+            const totalD = despFiltro.reduce((s,i)=>s+safeVal(i.val),0);
             const saldo = totalR - totalD;
-            const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
-            const [ano, mes] = mesSel.split('-');
-            const nomeMes = meses[parseInt(mes)-1];
-            let msg = `*Relatório Financeiro - ${nomeMes} de ${ano}*\n\n`;
+            let msg = `*Relatório Financeiro - ${mesSel}*\n\n`;
             msg += `*🟢 Entradas: R$ ${totalR.toFixed(2)}*\n`;
-            recFiltro.forEach(r => msg += `🔹 ${r.desc}: R$ ${r.val.toFixed(2)}\n`);
             msg += `\n*🔴 Saídas: R$ ${totalD.toFixed(2)}*\n`;
-            despFiltro.forEach(d => msg += `🔸 ${d.desc}: R$ ${d.val.toFixed(2)}\n`);
             msg += `\n*💰 Saldo Final: R$ ${saldo.toFixed(2)}*`;
             msg += `\n\n📊 Controle suas finanças de graça: https://oappdopobre.oseuapp.workers.dev`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -1135,10 +1644,11 @@
 
         window.onload = async () => {
             await initDB();
+            initTheme();
             const user = localStorage.getItem('contas_user');
             if(!user) openModal('modal-welcome'); else document.getElementById('username-header').innerText = user;
-            const savedTheme = localStorage.getItem('contas_theme');
-            if(savedTheme === 'light') document.body.classList.add('light-theme');
+            if(!localStorage.getItem('app_start_date')) localStorage.setItem('app_start_date', new Date().toISOString());
+            
             const sel = document.getElementById('filtroMes');
             const hoje = new Date();
             for(let i=0; i<12; i++) {
@@ -1146,17 +1656,28 @@
                 const s = d.toISOString().slice(0,7);
                 sel.add(new Option(d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}), s));
             }
+            
+            // Mascara de Input (Moeda) Segura
             document.querySelectorAll('input[type="tel"]').forEach(i => {
                 i.addEventListener('input', e => {
                     let v = e.target.value.replace(/\D/g,'');
-                    v = (v/100).toFixed(2).replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    if (v === "") { e.target.value = ""; return; }
+                    if (v.length > 15) v = v.slice(0,15);
+                    v = (parseInt(v)/100).toFixed(2).replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     e.target.value = v;
                 });
             });
-            document.querySelectorAll('input[type="date"]').forEach(i => i.value = hoje.toISOString().slice(0,10));
+            
+            // Correção de Fuso Horário nos Inputs de Data
+            const localDate = getLocalDate();
+            document.querySelectorAll('input[type="date"]').forEach(i => i.value = localDate);
+            
             setupSmartBar();
+            
+            await fecharMesAutomatico(); // Chama a nova função de recálculo
+            await processarRecorrencias();
+            await render();
             navTo('v-ganhar', document.querySelector('.tab.active'));
-            render();
         };
     </script>
 </body>
