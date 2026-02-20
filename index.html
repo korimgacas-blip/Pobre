@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -23,22 +24,22 @@
     
     <style>
         :root {
-            /* Palette Dark (Padrão) */
-            --primary: #5e5ce6;
-            --primary-glow: rgba(94, 92, 230, 0.5);
-            --income: #30d158;
-            --expense: #ff453a;
-            --whatsapp: #25D366;
+            /* Palette Dark (Padrão Ergonomico) */
+            --primary: #2563EB; 
+            --primary-glow: rgba(37, 99, 235, 0.25);
+            --income: #16A34A; /* Verde sucesso mais suave */
+            --expense: #DC2626; /* Vermelho alerta sem berrar */
+            --whatsapp: #25D366; 
             
-            --bg-base: #000000;
-            --text-main: #f5f5f7;
-            --text-sec: #8e8e93;
+            --bg-base: #121212; /* Fundo escuro real (evita ghosting OLED) */
+            --text-main: #F3F4F6; /* Branco quebrado (não cansa a vista) */
+            --text-sec: #9CA3AF; /* Cinza médio legível */
             
-            --glass-surface: rgba(28, 28, 30, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --glass-surface: #1E1E24; /* Diferenciação clara do fundo */
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             
-            --radius-card: 24px;
+            --radius-card: 20px;
         }
 
         /* --- PALETAS DE CORES --- */
@@ -49,15 +50,15 @@
         body.palette-berry { --primary: #ec4899; --primary-glow: rgba(236, 72, 153, 0.5); }
         body.palette-minimal { --primary: #64748b; --primary-glow: rgba(100, 116, 139, 0.5); }
 
-        /* TEMA CLARO */
+        /* --- TEMA CLARO --- */
         body.light-theme {
-            --bg-base: #f2f2f7;
-            --text-main: #111113;
-            --text-sec: #58585e;
+            --bg-base: #F8FAFC;
+            --text-main: #111827;
+            --text-sec: #6B7280;
             
-            --glass-surface: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(0, 0, 0, 0.08);
-            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            --glass-surface: #FFFFFF;
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
         }
 
         * { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -84,12 +85,11 @@
         }
         
         header.header-pos {
-            background: linear-gradient(90deg, rgba(59,130,246,0.15), rgba(48,209,88,0.15));
-            border-bottom: 1px solid rgba(48, 209, 88, 0.3);
+            /* Removemos o background gradiente para manter o foco */
+            border-bottom: 2px solid rgba(22, 163, 74, 0.4); /* Linha verde sutil */
         }
         header.header-neg {
-            background: linear-gradient(90deg, rgba(239,68,68,0.15), rgba(255,69,58,0.15));
-            border-bottom: 1px solid rgba(255, 69, 58, 0.3);
+            border-bottom: 2px solid rgba(220, 38, 38, 0.4); /* Linha vermelha sutil */
         }
 
         .user-area { display: flex; flex-direction: column; justify-content: center; }
@@ -292,15 +292,15 @@
         <div id="dashboard-main" class="dashboard">
             <div class="dash-card">
                 <small>Saldo Total</small>
-                <b id="dash-saldo">R$ 0,00</b>
+                <b id="dash-entradas">R$ 0,00</b>
             </div>
             <div class="dash-card">
                 <small>Saída (Mês)</small>
                 <b id="dash-gastos" style="color: var(--expense);">R$ 0,00</b>
             </div>
             <div class="dash-card">
-                <small>Resultado Médio</small>
-                <b id="dash-media" style="color: var(--primary);">R$ 0,00</b>
+                <small>Saldo do Mês</small>
+                <b id="dash-saldo-mes" style="color: var(--primary);">R$ 0,00</b>
             </div>
         </div>
 
@@ -356,6 +356,21 @@
                 </label>
 
                 <div id="opcoes-recorrente" class="hidden" style="background: rgba(120,120,128,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                  <label>Parcelar em até 12x</label>
+                  <select id="parcelas-recorrente" style="margin-bottom: 10px;">
+                      <option value="1">1x (Fixa mensal contínua)</option>
+                      <option value="2">2x</option>
+                      <option value="3">3x</option>
+                      <option value="4">4x</option>
+                      <option value="5">5x</option>
+                      <option value="6">6x</option>
+                      <option value="7">7x</option>
+                      <option value="8">8x</option>
+                      <option value="9">9x</option>
+                      <option value="10">10x</option>
+                      <option value="11">11x</option>
+                      <option value="12">12x</option>
+                  </select>
                   <label>Dia fixo do mês</label>
                   <input type="number" id="dia-fixo" min="1" max="28" placeholder="Ex: 5">
                   <label>Data de término (opcional)</label>
@@ -397,19 +412,29 @@
             <div class="card">
                 <h3 style="margin-top:0"><i class="fas fa-bullseye"></i> Meta Financeira</h3>
                 
-                <label>Valor da Meta (R$)</label>
-                <input type="tel" id="meta-valor" placeholder="Ex: 10000">
+                <div id="meta-form-area">
+                    <label>Valor da Meta (R$)</label>
+                    <input type="tel" id="meta-valor" placeholder="Ex: 10000">
 
-                <label>Prazo (meses)</label>
-                <input type="number" id="meta-prazo" placeholder="Ex: 6">
+                    <label>Prazo (meses)</label>
+                    <input type="number" id="meta-prazo" placeholder="Ex: 6">
 
-                <button class="btn-primary" onclick="salvarMeta()">Definir Meta</button>
+                    <button class="btn-primary" onclick="salvarMeta()">Calcular / Salvar Meta</button>
+                </div>
+
+                <div id="meta-actions" style="display:none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;">
+                     <button class="btn-sec" onclick="editarMeta()"><i class="fas fa-pen"></i> Editar</button>
+                     <button class="btn-danger" onclick="excluirMeta()"><i class="fas fa-trash"></i> Excluir</button>
+                     <button class="btn-primary" onclick="calcularMeta()"><i class="fas fa-sync"></i> Calcular</button>
+                </div>
 
                 <div style="margin-top:20px;">
                     <div style="height:14px; background:rgba(120,120,128,0.2); border-radius:20px; overflow:hidden;">
                         <div id="meta-barra" style="height:100%; width:0%; background:var(--income); transition:0.5s;"></div>
                     </div>
-                    <div id="meta-status" style="margin-top:8px; font-size:0.8rem; font-weight: 600;"></div>
+                    <div id="meta-status" style="margin-top:15px; font-size:0.85rem; line-height: 1.5;"></div>
+                    
+                    <canvas id="graficoMeta" height="120" style="margin-top: 15px; display: none;"></canvas>
                 </div>
             </div>
 
@@ -419,6 +444,12 @@
                     <canvas id="chart-projecao"></canvas>
                 </div>
                 <div id="projecao-info" style="margin-top:15px; font-size:0.85rem; color:var(--text-sec);"></div>
+                
+                <div class="chart-container" style="margin-top: 20px;">
+                    <canvas id="chart-recorrencias"></canvas>
+                </div>
+                
+                <div id="indice-comprometimento" style="margin-top:15px; font-size:0.9rem; line-height: 1.5; padding-top: 15px; border-top: 1px solid var(--glass-border);"></div>
             </div>
 
             <div class="card">
@@ -676,14 +707,14 @@
             <div class="guide-item" onclick="toggleGuide(this)">
                 <div class="guide-header">💸 Lançamentos e Recorrência <i class="fas fa-chevron-down" style="float:right"></i></div>
                 <div class="guide-content">
-                    Use as abas <b>Ganhar</b> e <b>Gastar</b>. Marque "Conta mensal fixa" para gastos que se repetem todo mês automaticamente (ex: Aluguel, Netflix).
+                    Use as abas <b>Ganhar</b> e <b>Gastar</b>. Marque "Conta mensal fixa" para gastos que se repetem todo mês automaticamente (ex: Aluguel, Netflix). Pode parcelar em até 12x.
                 </div>
             </div>
             
             <div class="guide-item" onclick="toggleGuide(this)">
                 <div class="guide-header">📊 Análise e Metas <i class="fas fa-chevron-down" style="float:right"></i></div>
                 <div class="guide-content">
-                    Defina uma meta financeira e acompanhe o progresso. O app também projeta seu futuro financeiro com base na sua média de gastos.
+                    Defina uma meta financeira e acompanhe o progresso. O app projeta seu futuro financeiro e mostra seu Índice de Comprometimento de Renda.
                 </div>
             </div>
 
@@ -727,6 +758,8 @@
         let chartInstanceDoughnut = null;
         let chartInstanceBar = null;
         let chartInstanceProjecao = null;
+        let graficoMeta = null;
+        let chartRecorrencias = null;
         
         const BACKUP_EMBUTIDO = null; // __MARKER_BACKUP__
 
@@ -810,6 +843,7 @@
                     data: item.data,
                     cat: item.cat || item.categoria,
                     recorrente: item.recorrente || false,
+                    parcelas: item.parcelas || 1,
                     diaFixo: item.diaFixo || null,
                     recorrenteAtiva: item.recorrenteAtiva !== undefined ? item.recorrenteAtiva : true
                 });
@@ -833,6 +867,14 @@
             if(!db.objectStoreNames.contains(store)) return [];
             const tx = db.transaction(store, "readonly");
             return new Promise(r => { const req = tx.objectStore(store).getAll(); req.onsuccess = () => r(req.result || []); });
+        }
+
+        /* ================= PIPELINE DE ATUALIZAÇÃO REATIVA ================= */
+        async function atualizarSistemaFinanceiro() {
+            document.body.style.opacity = "0.95";
+            await recalcularFechamentos();
+            await render();
+            document.body.style.opacity = "1";
         }
 
         /* ================= CORE UI ================= */
@@ -931,36 +973,47 @@
         }
 
         async function salvar(tipo) {
-            // 1. SEGURAR DADOS EM VARIÁVEIS ANTES DE INSERIR
             const editId = document.getElementById(`edit-id-${tipo}`).value;
             const desc = document.getElementById(`desc-${tipo}`).value;
-            // Parsing seguro do valor
+            
             let rawVal = document.getElementById(`val-${tipo}`).value;
             if(!rawVal) rawVal = "0";
-            const val = safeFloat(parseFloat(rawVal.replace(/\./g,'').replace(',','.')));
+            let val = safeFloat(parseFloat(rawVal.replace(/\./g,'').replace(',','.')));
             const data = document.getElementById(`data-${tipo}`).value;
             const cat = tipo === 'ganhar' ? 'salario' : document.getElementById('cat-gastar').value;
 
-            // Validação
             if(!desc || val <= 0 || !data) { showToast("Preencha todos os campos!"); return; }
 
-            // Payload do objeto
             const obj = { desc, val, data, cat };
             
-            // Recorrência (apenas gastos)
             if(tipo === 'gastar'){
                 const recorrente = document.getElementById('recorrente-gastar')?.checked || false;
                 if(recorrente){
+                    const dia = parseInt(document.getElementById('dia-fixo').value);
+                    if(!dia || dia < 1 || dia > 28){
+                        showToast("Dia fixo do mês inválido (1 a 28)");
+                        return;
+                    }
+
+                    const parcelas = parseInt(document.getElementById('parcelas-recorrente').value) || 1;
+                    
                     obj.recorrente = true;
                     obj.recorrenteAtiva = true;
-                    obj.diaFixo = parseInt(document.getElementById('dia-fixo').value) || new Date(data).getDate();
+                    obj.parcelas = parcelas;
+                    obj.parcelaAtual = 1;
+                    obj.diaFixo = dia;
                     obj.recorrenteInicio = data.slice(0,7);
+                    
                     const fim = document.getElementById('recorrente-fim').value;
                     if(fim) obj.recorrenteFim = fim;
+
+                    if(parcelas > 1){
+                        const valorOriginal = obj.val;
+                        obj.val = safeFloat(valorOriginal / parcelas);
+                    }
                 }
             }
 
-            // Duplicidade (Relaxada em edição para permitir update)
             if(!editId) {
                 const duplicado = await verificarDuplicidade(tipo, obj);
                 if(duplicado){ showToast("Lançamento duplicado!"); return; }
@@ -974,12 +1027,9 @@
                 store.put(obj);
                 
                 tx.oncomplete = async () => {
-                    // 2. FORÇA RECÁLCULO DE FECHAMENTOS (CORREÇÃO PROJEÇÃO)
-                    await recalcularFechamentos(); 
-                    
                     showToast(editId ? "Atualizado!" : "Salvo!");
                     cancelarEdicao(tipo);
-                    render(); 
+                    await atualizarSistemaFinanceiro();
                     if (!editId) verificarGatilhosFunil();
                 };
             } catch (error) {
@@ -1023,9 +1073,8 @@
                 const store = tx.objectStore(type === 'r' ? "receitas" : "despesas");
                 store.delete(id);
                 tx.oncomplete = async () => { 
-                    await recalcularFechamentos(); // Atualiza histórico após exclusão
                     showToast("Item excluído!"); 
-                    render(); 
+                    await atualizarSistemaFinanceiro();
                 };
             }
         }
@@ -1051,7 +1100,6 @@
         }
 
         // --- SISTEMA DE INTEGRIDADE (RECÁLCULO) ---
-        // 3. FUNÇÃO DE CORREÇÃO GERAL DE DADOS
         async function recalcularFechamentos() {
             if(!db) return;
             const [receitas, despesas] = await Promise.all([
@@ -1061,25 +1109,20 @@
 
             const mapa = {};
 
-            // Agrupa todas receitas por Mês (YYYY-MM)
             receitas.forEach(r=>{
                 const m = r.data.slice(0,7);
                 if(!mapa[m]) mapa[m] = { receitas:0, despesas:0 };
                 mapa[m].receitas += safeVal(r.val);
             });
 
-            // Agrupa todas despesas por Mês
             despesas.forEach(d=>{
                 const m = d.data.slice(0,7);
                 if(!mapa[m]) mapa[m] = { receitas:0, despesas:0 };
                 mapa[m].despesas += safeVal(d.val);
             });
 
-            // Transação de Escrita para reconstruir a tabela de Fechamentos
             const tx = db.transaction("fechamentos","readwrite");
             const store = tx.objectStore("fechamentos");
-            
-            // Limpa dados antigos potencialmente errados
             store.clear();
 
             Object.keys(mapa).forEach(m=>{
@@ -1094,12 +1137,11 @@
 
             return new Promise(res=>{
                 tx.oncomplete = ()=>res();
-                tx.onerror = ()=>res(); // Continua mesmo se der erro (fallback)
+                tx.onerror = ()=>res(); 
             });
         }
 
         async function fecharMesAutomatico() {
-            // Função mantida para compatibilidade, mas o trabalho pesado agora é do recalcularFechamentos
             await recalcularFechamentos();
             localStorage.setItem('ultimo_mes_fechado', getLocalMonth());
         }
@@ -1116,6 +1158,15 @@
 
                 const chaveControle = `rec_${d.id}_${mesAtual}`;
                 if(localStorage.getItem(chaveControle)) continue;
+
+                // Validação de limite de parcelas
+                if(d.parcelas && d.parcelas > 1){
+                     const mesIndex = (
+                        (new Date(mesAtual+"-01").getFullYear() - new Date(d.recorrenteInicio+"-01").getFullYear()) * 12 +
+                        (new Date(mesAtual+"-01").getMonth() - new Date(d.recorrenteInicio+"-01").getMonth())
+                    );
+                    if(mesIndex >= d.parcelas) continue; // Passou das parcelas
+                }
 
                 const existeNoMes = despesas.some(x => 
                     x.desc === d.desc && 
@@ -1135,6 +1186,111 @@
                 tx.objectStore("despesas").add(novoLancamento);
                 localStorage.setItem(chaveControle,"true");
             }
+        }
+
+        // --- CÁLCULO DAS RECORRÊNCIAS FUTURAS ---
+        async function calcularRecorrenciasFuturas(meses = 6){
+            const despesas = await getAll("despesas");
+            const hoje = new Date();
+            const resultado = [];
+
+            for(let i=1; i<=meses; i++){
+                const dataFutura = new Date(hoje.getFullYear(), hoje.getMonth()+i, 1);
+                const mesRef = dataFutura.toISOString().slice(0,7);
+
+                let totalMes = 0;
+
+                despesas.forEach(d => {
+                    if(!d.recorrente) return;
+                    if(d.recorrenteAtiva === false) return;
+
+                    const inicio = d.recorrenteInicio;
+                    const parcelas = d.parcelas || 1;
+
+                    if(!inicio) return;
+                    if(mesRef < inicio) return;
+                    if(d.recorrenteFim && mesRef > d.recorrenteFim) return;
+
+                    const dataInicio = new Date(inicio+"-01");
+
+                    const mesIndex = (
+                        (dataFutura.getFullYear() - dataInicio.getFullYear()) * 12 +
+                        (dataFutura.getMonth() - dataInicio.getMonth())
+                    );
+
+                    if(parcelas > 1){
+                        if(mesIndex >= 0 && mesIndex < parcelas){
+                            totalMes += safeVal(d.val);
+                        }
+                    } else {
+                        if(mesIndex >= 0){
+                            totalMes += safeVal(d.val);
+                        }
+                    }
+                });
+
+                resultado.push({
+                    mes: mesRef,
+                    total: safeFloat(totalMes)
+                });
+            }
+            return resultado;
+        }
+
+        // --- ICF (ÍNDICE DE COMPROMETIMENTO FINANCEIRO) ---
+        async function calcularIndiceComprometimento(){
+            const [receitas, despesas, fechamentos] = await Promise.all([
+                getAll("receitas"),
+                getAll("despesas"),
+                getAll("fechamentos")
+            ]);
+
+            if(receitas.length === 0) return null;
+
+            // -------- RENDA MÉDIA --------
+            let rendaMedia = 0;
+
+            if(fechamentos.length > 0){
+                fechamentos.sort((a,b)=>a.mes.localeCompare(b.mes));
+                const primeiroMes = fechamentos[0].mes;
+                const hoje = getLocalMonth();
+                const inicio = new Date(primeiroMes+"-01");
+                const fim = new Date(hoje+"-01");
+                
+                let diffMeses = (fim.getFullYear()-inicio.getFullYear())*12 + (fim.getMonth()-inicio.getMonth()) + 1;
+                if(diffMeses <= 0) diffMeses = 1;
+
+                const totalReceitas = receitas.reduce((s,i)=>s+safeVal(i.val),0);
+                rendaMedia = safeFloat(totalReceitas / diffMeses);
+            }
+
+            // -------- DESPESAS RECORRENTES ATUAIS --------
+            const mesAtual = getLocalMonth();
+            let recorrenteMensal = 0;
+
+            despesas.forEach(d=>{
+                if(!d.recorrente) return;
+                if(d.recorrenteAtiva === false) return;
+                if(d.recorrenteInicio && mesAtual < d.recorrenteInicio) return;
+                if(d.recorrenteFim && mesAtual > d.recorrenteFim) return;
+                
+                if(d.parcelas && d.parcelas > 1){
+                     const dataInicio = new Date(d.recorrenteInicio+"-01");
+                     const mesIndex = (
+                        (new Date(mesAtual+"-01").getFullYear() - dataInicio.getFullYear()) * 12 +
+                        (new Date(mesAtual+"-01").getMonth() - dataInicio.getMonth())
+                    );
+                    if(mesIndex >= d.parcelas) return;
+                }
+
+                recorrenteMensal += safeVal(d.val);
+            });
+
+            if(rendaMedia <= 0) return null;
+
+            const icf = safeFloat((recorrenteMensal / rendaMedia) * 100);
+
+            return { icf, rendaMedia, recorrenteMensal };
         }
 
         // --- MOTOR DO FUNIL ---
@@ -1176,33 +1332,50 @@
             const recFiltro = receitas.filter(r => r.data.startsWith(filtro));
             const despFiltro = despesas.filter(d => d.data.startsWith(filtro));
 
-            const totalR = safeFloat(receitas.reduce((s, i) => s + safeVal(i.val), 0));
-            const totalD = safeFloat(despesas.reduce((s, i) => s + safeVal(i.val), 0));
-            const saldo = safeFloat(totalR - totalD);
-            
-            // 4. CORREÇÃO NA LEITURA DE MÉDIA (MÉDIA REAL)
-            const fechamentos = await getAll("fechamentos");
-            let media = 0;
-            if(fechamentos.length > 0) {
-                media = safeFloat(fechamentos.reduce((s,f)=>s+f.saldo,0) / fechamentos.length);
-            }
-            if(document.getElementById('dash-media')) document.getElementById('dash-media').innerText = FORMAT.format(media);
+            // Dashboard - Focado exclusivamente no mês selecionado
+            const totalRMes = safeFloat(recFiltro.reduce((s, i) => s + safeVal(i.val), 0));
+            const totalDMes = safeFloat(despFiltro.reduce((s, i) => s + safeVal(i.val), 0));
+            const saldoMes = safeFloat(totalRMes - totalDMes);
 
-            document.getElementById('dash-saldo').innerText = FORMAT.format(saldo);
-            const gastosMes = safeFloat(despFiltro.reduce((s,i)=>s+safeVal(i.val),0));
-            document.getElementById('dash-gastos').innerText = FORMAT.format(gastosMes);
+            document.getElementById('dash-entradas').innerText = FORMAT.format(totalRMes);
+            document.getElementById('dash-gastos').innerText = FORMAT.format(totalDMes);
+            document.getElementById('dash-saldo-mes').innerText = FORMAT.format(saldoMes);
 
             const header = document.getElementById('main-header');
-            if(saldo >= 0) {
+            if(saldoMes >= 0) {
                 header.classList.remove('header-neg'); header.classList.add('header-pos');
+                document.getElementById('dash-saldo-mes').style.color = 'var(--primary)';
             } else {
                 header.classList.remove('header-pos'); header.classList.add('header-neg');
+                document.getElementById('dash-saldo-mes').style.color = 'var(--expense)';
             }
             
             updateCharts(recFiltro, despFiltro);
             renderHistoricoMensal(receitas, despesas);
-            renderProjecao();
-            atualizarMeta();
+            await renderProjecao();
+            await renderGraficoRecorrencias();
+            await atualizarMeta();
+
+            // Render ICF
+            const indice = await calcularIndiceComprometimento();
+            if(indice){
+                let status = "";
+                let cor = "";
+
+                if(indice.icf <= 30){ status = "Saudável"; cor = "#30d158"; }
+                else if(indice.icf <= 50){ status = "Atenção"; cor = "#ff9f0a"; }
+                else if(indice.icf <= 70){ status = "Alto Risco"; cor = "#ff453a"; }
+                else{ status = "Crítico"; cor = "#8e0000"; }
+
+                document.getElementById("indice-comprometimento").innerHTML =
+                    `Índice de Comprometimento: 
+                    <b style="color:${cor}">${indice.icf.toFixed(1)}%</b><br>
+                    Recorrências Mensais: ${FORMAT.format(indice.recorrenteMensal)}<br>
+                    Renda Média: ${FORMAT.format(indice.rendaMedia)}<br>
+                    <small>Status: ${status}</small>`;
+            } else {
+                 document.getElementById("indice-comprometimento").innerHTML = "";
+            }
 
             const list = document.getElementById('lista-detalhada');
             list.innerHTML = "";
@@ -1229,12 +1402,11 @@
         }
         
         async function renderProjecao() {
-            // Agora usa a store "fechamentos" que foi forçada a recalcular
             let fechamentos = await getAll("fechamentos");
 
-            if(fechamentos.length < 2){
-                if(chartInstanceProjecao) chartInstanceProjecao.destroy();
-                document.getElementById("projecao-info").innerHTML = 
+            if (fechamentos.length < 2) {
+                if (chartInstanceProjecao) chartInstanceProjecao.destroy();
+                document.getElementById("projecao-info").innerHTML =
                     `<div style="text-align:center; opacity:0.6; padding:20px;">
                     Precisa de pelo menos 2 meses com dados para projetar.
                     </div>`;
@@ -1243,43 +1415,73 @@
 
             fechamentos.sort((a,b)=>a.mes.localeCompare(b.mes));
 
-            // Média dos últimos 6 meses para ser mais realista
-            const ultimosMeses = fechamentos.slice(-6); 
-            const media = safeFloat(ultimosMeses.reduce((s,f)=>s+f.saldo,0) / ultimosMeses.length);
+            const ultimos = fechamentos.slice(-6);
+            const n = ultimos.length;
 
-            // 5. CORREÇÃO DE SALDO ACUMULADO REAL
-            // O gráfico deve partir do Saldo Atual Real, não de zero.
+            let sumT = 0, sumY = 0, sumTY = 0, sumT2 = 0;
+
+            ultimos.forEach((f, index) => {
+                const t = index + 1;
+                const y = safeVal(f.saldo);
+
+                sumT += t;
+                sumY += y;
+                sumTY += t * y;
+                sumT2 += t * t;
+            });
+
+            const b = (n * sumTY - sumT * sumY) / (n * sumT2 - sumT * sumT);
+
+            const mediaY = sumY / n;
+            const mediaT = sumT / n;
+            const a = mediaY - (b * mediaT);
+            const media = safeFloat(ultimos.reduce((s,f)=>s+f.saldo,0) / ultimos.length);
+
             const [r, d] = await Promise.all([getAll("receitas"), getAll("despesas")]);
             const saldoAtualReal = safeFloat(r.reduce((s,i)=>s+safeVal(i.val),0) - d.reduce((s,i)=>s+safeVal(i.val),0));
 
+            const recorrenciasFuturas = await calcularRecorrenciasFuturas(6);
             const projecoes = [];
             let acumulador = saldoAtualReal;
-            for(let k=0; k<6; k++) {
+
+            for(let k=1; k<=6; k++){
                 acumulador += media;
-                projecoes.push(acumulador);
+                acumulador -= (recorrenciasFuturas[k-1] ? recorrenciasFuturas[k-1].total : 0);
+                projecoes.push(safeFloat(acumulador));
             }
 
-            const labels = [
-                ...fechamentos.map(f=>f.mes), 
-                ...Array.from({length:6},(_,i)=>`+${i+1}m`)
-            ];
+            // --- Cálculo dos resíduos ---
+            let somaResiduos2 = 0;
+            ultimos.forEach((f, index)=>{
+                const t = index + 1;
+                const yEstimado = a + b*t;
+                const erro = safeVal(f.saldo) - yEstimado;
+                somaResiduos2 += erro*erro;
+            });
 
-            // Dados históricos (apenas os saldos mensais para visualização de tendência)
-            // Ou acumulado histórico? Geralmente projeção financeira mostra acumulo de capital.
-            // Vou manter a lógica visual de "Saldo do Mês" para histórico e "Saldo Acumulado" para projeção pode confundir.
-            // Melhor: Mostrar a tendência do Saldo Líquido Mensal.
-            
-            const dadosHistoricos = fechamentos.map(f=>f.saldo);
-            const dadosFuturos = [
-                ...Array(fechamentos.length-1).fill(null), 
-                fechamentos[fechamentos.length-1].saldo, // Ponto de ligação
-                ...Array(6).fill(media) // Projeção linear da média mensal
-            ];
+            const desvio = Math.sqrt(somaResiduos2 / (n - 2));
+            const proj6 = projecoes[5];
+            const z = desvio > 0 ? (0 - proj6) / desvio : 0;
 
-            const corProjecao = media < 0 ? '#ff453a' : '#5e5ce6';
+            function erf(x) {
+                const sign = x >= 0 ? 1 : -1;
+                x = Math.abs(x);
+                const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+                const t = 1 / (1 + p * x);
+                const y = 1 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1) * t * Math.exp(-x*x);
+                return sign*y;
+            }
+
+            function normalCDF(x){ return (1 + erf(x/Math.sqrt(2))) / 2; }
+
+            const probNegativo = desvio > 0 ? normalCDF(z) : (proj6 < 0 ? 1 : 0);
+
+            // --- Montagem do gráfico ---
+            const labels = [ ...ultimos.map(f=>f.mes), ...Array.from({length:6},(_,i)=>`+${i+1}m`) ];
+            const dadosHistoricos = ultimos.map(f=>safeVal(f.saldo));
+            const dadosFuturos = [ ...Array(n-1).fill(null), dadosHistoricos[n-1], ...projecoes ];
 
             const ctx = document.getElementById("chart-projecao").getContext('2d');
-            
             if(chartInstanceProjecao) chartInstanceProjecao.destroy();
 
             chartInstanceProjecao = new Chart(ctx, {
@@ -1288,42 +1490,239 @@
                     labels,
                     datasets:[
                         { label:'Saldo Mensal', data:dadosHistoricos, borderColor:'#30d158', tension:0.3 },
-                        { label:'Tendência Média', data:dadosFuturos, borderDash:[5,5], borderColor: corProjecao, tension:0.3 }
+                        { label:'Projeção', data:dadosFuturos, borderDash:[5,5], borderColor: proj6 < 0 ? '#ff453a' : '#5e5ce6', tension:0.3 }
                     ]
                 },
-                options:{ responsive:true, plugins:{legend:{display:true}} }
+                options:{ responsive:true }
             });
 
-            document.getElementById("projecao-info").innerHTML = 
-                `Média Mensal: <b style="color:${corProjecao}">${FORMAT.format(media)}</b><br>
-                 Saldo Acumulado em 6 meses: <b>${FORMAT.format(saldoAtualReal + (media*6))}</b>`;
+            document.getElementById("projecao-info").innerHTML =
+                `Média Histórica Mensal: <b>${FORMAT.format(media)}</b><br>
+                 Saldo Projetado (6m c/ dívidas): <b>${FORMAT.format(proj6)}</b><br>
+                 Probabilidade Saldo Negativo: <b>${(probNegativo*100).toFixed(1)}%</b>`;
         }
 
-        // --- METAS ---
+        async function renderGraficoRecorrencias(){
+            const dados = await calcularRecorrenciasFuturas(6);
+            const labels = dados.map(d=>d.mes);
+            const valores = dados.map(d=>d.total);
+            const ctx = document.getElementById("chart-recorrencias").getContext('2d');
+            
+            const isLight = document.body.classList.contains('light-theme');
+            const textColor = isLight ? '#333' : '#fff';
+
+            if(chartRecorrencias) chartRecorrencias.destroy();
+
+            chartRecorrencias = new Chart(ctx,{
+                type:'bar',
+                data:{
+                    labels,
+                    datasets:[{
+                        label:'Contas Fixas Futuras (R$)',
+                        data: valores,
+                        backgroundColor: 'rgba(255, 69, 58, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    plugins:{legend:{display:true, labels: {color: textColor}}},
+                    scales: {
+                        y: { ticks: { color: textColor } },
+                        x: { ticks: { color: textColor } }
+                    }
+                }
+            });
+
+            const total6m = valores.reduce((s,v)=>s+v,0);
+            
+            let infoEl = document.getElementById("projecao-info");
+            if(infoEl) {
+                infoEl.innerHTML += `<br><br>Total contas fixas (próx 6 meses): <b style="color:#ff453a">${FORMAT.format(total6m)}</b>`;
+            }
+        }
+
+        // --- GRÁFICO DA META FINANCEIRA ---
+        function gerarGraficoProjecao(saldoMensal, valorMeta, prazo){
+            const labels = [];
+            const dadosProjecao = [];
+            const linhaMeta = [];
+
+            for(let i = 0; i <= prazo; i++){
+                labels.push("Mês " + i);
+                dadosProjecao.push(safeFloat(saldoMensal * i));
+                linhaMeta.push(valorMeta);
+            }
+
+            const ctx = document.getElementById('graficoMeta').getContext('2d');
+
+            if(graficoMeta){
+                graficoMeta.destroy();
+            }
+            
+            const isLight = document.body.classList.contains('light-theme');
+            const textColor = isLight ? '#333' : '#fff';
+            const corLinha = saldoMensal >= 0 ? '#30d158' : '#ff453a';
+
+            graficoMeta = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Sua Projeção',
+                            data: dadosProjecao,
+                            borderColor: corLinha,
+                            backgroundColor: corLinha,
+                            borderWidth: 3,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Sua Meta',
+                            data: linhaMeta,
+                            borderColor: '#5e5ce6',
+                            borderDash: [5,5],
+                            borderWidth: 2,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, labels: { color: textColor } }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: textColor }
+                        },
+                        x: {
+                            ticks: { color: textColor }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- METAS GERENCIAMENTO ---
         function salvarMeta(){
-            const valor = parseFloat(document.getElementById("meta-valor").value);
-            const prazo = parseFloat(document.getElementById("meta-prazo").value);
-            if(!valor) return;
-            localStorage.setItem('meta_financeira', JSON.stringify({valorMeta: valor, prazoMeses: prazo || 6}));
+            let rawValor = document.getElementById("meta-valor").value;
+            if(!rawValor) rawValor = "0";
+            const valor = safeFloat(parseFloat(rawValor.replace(/\./g,'').replace(',','.')));
+            const prazo = parseInt(document.getElementById("meta-prazo").value);
+            
+            if(!valor || !prazo) { showToast("Preencha valor e prazo validos."); return; }
+            
+            localStorage.setItem('meta_financeira', JSON.stringify({valorMeta: valor, prazoMeses: prazo}));
+            showToast("Meta definida!");
             atualizarMeta();
+        }
+
+        function editarMeta(){
+            const meta = JSON.parse(localStorage.getItem('meta_financeira'));
+            if(!meta) return;
+            document.getElementById("meta-valor").value = meta.valorMeta.toFixed(2).replace('.', ',');
+            document.getElementById("meta-prazo").value = meta.prazoMeses;
+            document.getElementById("meta-form-area").style.display = "block";
+            document.getElementById("meta-actions").style.display = "none";
+        }
+
+        function excluirMeta(){
+            if(confirm("Tem certeza que deseja apagar sua meta?")){
+                localStorage.removeItem('meta_financeira');
+                document.getElementById("meta-valor").value = "";
+                document.getElementById("meta-prazo").value = "";
+                document.getElementById("meta-barra").style.width = "0%";
+                document.getElementById("meta-status").innerHTML = "";
+                showToast("Meta excluída!");
+                atualizarMeta();
+            }
+        }
+
+        async function calcularMeta(){
+            await atualizarMeta();
+            showToast("Meta recalculada!");
         }
         
         async function atualizarMeta(){
             const meta = JSON.parse(localStorage.getItem('meta_financeira'));
-            if(!meta) return;
-            const [receitas, despesas] = await Promise.all([getAll("receitas"), getAll("despesas")]);
-            const saldoTotal = safeFloat(receitas.reduce((s,i)=>s+safeVal(i.val),0) - despesas.reduce((s,i)=>s+safeVal(i.val),0));
-            const progresso = Math.min((saldoTotal/meta.valorMeta)*100, 100);
-            document.getElementById("meta-barra").style.width = progresso+"%";
-            document.getElementById("meta-status").innerHTML = `${FORMAT.format(saldoTotal)} de ${FORMAT.format(meta.valorMeta)} (${progresso.toFixed(1)}%)`;
-            if(progresso >= 100) showToast("Meta atingida! 🏆");
+            const statusEl = document.getElementById("meta-status");
+            const barraEl = document.getElementById("meta-barra");
+            const canvasEl = document.getElementById("graficoMeta");
+            const formArea = document.getElementById("meta-form-area");
+            const actionArea = document.getElementById("meta-actions");
+
+            if(!meta) {
+                statusEl.innerHTML = "";
+                barraEl.style.width = "0%";
+                canvasEl.style.display = "none";
+                formArea.style.display = "block";
+                actionArea.style.display = "none";
+                return;
+            }
+
+            formArea.style.display = "none";
+            actionArea.style.display = "grid";
+            canvasEl.style.display = "block";
+            
+            const [receitas, despesas] = await Promise.all([
+                getAll("receitas"),
+                getAll("despesas")
+            ]);
+
+            const saldoTotal = safeFloat(
+                receitas.reduce((s,i)=>s+safeVal(i.val),0) -
+                despesas.reduce((s,i)=>s+safeVal(i.val),0)
+            );
+
+            // Calcular projeção descontando recorrências futuras dentro do prazo
+            const recorrencias = await calcularRecorrenciasFuturas(meta.prazoMeses || 6);
+            const totalRecorrencias = recorrencias.reduce((s,i)=>s+i.total,0);
+
+            const saldoAjustado = safeFloat(saldoTotal - totalRecorrencias);
+
+            const progresso = Math.max(0, Math.min(
+                (saldoAjustado/meta.valorMeta)*100,
+                100
+            ));
+
+            barraEl.style.width = progresso + "%";
+
+            const economiaNecessaria = meta.valorMeta / meta.prazoMeses;
+
+            // Textos criativos dinâmicos
+            if(saldoAjustado >= 0){
+                let textoMotivacional = saldoAjustado >= meta.valorMeta 
+                    ? "🚀 <strong>Incrível!</strong> Você tem saldo para bater sua meta com folga!" 
+                    : "📈 <strong>No caminho certo!</strong> Falta um pouco, continue economizando.";
+                    
+                statusEl.innerHTML =
+                    `${FORMAT.format(saldoAjustado)} disponível após obrigações (próximos ${meta.prazoMeses} meses)<br>
+                    Meta: ${FORMAT.format(meta.valorMeta)} (${progresso.toFixed(1)}%)<br>
+                    Esforço mensal ideal: <b>${FORMAT.format(economiaNecessaria)}/mês</b><br><br>${textoMotivacional}`;
+                     
+                if(saldoAjustado >= meta.valorMeta && !localStorage.getItem('meta_toast_shown')) {
+                    showToast("Sua meta é viável no prazo!");
+                    localStorage.setItem('meta_toast_shown', 'true');
+                }
+            } else {
+                statusEl.innerHTML =
+                    `<b style="color: var(--expense)">${FORMAT.format(saldoAjustado)}</b> disponível após obrigações<br>
+                    Meta: ${FORMAT.format(meta.valorMeta)}<br>
+                    Esforço mensal ideal: <b>${FORMAT.format(economiaNecessaria)}/mês</b><br><br>
+                    ⚠️ <strong>Alerta Vermelho!</strong> Suas obrigações futuras somam mais que seu saldo atual. Faça ajustes urgentes!`;
+            }
+
+            // O gráfico usa a média de sobra mensal para demonstrar
+            const saldoMensalBase = saldoAjustado / meta.prazoMeses;
+            gerarGraficoProjecao(saldoMensalBase, meta.valorMeta, meta.prazoMeses);
         }
 
         function renderHistoricoMensal(receitas, despesas) {
             const container = document.getElementById('historico-mensal-list');
             if(!container) return;
             
-            // Recálculo local para exibição imediata na lista
             const mapR = {}; const mapD = {};
             receitas.forEach(r => { const m = r.data.slice(0,7); mapR[m] = (mapR[m]||0) + safeVal(r.val); });
             despesas.forEach(d => { const m = d.data.slice(0,7); mapD[m] = (mapD[m]||0) + safeVal(d.val); });
@@ -1363,14 +1762,31 @@
             const ctxD = document.getElementById('chart-doughnut').getContext('2d');
             chartInstanceDoughnut = new Chart(ctxD, {
                 type: 'doughnut',
-                data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: ['#ff453a', '#ff9f0a', '#ffd60a', '#32d74b', '#64d2ff', '#0a84ff', '#5e5ce6', '#bf5af2'], borderWidth: 0 }] },
+                data: { 
+                    labels: catLabels, 
+                    datasets: [{ 
+                        data: catData, 
+                        /* Paleta de categorias harmonizada */
+                        backgroundColor: ['#2563EB', '#7C3AED', '#EC4899', '#F59E0B', '#10B981', '#64748B', '#3B82F6', '#8B5CF6'], 
+                        borderWidth: 0 
+                    }] 
+                },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: textColor, font: { size: 10 }, boxWidth: 10 } }, title: { display: true, text: 'Despesas por Categoria', color: textColor } } }
             });
 
             const ctxB = document.getElementById('chart-bar').getContext('2d');
             chartInstanceBar = new Chart(ctxB, {
                 type: 'bar',
-                data: { labels: ['Entradas', 'Saídas'], datasets: [{ label: 'Valor', data: [totR, totD], backgroundColor: ['#30d158', '#ff453a'], borderRadius: 8 }] },
+                data: { 
+                    labels: ['Entradas', 'Saídas'], 
+                    datasets: [{ 
+                        label: 'Valor', 
+                        data: [totR, totD], 
+                        /* Ajustado para as novas cores de Income/Expense */
+                        backgroundColor: ['#16A34A', '#DC2626'], 
+                        borderRadius: 8 
+                    }] 
+                },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'Balanço Mensal', color: textColor } }, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
             });
         }
@@ -1418,8 +1834,8 @@
                     const data = JSON.parse(e.target.result);
                     if(!confirm(`Restaurar backup de "${data.u || 'Usuário'}"?`)) return;
                     await autoRestoreOffline(data);
+                    await atualizarSistemaFinanceiro();
                     alert("Restaurado com sucesso!");
-                    location.reload();
                 } catch(err) { alert("Arquivo inválido."); }
             };
             reader.readAsText(file);
@@ -1619,7 +2035,6 @@
 
             doc.save(`Relatorio_Pro_${safeText(user)}_${mesSel}.pdf`);
             showToast("PDF Gerado com Sucesso!");
-            // location.reload(); // Removido reload forçado para melhorar UX
         }
 
         async function compartilharZap() {
@@ -1675,9 +2090,9 @@
             
             setupSmartBar();
             
-            await fecharMesAutomatico(); // Chama a nova função de recálculo
+            await fecharMesAutomatico(); 
             await processarRecorrencias();
-            await render();
+            await atualizarSistemaFinanceiro(); 
             navTo('v-ganhar', document.querySelector('.tab.active'));
         };
     </script>
